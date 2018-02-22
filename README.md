@@ -3,6 +3,8 @@ Tools for `extract` and `load` for IMaRS ETL (Extract, Transform, Load) operatio
 
 This is a relatively light wrapper designed to help make loading and extracting files from IMaRS systems easier for end-users.
 
+Usernames and passwords for connecting to IMaRS systems *might* be hard-coded here, so this repo should remain private.
+
 ## Usage
 The "extract" and "load" commands are used to "download" and "upload" files and corresponding metadata. 
 The IMaRS-ETL tool abstracts the details of this process so that the user need not worry about the data lakes, databases, or fileshares under the hood.
