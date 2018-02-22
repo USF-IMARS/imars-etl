@@ -25,12 +25,12 @@ setup(name='imars_etl',
     author_email='code+imars_etl@tylar.info',
     url='https://github.com/usf-imars/imars-etl',
     tests_require=['nose'],
-    install_requires=[],
-    entry_points={  # sets up CLI (eg bash) commands
-        'console_scripts': [
-            'imars-etl = imars-etl',
-        ],
-    },
+    install_requires=['pymysql'],
+    # entry_points={  # sets up CLI (eg bash) commands
+    #     'console_scripts': [
+    #         'imars-etl = imars-etl',
+    #     ],
+    # },
     #cmdclass={'test': PyTest},  # custom build commands for test/lint/etc
     packages=[  # modules that are added to python when this is installed
         'imars_etl'

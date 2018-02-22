@@ -2,8 +2,10 @@
 """ cmd line interface definition for imars-etl """
 from argparse import ArgumentParser
 import logging
+from logging.handlers import RotatingFileHandler
+import os
 
-import imars_etl
+from imars_etl import imars_etl
 
 assert __name__ == "__main__"
 # =========================================================================
@@ -62,21 +64,22 @@ formatter = logging.Formatter(
 # === (optional) create handlers
 # https://docs.python.org/3/howto/logging.html#useful-handlers
 stream_handler = logging.StreamHandler()
-stream_handler.setLevel(_level)
+stream_handler.setLevel(logging.DEBUG)
 stream_handler.setFormatter(formatter)
-stream_handler.addFilter(DuplicateLogFilter())
 
-file_handler = RotatingFileHandler(
-   '/var/opt/imars_etl/imars_etl.log', maxBytes=1e6, backupCount=5
-)
-file_handler.setLevel(logging.DEBUG)
-file_handler.setFormatter(formatter)
-file_handler.addFilter(DuplicateLogFilter())
+# LOG_DIR = "/var/opt/imars_etl/"
+# if not os.path.exists(LOG_DIR):
+#     os.makedirs(LOG_DIR)
+# file_handler = RotatingFileHandler(
+#    LOG_DIR+'imars_etl.log', maxBytes=1e6, backupCount=5
+# )
+# file_handler.setLevel(logging.DEBUG)
+# file_handler.setFormatter(formatter)
 
 # === add the handlers (if any) to the logger
 _handlers = [
-    stream_handler,
-    file_handler
+    stream_handler
+    # file_handler
 ]
 
 logging.basicConfig(
