@@ -38,13 +38,25 @@ subparsers = parser.add_subparsers(
     help='addtnl help for subcommands: `projectname $subcommand -h`'
 )
 
-parser_extract = subparsers.add_parser('extract', help='download file from data warehouse')
+parser_extract = subparsers.add_parser(
+    'extract',
+    help='download file from data warehouse'
+)
 parser_extract.set_defaults(func=imars_etl.extract)
 parser_extract.add_argument("sql",
-    help="SQL `WHERE _____` style selector string"
+    help="SQL `WHERE _____` style selector string."
 )
 
-parser_load = subparsers.add_parser('load', help='upload file to data warehouse')
+parser_load = subparsers.add_parser(
+    'load',
+    help='upload file to data warehouse'
+)
+parser_load.add_argument("filepath",
+    help="path to file to upload"
+)
+parser_load.add_argument("json",
+    help="string of json with given file's metadata."
+)
 parser_load.set_defaults(func=imars_etl.load)
 
 args = parser.parse_args()

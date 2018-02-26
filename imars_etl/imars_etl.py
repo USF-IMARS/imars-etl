@@ -1,4 +1,5 @@
 import logging
+import json
 
 import pymysql
 
@@ -8,6 +9,8 @@ class EXIT_STATUS(object):
 
 def extract(args):
     """
+    Example usage:
+        ./imars-etl.py -vvv extract 'area_id=1'
     """
     logger = logging.getLogger(__name__)
     logger.debug('extract')
@@ -41,24 +44,42 @@ def extract(args):
 
 def load(args):
     """
+    Example Usage:
+        ./imars-etl.py -vvv load /home/me/myfile.png '{"area_id":1}'
     """
     logger = logging.getLogger(__name__)
     logger.debug('load')
-    raise NotImplementedError("loading files not yet implemented")
-    # TODO: check for required args
-    # TODO: prompt for missing args
-    # try:
-    #         with connection.cursor() as cursor:
-    #             # Create a new record
-    #             sql = "INSERT INTO `users` (`email`, `password`) VALUES (%s, %s)"
-    #             logger.debug('query:\n\t'+sql)
-    #             cursor.execute(sql, ('webmaster@python.org', 'very-secret'))
-    #
-    #         # connection is not autocommit by default. So you must commit to save
-    #         # your changes.
-    #         connection.commit()
-    # finally:
-    #    connection.close()
+    # raise NotImplementedError("loading files not yet implemented")
+    # # TODO: check for required args
+    # # TODO: prompt for missing args
+    connection = _get_conn()
+    try:
+            with connection.cursor() as cursor:
+                json_dict = json.loads(args.json)
+                str_concat=(lambda x, y: str(x)+","+str(y))
+                keys = reduce(
+                    str_concat,
+                    [str(key) for key in json_dict]
+                )
+                vals = reduce(
+                    str_concat,
+                    [str(json_dict[key]) for key in json_dict]
+                )
+                logger.debug(keys)
+                logger.debug(vals)
+                # Create a new record
+                sql = "INSERT IGNORE INTO file (filepath,"+keys+") VALUES (%s,"+vals+")"
+                logger.debug('query:\n\t'+sql)
+                result = cursor.execute(sql, (
+                    args.filepath
+                ))
+                print("\n\n\n", result)
+
+            # connection is not autocommit by default. So you must commit to save
+            # your changes.
+            connection.commit()
+    finally:
+       connection.close()
 
 def _get_conn():
     # get connection to the metadata database
