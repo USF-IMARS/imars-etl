@@ -29,15 +29,19 @@ parser.add_argument("-v", "--verbose", help="increase output verbosity",
 #     default=None
 # )
 
-parser.set_defaults(func=imars_etl.extract)  # set default behavior if subcommand not given
+# set default behavior if subcommand not given
+parser.set_defaults(func=imars_etl.extract)
 
+# =========================================================================
 # === subcommands
+# =========================================================================
 subparsers = parser.add_subparsers(
     title='subcommands',
     description='usage: `projectname $subcommand` ',
     help='addtnl help for subcommands: `projectname $subcommand -h`'
 )
 
+# === extract
 parser_extract = subparsers.add_parser(
     'extract',
     help='download file from data warehouse'
@@ -47,19 +51,32 @@ parser_extract.add_argument("sql",
     help="SQL `WHERE _____` style selector string."
 )
 
+# === load
 parser_load = subparsers.add_parser(
     'load',
     help='upload file to data warehouse'
 )
-parser_load.add_argument("filepath",
+# required args
+parser_load.add_argument("-f", "--filepath", required=True,
     help="path to file to upload"
 )
-parser_load.add_argument("json",
+parser_load.add_argument("-a", "--area", required=True,
+    help="area or region of interest (aka AoI or RoI)"
+)
+parser_load.add_argument("-d", "--date", required=True,
+    help="ISO8601-formatted date-time string of product"
+)
+parser_load.add_argument("-t", "--type", required=True,
+    help="product type id"
+)
+# optional args
+parser_load.add_argument("-j", "--json",
     help="string of json with given file's metadata."
 )
 parser_load.set_defaults(func=imars_etl.load)
-
+# ===
 args = parser.parse_args()
+# =========================================================================
 # =========================================================================
 # === set up logging behavior
 # =========================================================================
