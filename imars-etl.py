@@ -57,16 +57,17 @@ parser_load = subparsers.add_parser(
     help='upload file to data warehouse'
 )
 # required args
-parser_load.add_argument("-f", "--filepath", required=True,
+required_named_args = parser_load.add_argument_group('required named arguments')
+required_named_args.add_argument("-f", "--filepath", required=True,
     help="path to file to upload"
 )
-parser_load.add_argument("-a", "--area", required=True,
+required_named_args.add_argument("-a", "--area", required=True,
     help="area or region of interest (aka AoI or RoI)"
 )
-parser_load.add_argument("-d", "--date", required=True,
+required_named_args.add_argument("-d", "--date", required=True,
     help="ISO8601-formatted date-time string of product"
 )
-parser_load.add_argument("-t", "--type", required=True,
+required_named_args.add_argument("-t", "--type", required=True,
     help="product type id"
 )
 # optional args
