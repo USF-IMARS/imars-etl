@@ -29,9 +29,6 @@ parser.add_argument("-v", "--verbose", help="increase output verbosity",
 #     default=None
 # )
 
-# set default behavior if subcommand not given
-parser.set_defaults(func=imars_etl.extract)
-
 # =========================================================================
 # === subcommands
 # =========================================================================
@@ -56,6 +53,7 @@ parser_load = subparsers.add_parser(
     'load',
     help='upload file to data warehouse'
 )
+parser_load.set_defaults(func=imars_etl.load)
 # required args
 required_named_args = parser_load.add_argument_group('required named arguments')
 required_named_args.add_argument("-f", "--filepath", required=True,
@@ -74,7 +72,6 @@ required_named_args.add_argument("-t", "--type", required=True,
 parser_load.add_argument("-j", "--json",
     help="string of json with given file's metadata."
 )
-parser_load.set_defaults(func=imars_etl.load)
 # ===
 args = parser.parse_args()
 # =========================================================================
