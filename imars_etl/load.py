@@ -17,9 +17,10 @@ def load(args):
     """
     logger = logging.getLogger(__name__)
     logger.debug('load')
+    args = _validate_args(args)
     # TODO: attempt automagic ingest into IMaRS data warehouse using ./ingest/*
-    # # TODO: check for required args
-    # # TODO: prompt for missing args
+    # TODO: check for required args
+    # TODO: prompt for missing args
     connection = metadatabase.get_conn()
     try:
         with connection.cursor() as cursor:
@@ -50,10 +51,29 @@ def load(args):
             if args.dry_run:  # test mode returns the sql string
                 return sql
             else:
-                logger.debug('======================== TO DB')
                 result = cursor.execute(sql)
                 # connection is not autocommit by default. So you must commit to save
                 # your changes.
                 connection.commit()
     finally:
        connection.close()
+
+def _validate_args(args):
+    """
+    Returns properly formatted & complete argument list.
+    Makes attempts to guess at filling in missing args.
+    """
+    # these are soft-required args, ones that we might try to guess if not
+    # given, but we have to give up if we cannot figure them out.
+    required_args = ['type','date','area']
+    for arg in required_args:
+        args[arg] = _guess_arg_value(args, arg)
+    return args
+
+def _guess_arg_value(args, arg_to_guess):
+    """
+    Attempts to guess a value for the given arg_to_guess using info from the
+    other args (mostly args.filepath).
+    Will overwrite args[arg_to_guess] if it finds a more appropriate value.
+    """
+    return args
