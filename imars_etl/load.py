@@ -67,7 +67,8 @@ def _validate_args(args):
     # given, but we have to give up if we cannot figure them out.
     required_args = ['type','date','area']
     for arg in required_args:
-        args[arg] = _guess_arg_value(args, arg)
+        guessed_val = _guess_arg_value(args, arg)
+        setattr(args, arg, guessed_val)
     return args
 
 def _guess_arg_value(args, arg_to_guess):
@@ -76,4 +77,12 @@ def _guess_arg_value(args, arg_to_guess):
     other args (mostly args.filepath).
     Will overwrite args[arg_to_guess] if it finds a more appropriate value.
     """
-    return args
+
+    # TODO: try to guess the arg
+    if getattr(args, arg_to_guess) is None:  # if failed to guess arg
+        raise ValueError(
+            "Missing required argument '" + arg_to_guess + "'."
+            + " Failed to guess argument value."
+        )
+    else:
+        return getattr(args, arg_to_guess)

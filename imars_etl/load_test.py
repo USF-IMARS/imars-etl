@@ -46,20 +46,19 @@ class Test_load(TestCase):
 
     def test_load_missing_filepath(self):
         """
-        test cmd missing filepath fails:
+        test cmd missing date fails:
             imars_etl.py load
                 --dry_run
                 -a 1
                 -t 4
-                -d '2018-02-26T13:00'
-                -j '{"status":1}'
+                -f '/my/path/without/a/date/in.it'
         """
         test_args = MagicMock(
             verbose=0,
             dry_run=True,
+            filepath="/my/path/without/a/date/in.it",
+            date=None,
             area=1,
-            type=4,
-            date="2018-02-26T13:00",
-            json='{"status":1}'
+            type=4
         )
         self.assertRaises(Exception, load, test_args)
