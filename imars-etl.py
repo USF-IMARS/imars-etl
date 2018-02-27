@@ -5,7 +5,8 @@ import logging
 from logging.handlers import RotatingFileHandler
 import os
 
-from imars_etl import imars_etl
+from imars_etl.load import load
+from imars_etl.extract import extract
 
 assert __name__ == "__main__"
 # =========================================================================
@@ -43,7 +44,7 @@ parser_extract = subparsers.add_parser(
     'extract',
     help='download file from data warehouse'
 )
-parser_extract.set_defaults(func=imars_etl.extract)
+parser_extract.set_defaults(func=extract)
 parser_extract.add_argument("sql",
     help="SQL `WHERE _____` style selector string."
 )
@@ -53,7 +54,7 @@ parser_load = subparsers.add_parser(
     'load',
     help='upload file to data warehouse'
 )
-parser_load.set_defaults(func=imars_etl.load)
+parser_load.set_defaults(func=load)
 # required args
 required_named_args = parser_load.add_argument_group('required named arguments')
 required_named_args.add_argument("-f", "--filepath", required=True,
@@ -71,6 +72,10 @@ required_named_args.add_argument("-t", "--type", required=True,
 # optional args
 parser_load.add_argument("-j", "--json",
     help="string of json with given file's metadata."
+)
+parser_load.add_argument("--dry_run",
+    help="test run only, does not actually insert into database",
+    action="store_true"
 )
 # ===
 args = parser.parse_args()
