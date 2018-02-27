@@ -17,9 +17,9 @@ class Test_load(TestCase):
 
     # tests:
     #########################
-    def test_rclone_cmd_basic(self):
+    def test_load_basic(self):
         """
-        test cmd:
+        test basic cmd passes:
             imars_etl.py load
                 --dry_run
                 -f /fake/filepath.png
@@ -43,3 +43,23 @@ class Test_load(TestCase):
             + ' (status,date_time,area_id,product_type_id,filepath)'
             + ' VALUES (1,"2018-02-26T13:00",1,4,"/fake/filepath.png")'
         )
+
+    def test_load_missing_filepath(self):
+        """
+        test cmd missing filepath fails:
+            imars_etl.py load
+                --dry_run
+                -a 1
+                -t 4
+                -d '2018-02-26T13:00'
+                -j '{"status":1}'
+        """
+        test_args = MagicMock(
+            verbose=0,
+            dry_run=True,
+            area=1,
+            type=4,
+            date="2018-02-26T13:00",
+            json='{"status":1}'
+        )
+        self.assertRaises(Exception, load, test_args)
