@@ -17,8 +17,10 @@ def check_match(filename, pattern):
     # check for potential named args
     for key in valid_pattern_vars:
         if (key in pattern):
+            logger.debug("     key    : " + key)
             # validate value in filename
             for valid_pattern in valid_pattern_vars[key]:
+                logger.debug("pattern test: " + valid_pattern)
                 if "*" in valid_pattern_vars[key]:
                     # cut out
                     regex = (
@@ -26,14 +28,24 @@ def check_match(filename, pattern):
                         + "[^"+valid_pattern_vars[key][0]+"]+".format(key)
                         + valid_pattern_vars[key][2]
                     )
-                    strptime_filename = re.sub(
-                        regex,
-                        valid_pattern_vars[key][0]
-                            + key
-                            + valid_pattern_vars[key][2],
-                        strptime_filename
-                    )
-
+                    try:
+                        regex_result = re.search(regex, strptime_filename)
+                        logger.debug("regex_result: " + str(regex_result))
+                        matched_string = regex_result.group(0)
+                        strptime_filename = strptime_filename.replace(
+                            matched_string,
+                            valid_pattern_vars[key][0] + key + valid_pattern_vars[key][2]
+                        )
+                        logger.debug("matched_str : " + matched_string)
+                    except AttributeError as a_err:  # no regex match
+                        logger.info(
+                            "no match for '" + key + "'"
+                            + " regex '" + regex + "'"
+                            + " in filename '" + filename + "'"
+                        )
+                        return False
+                    finally:
+                        break
                 elif valid_pattern in filename:
                     strptime_filename.replace(valid_pattern, key)
                 else:

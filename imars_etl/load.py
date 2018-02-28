@@ -78,7 +78,13 @@ def _guess_arg_value(args, arg_to_guess):
     Will overwrite args[arg_to_guess] if it finds a more appropriate value.
     """
 
-    # TODO: try to guess the arg
+    # TODO: try to guess the arg using modified check_match...
+
+
+
+
+
+    
     if getattr(args, arg_to_guess) is None:  # if failed to guess arg
         raise ValueError(
             "Missing required argument '" + arg_to_guess + "'."
