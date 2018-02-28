@@ -3,7 +3,7 @@ import logging
 import re
 import os
 
-from imars_etl.ingest.filepath_data import valid_pattern_vars
+from imars_etl.filepath.data import valid_pattern_vars
 
 def _parse_from_regex(key, strptime_filename, filename):
     """
@@ -66,7 +66,6 @@ def _parse_from_list(key, strptime_filename, filename):
             + str(valid_pattern_vars[key])
         )
         return None, strptime_filename
-
 
 def check_match(filename, pattern):
     """ returns true iff filename matches given filename_pattern """

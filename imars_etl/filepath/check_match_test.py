@@ -11,8 +11,8 @@ except ImportError:
     from unittest.mock import MagicMock
 
 # dependencies:
-from imars_etl.ingest import check_match
-from imars_etl.ingest.filepath_data import filename_patterns
+from imars_etl.filepath import check_match
+from imars_etl.filepath.data import filename_patterns
 
 class Test_check_match(TestCase):
 
