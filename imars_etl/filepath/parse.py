@@ -7,6 +7,26 @@ import re
 
 from imars_etl.filepath.data import valid_pattern_vars
 
+def parse(key, strptime_filename, filename):
+    """
+    returns
+    ----------
+    value : str
+        value of key read from filename. `None` if failed to read
+    strptime_filename : str
+        modified filename with read in value replaced by key. Unmodified if
+        value failed to read.
+    """
+    if "*" in valid_pattern_vars[key]:  # if we should regex
+        return parse_regex(
+            key, strptime_filename, filename
+        )
+    else:
+        return parse_list(
+            key, strptime_filename, filename
+        )
+
+
 def parse_regex(key, strptime_filename, filename):
     """
     returns

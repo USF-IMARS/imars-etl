@@ -3,7 +3,7 @@ import logging
 import os
 
 from imars_etl.filepath.data import valid_pattern_vars
-from imars_etl.filepath.parse import parse_regex, parse_list
+from imars_etl.filepath.parse import parse
 
 def check_match(filename, pattern):
     """ returns true iff filename matches given filename_pattern """
@@ -19,14 +19,7 @@ def check_match(filename, pattern):
         if (key in pattern):  # if the argname is in the pattern
             logger.debug("     key    : " + key)
             # validate value in filename
-            if "*" in valid_pattern_vars[key]:  # if we should regex
-                val, strptime_filename = parse_regex(
-                    key, strptime_filename, filename
-                )
-            else:
-                val, strptime_filename = parse_list(
-                    key, strptime_filename, filename
-                )
+            val, strptime_filename = parse(key, strptime_filename, filename)
     # check for valid date in filename that matches pattern
     try:
         datetime.strptime(strptime_filename, strptime_pattern)
