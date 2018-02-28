@@ -64,12 +64,17 @@ def _validate_args(args):
     Returns properly formatted & complete argument list.
     Makes attempts to guess at filling in missing args.
     """
+    logger = logging.getLogger(__name__)
     # these are soft-required args, ones that we might try to guess if not
     # given, but we have to give up if we cannot figure them out.
     required_args = ['type','date','area']
     for arg in required_args:
-        guessed_val = _guess_arg_value(args, arg)
-        setattr(args, arg, guessed_val)
+        try:
+            guessed_val = _guess_arg_value(args, arg)
+            if guessed_val is not None:
+                setattr(args, arg, guessed_val)
+        except ValueError as v_err:
+            logger.debug("failed to guess value for '{}'".format(arg))
     return args
 
 def _guess_arg_value(args, arg_to_guess):
@@ -81,13 +86,4 @@ def _guess_arg_value(args, arg_to_guess):
 
     # try to guess the arg using filepath
     val, mod_path = parse(arg_to_guess, args.filepath, args.filepath)
-    if val != None:
-        setattr(args, arg_to_guess, val)
-
-    if getattr(args, arg_to_guess) is None:  # if failed to guess arg
-        raise ValueError(
-            "Missing required argument '" + arg_to_guess + "'."
-            + " Failed to guess argument value."
-        )
-    else:
-        return getattr(args, arg_to_guess)
+    return val
