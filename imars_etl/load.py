@@ -2,6 +2,7 @@ import logging
 import json
 
 from imars_etl import metadatabase
+from imars_etl.filepath.parse import parse
 
 def load(args):
     """
@@ -78,13 +79,11 @@ def _guess_arg_value(args, arg_to_guess):
     Will overwrite args[arg_to_guess] if it finds a more appropriate value.
     """
 
-    # TODO: try to guess the arg using modified check_match...
+    # try to guess the arg using filepath
+    val, mod_path = parse(arg_to_guess, args.filepath, args.filepath)
+    if val != None:
+        setattr(args, arg_to_guess, val)
 
-
-
-
-
-    
     if getattr(args, arg_to_guess) is None:  # if failed to guess arg
         raise ValueError(
             "Missing required argument '" + arg_to_guess + "'."

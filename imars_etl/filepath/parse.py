@@ -17,15 +17,19 @@ def parse(key, strptime_filename, filename):
         modified filename with read in value replaced by key. Unmodified if
         value failed to read.
     """
-    if "*" in valid_pattern_vars[key]:  # if we should regex
-        return parse_regex(
-            key, strptime_filename, filename
-        )
-    else:
-        return parse_list(
-            key, strptime_filename, filename
-        )
-
+    logger = logging.getLogger(__name__)
+    try:
+        if "*" in valid_pattern_vars[key]:  # if we should regex
+            return parse_regex(
+                key, strptime_filename, filename
+            )
+        else:
+            return parse_list(
+                key, strptime_filename, filename
+            )
+    except KeyError as k_err:
+        logger.error("no filepath.data for key '" + key + "'")
+        return None, strptime_filename
 
 def parse_regex(key, strptime_filename, filename):
     """
@@ -72,6 +76,7 @@ def parse_list(key, strptime_filename, filename):
         modified filename with read in value replaced by key. Unmodified if
         value failed to read.
     """
+    logger = logging.getLogger(__name__)
     # check for each of the possible valid values
     for valid_pattern in valid_pattern_vars[key]:
         logger.debug("pattern test: " + valid_pattern)
