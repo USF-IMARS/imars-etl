@@ -40,6 +40,33 @@ def _parse_from_regex(key, strptime_filename, filename):
         )
         return None, strptime_filename
 
+def _parse_from_list(key, strptime_filename, filename):
+    """
+    returns
+    ----------
+    value : str
+        value of key read from filename. `None` if failed to read
+    strptime_filename : str
+        modified filename with read in value replaced by key. Unmodified if
+        value failed to read.
+    """
+    # check for each of the possible valid values
+    for valid_pattern in valid_pattern_vars[key]:
+        logger.debug("pattern test: " + valid_pattern)
+        if valid_pattern in filename:
+            strptime_filename = strptime_filename.replace(
+                valid_pattern,
+                key
+            )
+            return valid_pattern, strptime_filename
+    else:
+        logger.info(
+            "value read from filename for " + key
+            + " is not in list of valid keys: "
+            + str(valid_pattern_vars[key])
+        )
+        return None, strptime_filename
+
 
 def check_match(filename, pattern):
     """ returns true iff filename matches given filename_pattern """
@@ -60,22 +87,9 @@ def check_match(filename, pattern):
                     key, strptime_filename, filename
                 )
             else:
-                # check for each of the possible valid values
-                for valid_pattern in valid_pattern_vars[key]:
-                    logger.debug("pattern test: " + valid_pattern)
-                    if valid_pattern in filename:
-                        strptime_filename = strptime_filename.replace(
-                            valid_pattern,
-                            key
-                        )
-                        break
-                else:
-                    logger.info(
-                        "value read from filename for " + key
-                        + " is not in list of valid keys: "
-                        + str(valid_pattern_vars[key])
-                    )
-                    return False
+                val, strptime_filename = _parse_from_list(
+                    key, strptime_filename, filename
+                )
     # check for valid date in filename that matches pattern
     try:
         datetime.strptime(strptime_filename, strptime_pattern)
