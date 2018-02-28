@@ -14,45 +14,49 @@ def check_match(filename, pattern):
     strptime_pattern  = pattern.replace("{","").replace("}","")
     strptime_filename = filename  # values replaced by key string below
 
-    # check for potential named args
-    for key in valid_pattern_vars:
-        if (key in pattern):
+    # === check for potential named args
+    for key in valid_pattern_vars:  # for each possible argname
+        if (key in pattern):  # if the argname is in the pattern
             logger.debug("     key    : " + key)
             # validate value in filename
-            for valid_pattern in valid_pattern_vars[key]:
-                logger.debug("pattern test: " + valid_pattern)
-                if "*" in valid_pattern_vars[key]:
-                    # cut out
-                    regex = (
-                        valid_pattern_vars[key][0]
-                        + "[^"+valid_pattern_vars[key][0]+"]+".format(key)
-                        + valid_pattern_vars[key][2]
+            if "*" in valid_pattern_vars[key]:  # if we should regex
+                # cut out
+                regex = (
+                    valid_pattern_vars[key][0]
+                    + "[^"+valid_pattern_vars[key][0]+"]+".format(key)
+                    + valid_pattern_vars[key][2]
+                )
+                try:
+                    regex_result = re.search(regex, strptime_filename)
+                    logger.debug("regex_result: " + str(regex_result))
+                    matched_string = regex_result.group(0)
+                    strptime_filename = strptime_filename.replace(
+                        matched_string,
+                        valid_pattern_vars[key][0] + key + valid_pattern_vars[key][2]
                     )
-                    try:
-                        regex_result = re.search(regex, strptime_filename)
-                        logger.debug("regex_result: " + str(regex_result))
-                        matched_string = regex_result.group(0)
+                    logger.debug("matched_str : " + matched_string)
+                except AttributeError as a_err:  # no regex match
+                    logger.info(
+                        "no match for '" + key + "'"
+                        + " regex '" + regex + "'"
+                        + " in filename '" + filename + "'"
+                    )
+                    return False
+            else:
+                # check for each of the possible valid values
+                for valid_pattern in valid_pattern_vars[key]:
+                    logger.debug("pattern test: " + valid_pattern)
+                    if valid_pattern in filename:
                         strptime_filename = strptime_filename.replace(
-                            matched_string,
-                            valid_pattern_vars[key][0] + key + valid_pattern_vars[key][2]
+                            valid_pattern,
+                            key
                         )
-                        logger.debug("matched_str : " + matched_string)
-                    except AttributeError as a_err:  # no regex match
-                        logger.info(
-                            "no match for '" + key + "'"
-                            + " regex '" + regex + "'"
-                            + " in filename '" + filename + "'"
-                        )
-                        return False
-                    finally:
                         break
-                elif valid_pattern in filename:
-                    strptime_filename.replace(valid_pattern, key)
                 else:
                     logger.info(
                         "value read from filename for " + key
                         + " is not in list of valid keys: "
-                        + str(data.valid_pattern_vars[key])
+                        + str(valid_pattern_vars[key])
                     )
                     return False
     # check for valid date in filename that matches pattern
