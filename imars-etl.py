@@ -61,9 +61,6 @@ def parse_args(argvs):
     required_named_args.add_argument("-f", "--filepath", required=True,
         help="path to file to upload"
     )
-    required_named_args.add_argument("-a", "--area",
-        help="area or region of interest (aka AoI or RoI)"
-    )
     required_named_args.add_argument("-d", "--date",
         help="ISO8601-formatted date-time string of product"
     )

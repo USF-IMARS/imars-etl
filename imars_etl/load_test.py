@@ -23,19 +23,17 @@ class Test_load(TestCase):
             imars_etl.py load
                 --dry_run
                 -f /fake/filepath.png
-                -a 1
                 -t 4
                 -d '2018-02-26T13:00'
-                -j '{"status":1}'
+                -j '{"status":1, "area_id":1}'
         """
         test_args = MagicMock(
             verbose=0,
             dry_run=True,
             filepath="/fake/filepath.png",
-            area=1,
             type=4,
             date="2018-02-26T13:00",
-            json='{"status":1}'
+            json='{"status":1,"area_id":1}'
         )
         self.assertEqual(
             load(test_args),
@@ -49,8 +47,8 @@ class Test_load(TestCase):
         cmd missing date that cannot be guessed fails:
             imars_etl.py load
                 --dry_run
-                -a 1
                 -t 4
+                -j '{"area_id":1}'
                 -f '/my/path/without/a/date/in.it'
         """
         test_args = MagicMock(
@@ -58,7 +56,7 @@ class Test_load(TestCase):
             dry_run=True,
             filepath="/my/path/without/a/date/in.it",
             date=None,
-            area=1,
+            json='{"area_id":1}',
             type=4
         )
         self.assertRaises(Exception, load, test_args)
@@ -68,7 +66,7 @@ class Test_load(TestCase):
         cmd missing date that *can* be guessed passes:
             imars_etl.py load
                 --dry_run
-                -a 1
+                -j '{"area_id":1}'
                 -t 4
                 -f '/path/w/parseable/date/wv2_2000_06_myTag.zip'
         """
@@ -77,7 +75,7 @@ class Test_load(TestCase):
             dry_run=True,
             filepath="/path/w/parseable/date/wv2_2000_06_myTag.zip",
             date=None,
-            area=1,
+            json='{"area_id":1}',
             type=4
         )
         self.assertEqual(
@@ -85,5 +83,28 @@ class Test_load(TestCase):
             'INSERT INTO file'
             + ' (date_time,area_id,product_type_id,filepath)'
             + ' VALUES ("2000-06-01T00:00:00",1,4,'
+            + '"/path/w/parseable/date/wv2_2000_06_myTag.zip")'
+        )
+
+    def test_wv2_zip_ingest_example(self):
+        """
+        test wv2 ingest with filename parsing passes:
+            imars_etl.py load
+                --dry_run
+                -t 4
+                -f '/path/w/parseable/date/wv2_2000_06_myTag.zip'
+        """
+        test_args = MagicMock(
+            verbose=0,
+            dry_run=True,
+            filepath="/path/w/parseable/date/wv2_2000_06_myTag.zip",
+            date=None,
+            type=4
+        )
+        self.assertEqual(
+            load(test_args),
+            'INSERT INTO file'
+            + ' (date_time,product_type_id,filepath)'
+            + ' VALUES ("2000-06-01T00:00:00",4,'
             + '"/path/w/parseable/date/wv2_2000_06_myTag.zip")'
         )

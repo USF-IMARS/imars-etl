@@ -27,7 +27,6 @@ def load(args):
             except TypeError as t_err:  # json str is empty
                 json_dict = dict()
             json_dict["filepath"] = '"'+args.filepath+'"'
-            json_dict["area_id"] = args.area
             json_dict["date_time"] = '"'+args.date+'"'
             json_dict["product_type_id"] = args.type
 
@@ -64,7 +63,7 @@ def _validate_args(args):
     logger = logging.getLogger(__name__)
     # these are soft-required args, ones that we might try to guess if not
     # given, but we have to give up if we cannot figure them out.
-    required_args = ['type','date','area']
+    required_args = ['type','date']
     for arg in required_args:
         try:
             guessed_val = _guess_arg_value(args, arg)
