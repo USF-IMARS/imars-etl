@@ -31,8 +31,8 @@ class Test_check_match(TestCase):
         """ _parse_date works for pattern w/ 1 regex named arg """
         self.assertEqual(
             _parse_date(
-                "wv2_2000_01_{tag}.zip",
-                "wv2_%Y_%m_myTagHere.zip"
+                "wv2_2000_01_myTagHere.zip",
+                "wv2_%Y_%m_{tag}.zip"
             ),
             "2000-01-01T00:00:00"
         )
