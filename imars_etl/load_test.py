@@ -83,7 +83,7 @@ class Test_load(TestCase):
         self.assertEqual(
             load(test_args),
             'INSERT INTO file'
-            + ' (status,date_time,area_id,product_type_id,filepath)'
-            + ' VALUES (1,"2000-06-01T00:00",1,4,'\
+            + ' (date_time,area_id,product_type_id,filepath)'
+            + ' VALUES ("2000-06-01T00:00:00",1,4,'
             + '"/path/w/parseable/date/wv2_2000_06_myTag.zip")'
         )

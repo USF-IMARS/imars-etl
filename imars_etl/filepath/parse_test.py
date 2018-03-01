@@ -25,7 +25,7 @@ class Test_check_match(TestCase):
                 "wv2_2000_01_.zip",
                 "wv2_%Y_%m_.zip"
             ),
-            datetime(2000, 1, 1)
+            "2000-01-01T00:00:00"
         )
     def test_parse_date_w_args(self):
         """ _parse_date works for pattern w/ 1 regex named arg """
@@ -34,5 +34,5 @@ class Test_check_match(TestCase):
                 "wv2_2000_01_{tag}.zip",
                 "wv2_%Y_%m_myTagHere.zip"
             ),
-            datetime(2000, 1, 1)
+            "2000-01-01T00:00:00"
         )
