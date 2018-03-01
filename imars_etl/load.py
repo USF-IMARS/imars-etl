@@ -19,9 +19,6 @@ def load(args):
     logger = logging.getLogger(__name__)
     logger.debug('load')
     args = _validate_args(args)
-    # TODO: attempt automagic ingest into IMaRS data warehouse using ./ingest/*
-    # TODO: check for required args
-    # TODO: prompt for missing args
     connection = metadatabase.get_conn()
     try:
         with connection.cursor() as cursor:
