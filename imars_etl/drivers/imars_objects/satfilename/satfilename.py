@@ -46,28 +46,40 @@ Filenames in `geo` and `geo_v2` are probably similar, but shoud not be identical
 from imars_etl.drivers.imars_objects.satfilename.BaseSatFilepath import BaseSatFilepath
 
 ISO_8601_FMT="%Y-%m-%dT%H:%M:%SZ"
+
+# TODO: use something like this and function probably?
+# PATH_ROOT="/srv/imars-objects/{region}/{product_type_id}/"
+# _products = {
+#     # "product_type_id": {
+#     #   "basename": "A%Y%j%H%M00.L1A_LAC.x.hdf.bz2"
+#     #   "path"    : "/srv/imars-objects/{region}/{product_type_id}/"
+#     # }
+#     "png_chl_7d": {
+#         "name": "FGB_A1km_chlor_a_%Y%j_%Y%j_7D_MEAN.png"
+#     },
+#     "png_chl_ts_7d":{},
+#     "png_disch_7d":{},
+#     "png_met_7d":{},
+#     "myd01":{},
+#     "zip_wv2_ftp_ingest":{}
+# }
+
 products = {}
 
 """ zipped l1a (myd01) files from OB.DAAC """
-products["l1a_lac_hdf_bz2"] = BaseSatFilepath("l1a_lac_hdf_bz2", "A%Y%j%H%M00.L1A_LAC.x.hdf.bz2")
+products["l1a_lac_hdf_bz2"] = BaseSatFilepath(
+    "l1a_lac_hdf_bz2",
+    "A%Y%j%H%M00.L1A_LAC.x.hdf.bz2"
+)
 
-""" modis aqua l1.
-    I *think* these files are the same as l1a_LAC, but from LANCE.
-"""
+# modis aqua l1. I *think* these files are the same as l1a_LAC, but from LANCE.
 myd01 = BaseSatFilepath("myd01", "A%Y%j.%H%M.hdf")
-
 l1a_geo = BaseSatFilepath("geo", "A%Y%j%H%M00.GEO")
-
 okm = BaseSatFilepath("l1b", "A%Y%j%H%M00.L1B_LAC")
-
 hkm = BaseSatFilepath("hkm", "A%Y%j%H%M00.L1B_HKM")
-
 qkm = BaseSatFilepath("qkm", "A%Y%j%H%M00.L1B_QKM")
-
 l2 = BaseSatFilepath("l2", "A%Y%j%H%M00.L2")
-
 l3 = BaseSatFilepath("l3", ISO_8601_FMT+"_l3.nc")
-
 l3_pass = BaseSatFilepath("l3_pass", ISO_8601_FMT+"_l3.nc")
 
 def png(product_datetime, variable_name, region_id):
