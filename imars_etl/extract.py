@@ -1,6 +1,7 @@
 import logging
 
 from imars_etl import metadatabase
+from imars_etl.util import dict_to_argparse_namespace
 
 class EXIT_STATUS(object):
     NO_MATCHING_FILES = 7
@@ -9,7 +10,7 @@ class EXIT_STATUS(object):
 def extract(args):
     """
     args can be dict or argparse.Namespace
-    
+
     Example usage:
         ./imars-etl.py -vvv extract 'area_id=1'
     """
@@ -36,12 +37,13 @@ def extract(args):
                 print(result)
                 exit(EXIT_STATUS.MULTIPLE_MATCH)
             else:
-                # print a path to where the file can be accessed on the local
-                # machine.
+                # TODO: download & then print a path to where the file can be
+                # accessed on the local machine.
                 # NOTE: currently this just gives the path because we assume:
                 #   1. that the path is in /srv/imars-objects
                 #   2. that the system is set up to access /srv/imars-objects
                 print(result)
+                return result
 
     finally:
         connection.close()
