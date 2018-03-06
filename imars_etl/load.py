@@ -81,7 +81,6 @@ def _guess_arg_value(args, arg_to_guess):
     other args (mostly args.filepath).
     Will overwrite args[arg_to_guess] if it finds a more appropriate value.
     """
-
     # try to guess the arg using filepath
     val, mod_path = parse(arg_to_guess, args.filepath, args.filepath)
     return val
