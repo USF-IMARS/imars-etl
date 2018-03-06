@@ -56,9 +56,13 @@ def load(args):
             if args.dry_run:  # test mode returns the sql string
                 return sql
             else:
+                # TODO: load file into IMaRS data warehouse
+                # from imars_etl.drivers.imars_objects.load import _load
+                # new_filepath = _load(args)
+                # sql = sql.replace(json_dict["filepath"], new_filepath)
                 result = cursor.execute(sql)
-                # connection is not autocommit by default. So you must commit to save
-                # your changes.
+                # connection is not autocommit by default.
+                # So you must commit to save your changes.
                 connection.commit()
     finally:
        connection.close()
