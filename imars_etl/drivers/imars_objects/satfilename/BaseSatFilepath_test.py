@@ -8,7 +8,7 @@ except ImportError:
     from unittest.mock import MagicMock
 
 # dependencies:
-from satfilename.BaseSatFilepath import BaseSatFilepath
+from imars_etl.drivers.imars_objects.satfilename.BaseSatFilepath import BaseSatFilepath
 
 class Test_BaseSatFilepath(TestCase):
 

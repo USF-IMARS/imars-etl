@@ -9,7 +9,7 @@ except ImportError:
 from datetime import datetime
 
 # dependencies:
-from satfilename.satfilename import l1a_lac_hdf_bz2
+from imars_etl.drivers.imars_objects.satfilename.satfilename import products
 
 class Test_satfilename_main(TestCase):
 
@@ -18,7 +18,9 @@ class Test_satfilename_main(TestCase):
     def test_l1a_lac_hdf_bz2(self):
         """ basic test for l1a_lac_hdf_bz2 """
 
-        res = l1a_lac_hdf_bz2(datetime(2000, 1, 2, 3, 45), "fake_test-region01")
+        res = products['l1a_lac_hdf_bz2'](
+            datetime(2000, 1, 2, 3, 45), "fake_test-region01"
+        )
         self.assertEqual(
             res,
             "/srv/imars-objects/modis_aqua_fake_test-region01/l1a_lac_hdf_bz2/A2000002034500.L1A_LAC.x.hdf.bz2"

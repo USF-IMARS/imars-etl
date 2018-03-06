@@ -43,12 +43,13 @@ Note the common product directories and the two `geo` directories where a new ve
 Filenames in `geo` and `geo_v2` are probably similar, but shoud not be identical.
 """
 
-from satfilename.BaseSatFilepath import BaseSatFilepath
+from imars_etl.drivers.imars_objects.satfilename.BaseSatFilepath import BaseSatFilepath
 
 ISO_8601_FMT="%Y-%m-%dT%H:%M:%SZ"
+products = {}
 
 """ zipped l1a (myd01) files from OB.DAAC """
-l1a_lac_hdf_bz2 = BaseSatFilepath("l1a_lac_hdf_bz2", "A%Y%j%H%M00.L1A_LAC.x.hdf.bz2")
+products["l1a_lac_hdf_bz2"] = BaseSatFilepath("l1a_lac_hdf_bz2", "A%Y%j%H%M00.L1A_LAC.x.hdf.bz2")
 
 """ modis aqua l1.
     I *think* these files are the same as l1a_LAC, but from LANCE.
