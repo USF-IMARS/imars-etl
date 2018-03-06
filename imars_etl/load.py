@@ -3,9 +3,12 @@ import json
 
 from imars_etl import metadatabase
 from imars_etl.filepath.parse import parse
+from imars_etl.util import dict_to_argparse_namespace
 
 def load(args):
     """
+    args can be a dict or argparse.Namespace
+
     Example Usages:
         ./imars-etl.py -vvv load /home/me/myfile.png '{"area_id":1}'
 
@@ -18,7 +21,12 @@ def load(args):
     """
     logger = logging.getLogger(__name__)
     logger.debug('load')
+
+    if isinstance(args, dict):  # args can be dict
+        args = dict_to_argparse_namespace(args)
+
     args = _validate_args(args)
+
     connection = metadatabase.get_conn()
     try:
         with connection.cursor() as cursor:

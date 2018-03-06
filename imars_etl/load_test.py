@@ -17,6 +17,7 @@ class Test_load(TestCase):
 
     # tests:
     #########################
+    # === bash CLI
     def test_load_basic(self):
         """
         basic load cmd passes:
@@ -107,4 +108,31 @@ class Test_load(TestCase):
             + ' (date_time,product_type_id,filepath)'
             + ' VALUES ("2000-06-01T00:00:00",4,'
             + '"/path/w/parseable/date/wv2_2000_06_myTag.zip")'
+        )
+
+    # === python API
+    def test_load_python_basic_dict(self):
+        """
+        basic imars_etl.load passes:
+            imars_etl.load({
+                "dry_run": True,
+                "filepath": "/fake/filepath.png",
+                "type": "4",
+                "date": "2018-02-26T13:00",
+                "json": '{"status":1, "area_id":1}'
+            })
+        """
+        result = load({
+            "dry_run": True,
+            "filepath": "/fake/filepath.png",
+            "type": "4",
+            "date": "2018-02-26T13:00",
+            "json": '{"status":1, "area_id":1}'
+        })
+
+        self.assertEqual(
+            result,
+            'INSERT INTO file'
+            + ' (status,date_time,area_id,product_type_id,filepath)'
+            + ' VALUES (1,"2018-02-26T13:00",1,4,"/fake/filepath.png")'
         )

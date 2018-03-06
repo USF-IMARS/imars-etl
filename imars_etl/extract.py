@@ -8,11 +8,16 @@ class EXIT_STATUS(object):
 
 def extract(args):
     """
+    args can be dict or argparse.Namespace
+    
     Example usage:
         ./imars-etl.py -vvv extract 'area_id=1'
     """
     logger = logging.getLogger(__name__)
     logger.debug('extract')
+
+    if isinstance(args, dict):  # args can be dict
+        args = dict_to_argparse_namespace(args)
 
     connection = metadatabase.get_conn()
     try:

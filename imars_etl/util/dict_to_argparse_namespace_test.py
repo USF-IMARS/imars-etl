@@ -44,12 +44,3 @@ class Test_dict_to_argparse_namespace(TestCase):
         }
         args = dict_to_argparse_namespace(test_dict)
         self.assertTrue(isinstance(args, argparse.Namespace))
-
-    def test_argparse_passes_through(self):
-        """
-        passing a argparse.Namespace is fine
-        """
-        args = argparse.Namespace()
-        args.mytest = 'test'
-        args2 = dict_to_argparse_namespace(args)
-        self.assertEqual(args,args2)
