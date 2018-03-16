@@ -47,51 +47,94 @@ from imars_etl.drivers.imars_objects.satfilename.BaseSatFilepath import BaseSatF
 
 ISO_8601_FMT="%Y-%m-%dT%H:%M:%SZ"
 
-# TODO: use something like this and function probably?
-# PATH_ROOT="/srv/imars-objects/{region}/{product_type_id}/"
-# _products = {
-#     # "product_type_id": {
-#     #   "basename": "A%Y%j%H%M00.L1A_LAC.x.hdf.bz2"
-#     #   "path"    : "/srv/imars-objects/{region}/{product_type_id}/"
-#     # }
-#     "png_chl_7d": {
-#         "name": "FGB_A1km_chlor_a_%Y%j_%Y%j_7D_MEAN.png"
-#     },
-#     "png_chl_ts_7d":{},
-#     "png_disch_7d":{},
-#     "png_met_7d":{},
-#     "myd01":{},
-#     "zip_wv2_ftp_ingest":{}
-# }
+PATH_ROOT="/srv/imars-objects/{region}/{product_type_id}/"
+# TODO: create this from the metadata database rather than duplicating it here.
+_products = {
+    # "product_type_id": {
+    #   "basename": "A%Y%j%H%M00.L1A_LAC.x.hdf.bz2"
+    #   "path"    : "/srv/imars-objects/{region}/{product_type_id}/"
+    # }
+    "zip_wv2_ftp_ingest":{
+        "basename": "wv2_%Y_%m_{tag}.zip",
+        "path"    : "/srv/imars-objects/{product_type_name}",
+        "product_type_id"      : 6
+    }
+    ### === others from the metadata db that in need of adding:
+    # "png_chl_7d": {
+    #     "name": "FGB_A1km_chlor_a_%Y%j_%Y%j_7D_MEAN.png"
+    # },
+    ### === legacy values from pre-metadata db times:
+    # "l1a_lac_hdf_bz2":{
+    #     "//": "zipped l1a (myd01) files from OB.DAAC",
+    #     "basename": "A%Y%j%H%M00.L1A_LAC.x.hdf.bz2"
+    # }
+    # "myd01": {
+    #     "//": "modis aqua l1. I *think* these files are the same as l1a_LAC," +
+    #         + " but from LANCE.",
+    #     "basename": "A%Y%j.%H%M.hdf"
+    # }
+    # "geo": {
+    #     "basename": "A%Y%j%H%M00.GEO"
+    # }
+    # "l1b": {
+    #     "basename": "A%Y%j%H%M00.L1B_LAC"
+    # }
+    # "hkm": {
+    #     "basename": "A%Y%j%H%M00.L1B_HKM"
+    # }
+    # "qkm": {
+    #     "basename": "A%Y%j%H%M00.L1B_QKM"
+    # }
+    # "l2": {
+    #     "basename": "A%Y%j%H%M00.L2"
+    # }
+    # "l3": {
+    #     "basename": ISO_8601_FMT+"_l3.nc"
+    # }
+    # "l3_pass": {
+    #     "basename": ISO_8601_FMT+"_l3.nc"
+    # }
+    # "metadata-ini": {
+    #     "basename": "metadata_"+ISO_8601_FMT+".ini"
+    # }
+    # "png": {
+    #     "path": "/srv/imars-objects/modis_aqua_{region_shortname}/png_{variable_name}"
+    #     "basename": ISO_8601_FMT + "_{variable_name}.png"
+    # }
+}
 
-products = {}
-
-""" zipped l1a (myd01) files from OB.DAAC """
-products["l1a_lac_hdf_bz2"] = BaseSatFilepath(
-    "l1a_lac_hdf_bz2",
-    "A%Y%j%H%M00.L1A_LAC.x.hdf.bz2"
-)
-
-# modis aqua l1. I *think* these files are the same as l1a_LAC, but from LANCE.
-myd01 = BaseSatFilepath("myd01", "A%Y%j.%H%M.hdf")
-l1a_geo = BaseSatFilepath("geo", "A%Y%j%H%M00.GEO")
-okm = BaseSatFilepath("l1b", "A%Y%j%H%M00.L1B_LAC")
-hkm = BaseSatFilepath("hkm", "A%Y%j%H%M00.L1B_HKM")
-qkm = BaseSatFilepath("qkm", "A%Y%j%H%M00.L1B_QKM")
-l2 = BaseSatFilepath("l2", "A%Y%j%H%M00.L2")
-l3 = BaseSatFilepath("l3", ISO_8601_FMT+"_l3.nc")
-l3_pass = BaseSatFilepath("l3_pass", ISO_8601_FMT+"_l3.nc")
-
-def png(product_datetime, variable_name, region_id):
+def get_name(forced_basename=None, **kwargs):
     """
-    Returns path for png product with given attributes.
-    Although this is similar to a BaseSatFilepath, we don't use it here because
-    we also need to use the variable name to formulate base_path & filename.
+    kwargs are used to set metadata info that may be used in the formation of
+    the path or basename.
     """
-    return (
-        "/srv/imars-objects/modis_aqua_" + region_id + "/png_" + variable_name + "/" +
-        product_datetime.strftime(ISO_8601_FMT) +
-        "_" + variable_name + ".png"
+    print("placing {} (#{})...".format(
+        kwargs.get('product_type_name','???'),
+        kwargs.get('product_type_id',-999999))
     )
+    for prod_name in _products:
+        prod_meta = _products[prod_name]
+        print("is {} (#{})?".format(prod_name, prod_meta['product_type_id']))
+        if (
+                   kwargs.get('product_type_name','') == prod_name
+                or kwargs.get('product_type_id',-999999) == prod_meta['product_type_id']
+            ):
+            print('y!')
 
-metadata = BaseSatFilepath("metadata-ini", "metadata_"+ISO_8601_FMT+".ini")
+            if forced_basename is not None:
+                _basename = forced_basename
+            else:
+                _basename = prod_meta['basename']
+
+            try:
+                test = kwargs['product_type_name']
+            except KeyError as k_err:
+                kwargs['product_type_name'] = prod_name
+
+            return kwargs['datetime'].strftime(
+                (prod_meta['path']+"/"+_basename).format(**kwargs)
+            )
+        else:
+            print("no.")
+    else:
+        raise ValueError("could not identify product type")
