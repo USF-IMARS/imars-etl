@@ -2,10 +2,10 @@ import os
 
 from imars_etl.drivers.imars_objects.satfilename import satfilename
 
-def _load(**kwargs):
+def _load(dry_run=False, **kwargs):
     ul_target = satfilename.get_name(**kwargs)
-    if kwargs.get('dry_run', False):
-        # test only; do nothing
+    if dry_run:
+        # test mode
         outp = ["mv", kwargs['filepath'], ul_target]
         print(outp)
         return outp
