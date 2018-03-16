@@ -1,3 +1,5 @@
+import os
+
 from imars_etl.drivers.imars_objects.satfilename import satfilename
 
 def _load(**kwargs):
@@ -8,6 +10,6 @@ def _load(**kwargs):
         print(outp)
         return outp
     else:
-        # peform the load
-        # TODO
-        return
+        # === peform the load
+        # move the file into imars-objects path @ ul_target
+        return os.move(kwargs['filepath'], ul_target)
