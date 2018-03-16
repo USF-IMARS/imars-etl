@@ -1,1 +1,1 @@
-from dict_to_argparse_namespace import dict_to_argparse_namespace
+from imars_etl.util.dict_to_argparse_namespace import dict_to_argparse_namespace
