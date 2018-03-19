@@ -78,10 +78,9 @@ def _validate_args(args):
     required_args = ['type','date']
     for arg in required_args:
         try:
-            if getattr(args, arg) is None:
+            if getattr(args, arg, None) is None:
                 guessed_val = _guess_arg_value(args, arg)
-                if guessed_val is not None:
-                    setattr(args, arg, guessed_val)
+                setattr(args, arg, guessed_val)
             # else keep the given value
         except ValueError as v_err:
             logger.debug("failed to guess value for '{}'".format(arg))
