@@ -108,26 +108,26 @@ _products = {
     # }
 }
 
-def get_name(forced_basename=None, **kwargs):
+def get_name(args, forced_basename=None):
     """
-    kwargs are used to set metadata info that may be used in the formation of
+    args are used to set metadata info that may be used in the formation of
     the path or basename.
 
     Returns
     ------------
     str
-        path to file formed using given metadata in kwargs
+        path to file formed using given metadata in args
     """
     print("placing {} (#{})...".format(
-        kwargs.get('product_type_name','???'),
-        kwargs.get('product_type_id',-999999))
+        args.get('product_type_name','???'),
+        args.get('product_type_id',-999999))
     )
     for prod_name in _products:
         prod_meta = _products[prod_name]
         print("is {} (#{})?".format(prod_name, prod_meta['product_type_id']))
         if (
-                   kwargs.get('product_type_name','') == prod_name
-                or kwargs.get('product_type_id',-999999) == prod_meta['product_type_id']
+                   args.get('product_type_name','') == prod_name
+                or args.get('product_type_id',-999999) == prod_meta['product_type_id']
             ):  # if file type or id is given and matches a known type
             print('y!')
 
@@ -137,15 +137,16 @@ def get_name(forced_basename=None, **kwargs):
                 _basename = prod_meta['basename']
 
             try:  # set product_type_name if not already set
-                test = kwargs['product_type_name']
+                test = args['product_type_name']
                 # TODO: check for match w/ prod_name & raise if not?
             except KeyError as k_err:
-                kwargs['product_type_name'] = prod_name
+                args['product_type_name'] = prod_name
 
-            return kwargs['datetime'].strftime(
-                (prod_meta['path']+"/"+_basename).format(**kwargs)
+            return args['datetime'].strftime(
+                (prod_meta['path']+"/"+_basename).format(**args)
             )
         else:
             print("no.")
     else:
+        print(args)
         raise ValueError("could not identify product type")

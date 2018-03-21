@@ -1,3 +1,4 @@
+from datetime import datetime
 import logging
 import json
 
@@ -54,12 +55,13 @@ def load(args):
             sql = "INSERT INTO file ("+keys+") VALUES ("+vals+")"
             logger.debug('query:\n\t'+sql)
 
+            # load file into IMaRS data warehouse
+            # NOTE: _load should support args.dry_run=True also
+            new_filepath = _load(vars(args))
+            sql = sql.replace(json_dict["filepath"], new_filepath)
             if args.dry_run:  # test mode returns the sql string
                 return sql
             else:
-                # load file into IMaRS data warehouse
-                new_filepath = _load(args)
-                sql = sql.replace(json_dict["filepath"], new_filepath)
                 result = cursor.execute(sql)
                 # connection is not autocommit by default.
                 # So you must commit to save your changes.
@@ -85,6 +87,10 @@ def _validate_args(args):
             # else keep the given value
         except ValueError as v_err:
             logger.debug("failed to guess value for '{}'".format(arg))
+
+    ISO_8601_FMT="%Y-%m-%dT%H:%M:%S"
+    setattr(args, "datetime", datetime.strptime(args.date, ISO_8601_FMT))
+
     return args
 
 def _guess_arg_value(args, arg_to_guess):

@@ -92,7 +92,7 @@ class Test_load(TestCase):
         test wv2 ingest with filename parsing passes:
             imars_etl.py load
                 --dry_run
-                -t 4
+                -t 6
                 -f '/path/w/parseable/date/wv2_2000_06_myTag.zip'
         """
         test_args = MagicMock(
@@ -100,13 +100,13 @@ class Test_load(TestCase):
             dry_run=True,
             filepath="/path/w/parseable/date/wv2_2000_06_myTag.zip",
             date=None,
-            product_type_id=4
+            product_type_id=6
         )
         self.assertEqual(
             load(test_args),
             'INSERT INTO file'
             + ' (date_time,product_type_id,filepath)'
-            + ' VALUES ("2000-06-01T00:00:00",4,'
+            + ' VALUES ("2000-06-01T00:00:00",6,'
             + '"/path/w/parseable/date/wv2_2000_06_myTag.zip")'
         )
 
