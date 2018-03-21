@@ -148,7 +148,6 @@ class Test_load(TestCase):
             "type":7,
             # "date":"2016-02-12T16:25:18",
             # "datetime": datetime(2016,2,12,16,25,18),
-            # "forced_basename": "wv2_2017_03_RB2.zip",
             "json":'{"status":3,"area_id":5}'
         }
         self.assertEqual(
