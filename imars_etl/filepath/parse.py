@@ -9,9 +9,28 @@ import os
 
 from imars_etl.filepath.data import valid_pattern_vars, filename_patterns
 
+def parse_all_from_filename(args):
+    """
+    attempts to fill all arguments in args using args.filename and information
+    from `imars_etl.filepath.data`.
+
+    Returns
+    -----------
+    args : ArgParse arg obj
+        modified version of input args with any missing args filled
+    """
+    for pattern_name in filename_patterns:
+        pattern = filename_patterns[pattern_name]
+        # check if args.filepath matches this pattern
+        if filename_matches_pattern(args.filename, pattern):
+            # get list of attributes which are in the pattern:
+            attribs_in_pattern = [ s.split("}")[0] for s in pattern.split("{")[1:] ]
+            for param in attribs_in_pattern:
+                parse(param, args.filename, args.filename)
+
 def parse(key, strptime_filename, filename):
     """
-    returns
+    Returns
     ----------
     value : str
         value of key read from filename. `None` if failed to read
@@ -36,6 +55,18 @@ def parse(key, strptime_filename, filename):
         logger.error("no filepath.data for key '" + key + "'")
         return None, strptime_filename
 
+# TODO: this is a duplicate of check_match?
+def filename_matches_pattern(filename, pattern):
+    """ returns true if given filename matches given pattern """
+    if "/" in filename and "/" not in pattern:
+        filename = os.path.basename(filename)
+    try:
+        # filename matches if we can successfully get the date
+        _parse_date(filename, pattern)
+        return True
+    except ValueError as v_err:  # filename does not match pattern
+        return False
+
 def parse_date(filename):
     """
     attempts to read date from filename by checking against all patterns in
@@ -45,13 +76,9 @@ def parse_date(filename):
     dates_matched=[]
     for pattern_name in filename_patterns:
         pattern = filename_patterns[pattern_name]
-        if "/" in filename and "/" not in pattern:
-            filename = os.path.basename(filename)
-        try:
+        if filename_matches_pattern(filename, pattern):
             dates_matched.append(_parse_date(filename, pattern))
-        except ValueError as v_err:  # filename does not match pattern
-            logger.debug("filename does not match date pattern")
-            pass
+
     if len(dates_matched) == 1:
         return dates_matched[0]
     elif len(dates_matched) > 1:
@@ -62,7 +89,6 @@ def parse_date(filename):
         )
     else: # len(dates_matched) < 1:
         raise ValueError("filename does not match any known patterns")
-
 
 def _parse_date(filename, pattern):
     """reads a date from filename using given pattern"""
