@@ -3,7 +3,7 @@ import logging
 import json
 
 from imars_etl import metadatabase
-from imars_etl.filepath.parse import parse
+from imars_etl.filepath.parse import parse, parse_all_from_filename
 from imars_etl.util import dict_to_argparse_namespace
 from imars_etl.drivers.imars_objects.load import _load
 
@@ -75,19 +75,8 @@ def _validate_args(args):
     Makes attempts to guess at filling in missing args.
     """
     logger = logging.getLogger(__name__)
-    # these are soft-required args, ones that we might try to guess if not
-    # given, but we have to give up if we cannot figure them out.
-    required_args = ['product_type_id','date']
-    for arg in required_args:
-        try:
-            if getattr(args, arg, None) is None:
-                logger.debug("attempting to guess {}".format(arg))
-                guessed_val = _guess_arg_value(args, arg)
-                logger.debug("my guess: {}".format(guessed_val))
-                setattr(args, arg, guessed_val)
-            # else keep the given value
-        except ValueError as v_err:
-            logger.debug("failed to guess value for '{}'".format(arg))
+
+    args = parse_all_from_filename(args)
 
     ISO_8601_FMT="%Y-%m-%dT%H:%M:%S"
     try:
@@ -107,4 +96,5 @@ def _guess_arg_value(args, arg_to_guess):
     Will overwrite args[arg_to_guess] if it finds a more appropriate value.
     """
     # try to guess the arg using filepath
-    return parse(arg_to_guess, args.filepath, args.filepath)
+    v, fp = parse(arg_to_guess, args.filepath, args.filepath)
+    return v

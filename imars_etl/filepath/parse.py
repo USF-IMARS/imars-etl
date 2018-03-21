@@ -14,11 +14,32 @@ def parse_all_from_filename(args):
     attempts to fill all arguments in args using args.filename and information
     from `imars_etl.filepath.data`.
 
-    Returns
-    -----------
+    Parameters
+    ----------
     args : ArgParse arg obj
-        modified version of input args with any missing args filled
+        arguments we have to start with. these will be used to guess at others.
+
+    Returns
+    -------
+    args : ArgParse arg obj
+        modified version of input args with any missing args filled.
     """
+    # these are soft-required args, ones that we might try to guess if not
+    # given, but we have to give up if we cannot figure them out.
+    # required_args = ['product_type_id','date']
+    #
+    # for arg in required_args:
+    #     try:
+    #         if getattr(args, arg, None) is None:
+    #             logger.debug("attempting to guess {}".format(arg))
+    #             guessed_val = _guess_arg_value(args, arg)
+    #             logger.debug("my guess: {}".format(guessed_val))
+    #             setattr(args, arg, guessed_val)
+    #         # else keep the given value
+    #     except ValueError as v_err:
+    #         logger.debug("failed to guess value for '{}'".format(arg))
+    #         logger.debug(v_err)
+
     for pattern_name in filename_patterns:
         pattern = filename_patterns[pattern_name]
         # check if args.filepath matches this pattern
@@ -26,7 +47,10 @@ def parse_all_from_filename(args):
             # get list of attributes which are in the pattern:
             attribs_in_pattern = [ s.split("}")[0] for s in pattern.split("{")[1:] ]
             for param in attribs_in_pattern:
-                parse(param, args.filename, args.filename)
+                val = parse(param, args.filename, args.filename)
+                # TODO: check guessed argument value does not overwrite
+                setattr(args, param, val)
+            return args
 
 def parse(key, strptime_filename, filename):
     """
@@ -61,6 +85,7 @@ def filename_matches_pattern(filename, pattern):
     """ returns true if given filename matches given pattern """
     if "/" in filename and "/" not in pattern:
         filename = os.path.basename(filename)
+
     try:
         # filename matches if we can successfully get the date
         _parse_date(filename, pattern)
@@ -77,19 +102,23 @@ def parse_date(filename):
     dates_matched=[]
     for pattern_name in filename_patterns:
         pattern = filename_patterns[pattern_name]
+        if "/" in filename and "/" not in pattern:
+            filename = os.path.basename(filename)
+
         if filename_matches_pattern(filename, pattern):
             dates_matched.append(_parse_date(filename, pattern))
 
     if len(dates_matched) == 1:
+        logger.debug("date read from {} pattern".format(pattern_name))
         return dates_matched[0]
     elif len(dates_matched) > 1:
         # TODO: try to get & return consensus
-        raise ValueError(
+        raise LookupError(
             "filename matches multiple known patterns. Possible dates are: \n"
             + str(dates_matched)
         )
     else: # len(dates_matched) < 1:
-        raise ValueError("filename does not match any known patterns")
+        raise LookupError("filename does not match any known patterns")
 
 def _parse_date(filename, pattern):
     """reads a date from filename using given pattern"""
@@ -129,6 +158,7 @@ def parse_regex(key, strptime_filename, filename):
         + valid_pattern_vars[key][2]
     )
     try:
+        logger.debug("re.search({},{})".format(regex,strptime_filename))
         regex_result = re.search(regex, strptime_filename)
         logger.debug("regex_result: " + str(regex_result))
         matched_string = regex_result.group(0)

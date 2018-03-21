@@ -96,7 +96,7 @@ class Test_load(TestCase):
                 -f '/path/w/parseable/date/wv2_2000_06_myTag.zip'
         """
         test_args = MagicMock(
-            verbose=0,
+            verbose=3,
             dry_run=True,
             filepath="/path/w/parseable/date/wv2_2000_06_myTag.zip",
             date=None,

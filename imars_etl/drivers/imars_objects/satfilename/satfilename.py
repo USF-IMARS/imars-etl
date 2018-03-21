@@ -142,6 +142,8 @@ def get_name(args, forced_basename=None):
             except KeyError as k_err:
                 args['product_type_name'] = prod_name
 
+
+            print(args)
             return args['datetime'].strftime(
                 (prod_meta['path']+"/"+_basename).format(**args)
             )
