@@ -83,13 +83,20 @@ def _validate_args(args):
             if getattr(args, arg, None) is None:
                 logger.debug("attempting to guess {}".format(arg))
                 guessed_val = _guess_arg_value(args, arg)
+                logger.debug("my guess: {}".format(guessed_val))
                 setattr(args, arg, guessed_val)
             # else keep the given value
         except ValueError as v_err:
             logger.debug("failed to guess value for '{}'".format(arg))
 
     ISO_8601_FMT="%Y-%m-%dT%H:%M:%S"
-    setattr(args, "datetime", datetime.strptime(args.date, ISO_8601_FMT))
+    try:
+        dt = datetime.strptime(args.date, ISO_8601_FMT)
+        logger.debug("full datetime parsed")
+    except ValueError as v_err:
+        dt = datetime.strptime(args.date, ISO_8601_FMT[:-3])
+        logger.debug("partial datetime parsed (no seconds)")
+    setattr(args, "datetime", dt)
 
     return args
 

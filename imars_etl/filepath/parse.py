@@ -42,6 +42,7 @@ def parse(key, strptime_filename, filename):
     # logger.debug("parsing '" + key + "' from filename '" + filename + "'")
     try:
         if key == "date":  # must handle date specially
+            logger.debug("parsing date from filename")
             return parse_date(filename), strptime_filename
         elif "*" in valid_pattern_vars[key]:  # if we should regex
             return parse_regex(
