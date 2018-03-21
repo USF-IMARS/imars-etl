@@ -29,6 +29,15 @@ $ imars-etl -vvv extract 'date_time < "2018-01-01" AND date_time > "2018-01-07"'
 
 # Not yet implemented (short_name values (see issue #1)):
 # you@computer:~/$ imars-etl extract --satellite aqua --time 2017-01-02T13:45 --instrument modis
+
+# Not yet implemented (extract multiple by setting max (default is 1))
+# you@computer:~/$ imars-etl extract --max 10 --satellite wv2 --time_start  2017-01-02T13:45 --time_end  2017-01-03T18:00
+
+# Not yet implemented (output directory):
+# you@computer:!/$ imars-etl extract --satellite wv2 --time 2017-02-02T13:45 --output /home/you/my_dir/
+
+# Not yet implemented (list of products in file)
+# you@computer:!/$ imars-etl extract --infile ./list_of_products.txt
 ```
 ### load
 ```bash
