@@ -79,6 +79,7 @@ def _validate_args(args):
     for arg in required_args:
         try:
             if getattr(args, arg, None) is None:
+                logger.debug("attempting to guess {}".format(arg))
                 guessed_val = _guess_arg_value(args, arg)
                 setattr(args, arg, guessed_val)
             # else keep the given value

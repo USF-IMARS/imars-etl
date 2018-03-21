@@ -1,4 +1,7 @@
 """
+tests of satfilename interface.
+Test args should be fully filled because imars_etl.load wraps this and
+takes care of any argument checking & auto-filling.
 """
 
 # std modules:
@@ -19,11 +22,12 @@ class Test_imars_obj_load(TestCase):
     # tests:
     #########################
     # === bash CLI
-    def test_load_basic(self):
+    def test_load_zip_wv2_ftp_ingest(self):
         """
+        load zip_wv2_ftp_ingest passes
         """
         test_args = {
-            "verbose":0,
+            "verbose":3,
             "dry_run":True,
             "filepath":"/srv/imars-objects/ftp-ingest/wv2_2017_03_RB2.zip",
             "product_type_id":6,

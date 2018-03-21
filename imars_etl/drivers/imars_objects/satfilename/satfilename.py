@@ -57,7 +57,12 @@ _products = {
     "zip_wv2_ftp_ingest":{
         "basename": "wv2_%Y_%m_{tag}.zip",
         "path"    : "/srv/imars-objects/{product_type_name}",
-        "product_type_id"      : 6
+        "product_type_id": 6
+    },
+    "att_wv2_m1bs":{
+        "basename": "WV02_%Y%m%d%H%M%S_{catalog_id}_%y%b%d%H%M%S-M1BS-{id_number}_{two_numbers}_P{pass_number}.att",  # NOTE: how to %b in all caps?
+        "path": "/srv/imars-objects/extra_data/WV02/%Y.%m",
+        "product_type_id": 7
     }
     ### === others from the metadata db that in need of adding:
     # "png_chl_7d": {
@@ -107,6 +112,11 @@ def get_name(forced_basename=None, **kwargs):
     """
     kwargs are used to set metadata info that may be used in the formation of
     the path or basename.
+
+    Returns
+    ------------
+    str
+        path to file formed using given metadata in kwargs
     """
     print("placing {} (#{})...".format(
         kwargs.get('product_type_name','???'),
@@ -118,7 +128,7 @@ def get_name(forced_basename=None, **kwargs):
         if (
                    kwargs.get('product_type_name','') == prod_name
                 or kwargs.get('product_type_id',-999999) == prod_meta['product_type_id']
-            ):
+            ):  # if file type or id is given and matches a known type
             print('y!')
 
             if forced_basename is not None:
@@ -126,8 +136,9 @@ def get_name(forced_basename=None, **kwargs):
             else:
                 _basename = prod_meta['basename']
 
-            try:
+            try:  # set product_type_name if not already set
                 test = kwargs['product_type_name']
+                # TODO: check for match w/ prod_name & raise if not?
             except KeyError as k_err:
                 kwargs['product_type_name'] = prod_name
 

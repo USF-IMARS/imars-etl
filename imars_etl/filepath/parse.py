@@ -20,7 +20,7 @@ def parse(key, strptime_filename, filename):
         value failed to read.
     """
     logger = logging.getLogger(__name__)
-    logger.debug("parsing '" + key + "' from filename '" + filename + "'")
+    # logger.debug("parsing '" + key + "' from filename '" + filename + "'")
     try:
         if key == "date":  # must handle date specially
             return parse_date(filename), strptime_filename
@@ -50,7 +50,7 @@ def parse_date(filename):
         try:
             dates_matched.append(_parse_date(filename, pattern))
         except ValueError as v_err:  # filename does not match pattern
-            logger.debug("")
+            logger.debug("filename does not match date pattern")
             pass
     if len(dates_matched) == 1:
         return dates_matched[0]
@@ -76,11 +76,13 @@ def _parse_date(filename, pattern):
     for key in valid_pattern_vars:  # for each possible argname
         if (key in pattern):  # if the argname is in the pattern
             val, strptime_filename = parse(key, strptime_filename, filename)
-    logger.debug("parse(\n\tfilename='{}', \n\tpattern='{}'\n)".format(
+    logger.debug("parse_date(\n\tfilename='{}',\n\tpattern= '{}'\n)".format(
         strptime_filename,
         strptime_pattern
     ))
-    return datetime.strptime(strptime_filename, strptime_pattern).isoformat()
+    result = datetime.strptime(strptime_filename, strptime_pattern).isoformat()
+    logger.debug("parsed_date={}".format(result))
+    return result
 
 def parse_regex(key, strptime_filename, filename):
     """

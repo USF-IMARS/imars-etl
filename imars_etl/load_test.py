@@ -17,7 +17,7 @@ class Test_load(TestCase):
 
     # tests:
     #########################
-    # === bash CLI
+    # === bash CLI (passes ArgParse objects)
     def test_load_basic(self):
         """
         basic load cmd passes:
@@ -110,7 +110,7 @@ class Test_load(TestCase):
             + '"/path/w/parseable/date/wv2_2000_06_myTag.zip")'
         )
 
-    # === python API
+    # === python API (passes dicts)
     def test_load_python_basic_dict(self):
         """
         basic imars_etl.load passes:
@@ -135,4 +135,26 @@ class Test_load(TestCase):
             'INSERT INTO file'
             + ' (status,date_time,area_id,product_type_id,filepath)'
             + ' VALUES (1,"2018-02-26T13:00",1,4,"/fake/filepath.png")'
+        )
+
+    def test_load_att_wv2_m1bs(self):
+        """
+        load att_wv2_m1bs with inferred date from filepath passes
+        """
+        test_args = {
+            "verbose":3,
+            "dry_run":True,
+            "filepath":"/tmp/airflow_output_2018-03-01T20:00:00/057522945010_01_003/057522945010_01/057522945010_01_P002_MUL/16FEB12162518-M1BS-057522945010_01_P002.ATT",
+            "type":7,
+            # "date":"2016-02-12T16:25:18",
+            # "datetime": datetime(2016,2,12,16,25,18),
+            # "forced_basename": "wv2_2017_03_RB2.zip",
+            "json":'{"status":3,"area_id":5}'
+        }
+        self.assertEqual(
+            load(test_args),
+            'INSERT INTO file'
+            + ' (status,date_time,area_id,product_type_id,filepath)'
+            + ' VALUES (3,"2016-02-12T16:25:18",5,7,'
+            + '"/tmp/airflow_output_2018-03-01T20:00:00/057522945010_01_003/057522945010_01/057522945010_01_P002_MUL/16FEB12162518-M1BS-057522945010_01_P002.ATT")'
         )
