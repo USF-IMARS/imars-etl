@@ -32,7 +32,7 @@ class Test_load(TestCase):
             verbose=0,
             dry_run=True,
             filepath="/fake/filepath.png",
-            type=4,
+            product_type_id=4,
             date="2018-02-26T13:00",
             json='{"status":1,"area_id":1}'
         )
@@ -58,7 +58,7 @@ class Test_load(TestCase):
             filepath="/my/path/without/a/date/in.it",
             date=None,
             json='{"area_id":1}',
-            type=4
+            product_type_id=4
         )
         self.assertRaises(Exception, load, test_args)
 
@@ -77,7 +77,7 @@ class Test_load(TestCase):
             filepath="/path/w/parseable/date/wv2_2000_06_myTag.zip",
             date=None,
             json='{"area_id":1}',
-            type=4
+            product_type_id=4
         )
         self.assertEqual(
             load(test_args),
@@ -100,7 +100,7 @@ class Test_load(TestCase):
             dry_run=True,
             filepath="/path/w/parseable/date/wv2_2000_06_myTag.zip",
             date=None,
-            type=4
+            product_type_id=4
         )
         self.assertEqual(
             load(test_args),
@@ -117,7 +117,7 @@ class Test_load(TestCase):
             imars_etl.load({
                 "dry_run": True,
                 "filepath": "/fake/filepath.png",
-                "type": "4",
+                "product_type_id": "4",
                 "date": "2018-02-26T13:00",
                 "json": '{"status":1, "area_id":1}'
             })
@@ -125,7 +125,7 @@ class Test_load(TestCase):
         result = load({
             "dry_run": True,
             "filepath": "/fake/filepath.png",
-            "type": "4",
+            "product_type_id": "4",
             "date": "2018-02-26T13:00",
             "json": '{"status":1, "area_id":1}'
         })
@@ -145,7 +145,7 @@ class Test_load(TestCase):
             "verbose":3,
             "dry_run":True,
             "filepath":"/tmp/airflow_output_2018-03-01T20:00:00/057522945010_01_003/057522945010_01/057522945010_01_P002_MUL/16FEB12162518-M1BS-057522945010_01_P002.ATT",
-            "type":7,
+            "product_type_id":7,
             # "date":"2016-02-12T16:25:18",
             # "datetime": datetime(2016,2,12,16,25,18),
             "json":'{"status":3,"area_id":5}'

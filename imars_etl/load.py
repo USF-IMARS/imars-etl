@@ -37,7 +37,7 @@ def load(args):
                 json_dict = dict()
             json_dict["filepath"] = '"'+args.filepath+'"'
             json_dict["date_time"] = '"'+args.date+'"'
-            json_dict["product_type_id"] = args.type
+            json_dict["product_type_id"] = args.product_type_id
 
             str_concat=(lambda x, y: str(x)+","+str(y))
             keys = reduce(
@@ -75,7 +75,7 @@ def _validate_args(args):
     logger = logging.getLogger(__name__)
     # these are soft-required args, ones that we might try to guess if not
     # given, but we have to give up if we cannot figure them out.
-    required_args = ['type','date']
+    required_args = ['product_type_id','date']
     for arg in required_args:
         try:
             if getattr(args, arg, None) is None:

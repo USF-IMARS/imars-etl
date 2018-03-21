@@ -64,7 +64,7 @@ def parse_args(argvs):
     required_named_args.add_argument("-d", "--date",
         help="ISO8601-formatted date-time string of product"
     )
-    required_named_args.add_argument("-t", "--type",
+    required_named_args.add_argument("-t", "--product_type_id",
         help="product type id"
     )
     # optional args
