@@ -42,6 +42,8 @@ Some general rules/assumptions that summarize behavior here:
 Note the common product directories and the two `geo` directories where a new version was separated out into a new product.
 Filenames in `geo` and `geo_v2` are probably similar, but shoud not be identical.
 """
+import logging
+import sys
 
 from imars_etl.drivers.imars_objects.satfilename.BaseSatFilepath import BaseSatFilepath
 
@@ -118,18 +120,22 @@ def get_name(args, forced_basename=None):
     str
         path to file formed using given metadata in args
     """
-    print("placing {} (#{})...".format(
+    logger = logging.getLogger("{}.{}".format(
+        __name__,
+        sys._getframe().f_code.co_name)
+    )
+    logger.info("placing {} (#{})...".format(
         args.get('product_type_name','???'),
         args.get('product_type_id',-999999))
     )
     for prod_name in _products:
         prod_meta = _products[prod_name]
-        print("is {} (#{})?".format(prod_name, prod_meta['product_type_id']))
+        logger.debug("is {} (#{})?".format(prod_name, prod_meta['product_type_id']))
         if (
                    args.get('product_type_name','') == prod_name
                 or args.get('product_type_id',-999999) == prod_meta['product_type_id']
             ):  # if file type or id is given and matches a known type
-            print('y!')
+            logger.debug('y!')
 
             if forced_basename is not None:
                 _basename = forced_basename
@@ -142,13 +148,12 @@ def get_name(args, forced_basename=None):
             except KeyError as k_err:
                 args['product_type_name'] = prod_name
 
-
-            print(args)
+            # logger.debug(args)
             return args['datetime'].strftime(
                 (prod_meta['path']+"/"+_basename).format(**args)
             )
         else:
-            print("no.")
+            logger.debug("no.")
     else:
-        print(args)
+        # logger.debug(args)
         raise ValueError("could not identify product type")

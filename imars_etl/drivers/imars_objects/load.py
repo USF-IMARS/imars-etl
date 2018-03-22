@@ -10,13 +10,9 @@ def _load(args):
         sys._getframe().f_code.co_name)
     )
     ul_target = satfilename.get_name(args)
-    outp = ["mv", args['filepath'], ul_target]
-    logging.debug(outp)
-    if dry_run:
-        # test mode
-        return outp
-    else:
-        # === peform the load
-        # move the file into imars-objects path @ ul_target
+    logger.debug(["mv", args['filepath'], ul_target])
+    
+    if not args['dry_run']:  # don't actuall move if test mode
         os.move(args['filepath'], ul_target)
-        return ul_target
+
+    return ul_target

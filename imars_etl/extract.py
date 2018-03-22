@@ -38,7 +38,7 @@ def extract(args):
             elif (len(result) > 1):
                 # TODO: request more info from user
                 logger.error("Too many results!")
-                print(result)
+                logger.error(result)
                 exit(EXIT_STATUS.MULTIPLE_MATCH)
             else:
                 # TODO: download & then print a path to where the file can be
@@ -46,7 +46,7 @@ def extract(args):
                 # NOTE: currently this just gives the path because we assume:
                 #   1. that the path is in /srv/imars-objects
                 #   2. that the system is set up to access /srv/imars-objects
-                print(result)
+                logger.debug(result)
                 return result
 
     finally:

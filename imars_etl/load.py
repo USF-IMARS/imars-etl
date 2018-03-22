@@ -26,7 +26,7 @@ def load(args):
         __name__,
         sys._getframe().f_code.co_name)
     )
-    logger.debug('load')
+    # logger.debug('load')
 
     if isinstance(args, dict):  # args can be dict
         args = dict_to_argparse_namespace(args)
@@ -53,8 +53,8 @@ def load(args):
                 str_concat,
                 [str(json_dict[key]) for key in json_dict]
             )
-            logger.debug(keys)
-            logger.debug(vals)
+            # logger.debug(keys)
+            # logger.debug(vals)
             # Create a new record
             sql = "INSERT INTO file ("+keys+") VALUES ("+vals+")"
             logger.debug('query:\n\t'+sql)

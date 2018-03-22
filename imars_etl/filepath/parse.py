@@ -94,6 +94,7 @@ def parse(key, strptime_filename, filename):
 # TODO: this is a duplicate of check_match?
 def filename_matches_pattern(filename, pattern):
     """ returns true if given filename matches given pattern """
+    # switch to basepath if path info not part of pattern
     if "/" in filename and "/" not in pattern:
         filename = os.path.basename(filename)
 
@@ -141,6 +142,11 @@ def _parse_date(filename, pattern):
         sys._getframe().f_code.co_name)
     )
     logger.setLevel(logging.INFO)
+
+    # switch to basepath if path info not part of pattern
+    if "/" in filename and "/" not in pattern:
+        filename = os.path.basename(filename)
+
     # these strings need to be built up so strptime can read them
     strptime_pattern  = pattern.replace("{","").replace("}","")
     strptime_filename = filename  # values replaced by key string below
