@@ -11,7 +11,7 @@ from imars_etl.filepath.data import valid_pattern_vars, filename_patterns
 
 def parse_all_from_filename(args):
     """
-    attempts to fill all arguments in args using args.filename and information
+    attempts to fill all arguments in args using args.filepath and information
     from `imars_etl.filepath.data`.
 
     Parameters
@@ -43,11 +43,11 @@ def parse_all_from_filename(args):
     for pattern_name in filename_patterns:
         pattern = filename_patterns[pattern_name]
         # check if args.filepath matches this pattern
-        if filename_matches_pattern(args.filename, pattern):
+        if filename_matches_pattern(args.filepath, pattern):
             # get list of attributes which are in the pattern:
             attribs_in_pattern = [ s.split("}")[0] for s in pattern.split("{")[1:] ]
             for param in attribs_in_pattern:
-                val = parse(param, args.filename, args.filename)
+                val = parse(param, args.filepath, args.filepath)
                 # TODO: check guessed argument value does not overwrite
                 setattr(args, param, val)
             return args
