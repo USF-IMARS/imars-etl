@@ -54,7 +54,7 @@ def parse_all_from_filename(args):
             # get list of attributes which are in the pattern:
             attribs_in_pattern = [ s.split("}")[0] for s in pattern.split("{")[1:] ]
             for param in attribs_in_pattern:
-                val = parse(param, args.filepath, args.filepath)
+                val = parse(param, args.filepath, args.filepath)[0]
                 # TODO: check guessed argument value does not overwrite
                 setattr(args, param, val)
                 logger.debug('{} extracted :"{}"'.format(param, val))
@@ -187,12 +187,15 @@ def parse_regex(key, strptime_filename, filename):
     try:
         logger.debug("re.search({},{})".format(regex,strptime_filename))
         regex_result = re.search(regex, strptime_filename)
-        logger.debug("regex_result: " + str(regex_result))
+        # logger.debug("regex_result: " + str(regex_result))
         matched_string = regex_result.group(0)
         strptime_filename = strptime_filename.replace(
             matched_string,
             valid_pattern_vars[key][0] + key + valid_pattern_vars[key][2]
         )
+        # remove pre & post strings:
+        matched_string = matched_string.replace(valid_pattern_vars[key][0],"")
+        matched_string = matched_string.replace(valid_pattern_vars[key][2],"")
         logger.debug("matched_str : " + matched_string)
         return matched_string, strptime_filename
     except AttributeError as a_err:  # no regex match

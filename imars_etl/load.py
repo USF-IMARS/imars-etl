@@ -62,7 +62,7 @@ def load(args):
             # load file into IMaRS data warehouse
             # NOTE: _load should support args.dry_run=True also
             new_filepath = _load(vars(args))
-            sql = sql.replace(json_dict["filepath"], new_filepath)
+            sql = sql.replace(args.filepath, new_filepath)
             if args.dry_run:  # test mode returns the sql string
                 return sql
             else:
