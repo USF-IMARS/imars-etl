@@ -4,6 +4,7 @@ filepath.data
 """
 from datetime import datetime
 import logging
+import sys
 import re
 import os
 
@@ -24,6 +25,10 @@ def parse_all_from_filename(args):
     args : ArgParse arg obj
         modified version of input args with any missing args filled.
     """
+    logger = logging.getLogger("{}.{}".format(
+        __name__,
+        sys._getframe().f_code.co_name)
+    )
     # these are soft-required args, ones that we might try to guess if not
     # given, but we have to give up if we cannot figure them out.
     # required_args = ['product_type_id','date']
@@ -39,17 +44,20 @@ def parse_all_from_filename(args):
     #     except ValueError as v_err:
     #         logger.debug("failed to guess value for '{}'".format(arg))
     #         logger.debug(v_err)
-
     for pattern_name in filename_patterns:
         pattern = filename_patterns[pattern_name]
         # check if args.filepath matches this pattern
         if filename_matches_pattern(args.filepath, pattern):
+            logger.debug('matches pattern "{}"'.format(pattern))
+            setattr(args, 'date', _parse_date(args.filepath, pattern))
+            logger.debug('date extracted: {}'.format(args.date))
             # get list of attributes which are in the pattern:
             attribs_in_pattern = [ s.split("}")[0] for s in pattern.split("{")[1:] ]
             for param in attribs_in_pattern:
                 val = parse(param, args.filepath, args.filepath)
                 # TODO: check guessed argument value does not overwrite
                 setattr(args, param, val)
+                logger.debug('{} extracted :"{}"'.format(param, val))
             return args
 
 def parse(key, strptime_filename, filename):
@@ -62,7 +70,10 @@ def parse(key, strptime_filename, filename):
         modified filename with read in value replaced by key. Unmodified if
         value failed to read.
     """
-    logger = logging.getLogger(__name__)
+    logger = logging.getLogger("{}.{}".format(
+        __name__,
+        sys._getframe().f_code.co_name)
+    )
     # logger.debug("parsing '" + key + "' from filename '" + filename + "'")
     try:
         if key == "date":  # must handle date specially
@@ -98,7 +109,10 @@ def parse_date(filename):
     attempts to read date from filename by checking against all patterns in
     filepath.data.filename_patterns
     """
-    logger = logging.getLogger(__name__)
+    logger = logging.getLogger("{}.{}".format(
+        __name__,
+        sys._getframe().f_code.co_name)
+    )
     dates_matched=[]
     for pattern_name in filename_patterns:
         pattern = filename_patterns[pattern_name]
@@ -122,8 +136,11 @@ def parse_date(filename):
 
 def _parse_date(filename, pattern):
     """reads a date from filename using given pattern"""
-    logger = logging.getLogger(__name__)
-
+    logger = logging.getLogger("{}.{}".format(
+        __name__,
+        sys._getframe().f_code.co_name)
+    )
+    logger.setLevel(logging.INFO)
     # these strings need to be built up so strptime can read them
     strptime_pattern  = pattern.replace("{","").replace("}","")
     strptime_filename = filename  # values replaced by key string below
@@ -150,7 +167,11 @@ def parse_regex(key, strptime_filename, filename):
         modified filename with read in value replaced by key. Unmodified if
         value failed to read.
     """
-    logger = logging.getLogger(__name__)
+    logger = logging.getLogger("{}.{}".format(
+        __name__,
+        sys._getframe().f_code.co_name)
+    )
+    logger.setLevel(logging.INFO)
     # cut out
     regex = (
         valid_pattern_vars[key][0]
@@ -169,7 +190,7 @@ def parse_regex(key, strptime_filename, filename):
         logger.debug("matched_str : " + matched_string)
         return matched_string, strptime_filename
     except AttributeError as a_err:  # no regex match
-        logger.info(
+        logger.debug(
             "no match for '" + key + "'"
             + " regex '" + regex + "'"
             + " in filename '" + filename + "'"
@@ -186,7 +207,10 @@ def parse_list(key, strptime_filename, filename):
         modified filename with read in value replaced by key. Unmodified if
         value failed to read.
     """
-    logger = logging.getLogger(__name__)
+    logger = logging.getLogger("{}.{}".format(
+        __name__,
+        sys._getframe().f_code.co_name)
+    )
     # check for each of the possible valid values
     for valid_pattern in valid_pattern_vars[key]:
         logger.debug("pattern test: " + valid_pattern)

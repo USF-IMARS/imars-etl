@@ -1,4 +1,5 @@
 import logging
+import sys
 
 from imars_etl import metadatabase
 from imars_etl.util import dict_to_argparse_namespace
@@ -14,7 +15,10 @@ def extract(args):
     Example usage:
         ./imars-etl.py -vvv extract 'area_id=1'
     """
-    logger = logging.getLogger(__name__)
+    logger = logging.getLogger("{}.{}".format(
+        __name__,
+        sys._getframe().f_code.co_name)
+    )
     logger.debug('extract')
 
     if isinstance(args, dict):  # args can be dict

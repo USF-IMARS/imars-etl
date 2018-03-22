@@ -1,5 +1,6 @@
 from datetime import datetime
 import logging
+import sys
 import json
 
 from imars_etl import metadatabase
@@ -21,7 +22,10 @@ def load(args):
             -d '2018-02-26T13:00'
             -j '{"status":0}'
     """
-    logger = logging.getLogger(__name__)
+    logger = logging.getLogger("{}.{}".format(
+        __name__,
+        sys._getframe().f_code.co_name)
+    )
     logger.debug('load')
 
     if isinstance(args, dict):  # args can be dict
@@ -74,7 +78,10 @@ def _validate_args(args):
     Returns properly formatted & complete argument list.
     Makes attempts to guess at filling in missing args.
     """
-    logger = logging.getLogger(__name__)
+    logger = logging.getLogger("{}.{}".format(
+        __name__,
+        sys._getframe().f_code.co_name)
+    )
 
     args = parse_all_from_filename(args)
 
