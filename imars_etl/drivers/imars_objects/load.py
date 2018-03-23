@@ -1,6 +1,6 @@
 import logging
 import sys
-import os
+import shutil
 
 from imars_etl.drivers.imars_objects.satfilename import satfilename
 
@@ -11,8 +11,8 @@ def _load(args):
     )
     ul_target = satfilename.get_name(args)
     logger.debug(["mv", args['filepath'], ul_target])
-    
+
     if not args['dry_run']:  # don't actuall move if test mode
-        os.move(args['filepath'], ul_target)
+        shutil.move(args['filepath'], ul_target)
 
     return ul_target

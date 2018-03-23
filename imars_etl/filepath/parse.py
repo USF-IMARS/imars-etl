@@ -187,7 +187,7 @@ def parse_regex(key, strptime_filename, filename):
         __name__,
         sys._getframe().f_code.co_name)
     )
-    logger.setLevel(logging.DEBUG)
+    logger.setLevel(logging.INFO)
     # cut out
     escaped_pre = re.escape(valid_pattern_vars[key][0])
     escaped_post= re.escape(valid_pattern_vars[key][2])
