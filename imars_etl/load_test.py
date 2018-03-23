@@ -154,5 +154,5 @@ class Test_load(TestCase):
             'INSERT INTO file'
             + ' (status,date_time,area_id,product_type_id,filepath)'
             + ' VALUES (3,"2016-02-12T16:25:18",5,7,'
-            + '"/tmp/airflow_output_2018-03-01T20:00:00/057522945010_01_003/057522945010_01/057522945010_01_P002_MUL/16FEB12162518-M1BS-057522945010_01_P002.ATT")'
+            + '"/srv/imars-objects/extra_data/WV02/2016.02/WV02_20160212162518_0000000000000000_16Feb12162518-M1BS-057522945010_P002.att")'
         )

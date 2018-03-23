@@ -187,12 +187,14 @@ def parse_regex(key, strptime_filename, filename):
         __name__,
         sys._getframe().f_code.co_name)
     )
-    logger.setLevel(logging.INFO)
+    logger.setLevel(logging.DEBUG)
     # cut out
+    escaped_pre = re.escape(valid_pattern_vars[key][0])
+    escaped_post= re.escape(valid_pattern_vars[key][2])
     regex = (
-        valid_pattern_vars[key][0]
-        + "[^"+valid_pattern_vars[key][0]+"]+".format(key)
-        + valid_pattern_vars[key][2]
+        escaped_pre
+        + "[^"+escaped_pre+"]+".format(key)
+        + escaped_post
     )
     try:
         logger.debug("re.search({},{})".format(regex,strptime_filename))
