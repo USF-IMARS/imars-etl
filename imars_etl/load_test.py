@@ -117,7 +117,7 @@ class Test_load(TestCase):
             imars_etl.load({
                 "dry_run": True,
                 "filepath": "/fake/filepath.png",
-                "product_type_id": "6",
+                "product_type_id": 6,
                 "date": "2018-02-26T13:00",
                 "json": '{"status":1, "area_id":1}'
             })
@@ -125,7 +125,7 @@ class Test_load(TestCase):
         result = load({
             "dry_run": True,
             "filepath": "/fake/filepath.png",
-            "product_type_id": "6",
+            "product_type_id": 6,
             "date": "2018-02-26T13:00",
             "json": '{"status":1, "area_id":1}'
         })

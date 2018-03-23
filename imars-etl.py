@@ -65,7 +65,7 @@ def parse_args(argvs):
         help="ISO8601-formatted date-time string of product"
     )
     required_named_args.add_argument("-t", "--product_type_id",
-        help="product type id"
+        help="product type id", type=int
     )
     # optional args
     parser_load.add_argument("-j", "--json",
