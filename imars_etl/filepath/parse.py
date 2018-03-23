@@ -44,6 +44,7 @@ def parse_all_from_filename(args):
     #     except ValueError as v_err:
     #         logger.debug("failed to guess value for '{}'".format(arg))
     #         logger.debug(v_err)
+    logger.debug("parsing '{}'".format(args.filepath))
     for pattern_name in filename_patterns:
         pattern = filename_patterns[pattern_name]
         # check if args.filepath matches this pattern
@@ -97,10 +98,16 @@ def parse(key, strptime_filename, filename):
 # TODO: this is a duplicate of check_match?
 def filename_matches_pattern(filename, pattern):
     """ returns true if given filename matches given pattern """
+    logger = logging.getLogger("{}.{}".format(
+        __name__,
+        sys._getframe().f_code.co_name)
+    )
     # switch to basepath if path info not part of pattern
     if "/" in filename and "/" not in pattern:
         filename = os.path.basename(filename)
+        logger.debug("checking basename only")
 
+    logger.debug("\n{}\n\t=?=\n{}".format(filename,pattern))
     try:
         # filename matches if we can successfully get the date
         _parse_date(filename, pattern)

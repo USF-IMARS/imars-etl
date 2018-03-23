@@ -14,6 +14,6 @@ valid_pattern_vars = {
     # TODO: fill this from the database automatically
     ],
     "tag":       ["_",  "*", ".zip"],  # * matches any str between edge strings (not inclusive)
-    "idNumber":  ["-",  "*", "_"],
+    "idNumber":  ["-M1BS-",  "*", "_P"],
     "passNumber":["_P", "*", ".ATT"]
 }

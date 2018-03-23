@@ -143,7 +143,7 @@ class Test_load(TestCase):
         test_args = {
             "verbose":3,
             "dry_run":True,
-            "filepath":"/tmp/airflow_output_2018-03-01T20:00:00/057522945010_01_003/057522945010_01/057522945010_01_P002_MUL/16FEB12162518-M1BS-057522945010_01_P002.ATT",
+            "filepath":"/tmp/airflow_output_2018-03-01T20:00:00/057522945010_01_003/057522945010_01/057522945010_01_P002_MUL/16Feb12162518-M1BS-057522945010_P002.ATT",
             "product_type_id":7,
             # "date":"2016-02-12T16:25:18",
             # "datetime": datetime(2016,2,12,16,25,18),

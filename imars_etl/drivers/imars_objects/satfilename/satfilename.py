@@ -68,7 +68,7 @@ _products = {
         "product_type_id": 6
     },
     "att_wv2_m1bs":{
-        "basename": "WV02_%Y%m%d%H%M%S_{catalog_id}_%y%b%d%H%M%S-M1BS-{id_number}_{two_numbers}_P{pass_number}.att",  # NOTE: how to %b in all caps?
+        "basename": "WV02_%Y%m%d%H%M%S_0000000000000000_%y%b%d%H%M%S-M1BS-{idNumber}_P{passNumber}.att",  # NOTE: how to %b in all caps?
         "path": "/srv/imars-objects/extra_data/WV02/%Y.%m",
         "product_type_id": 7
     }
