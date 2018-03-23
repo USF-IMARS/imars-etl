@@ -59,6 +59,9 @@ def parse_all_from_filename(args):
                 setattr(args, param, val)
                 logger.debug('{} extracted :"{}"'.format(param, val))
             return args
+    else:
+        logger.warn("could not match filepath to any known patterns.")
+        return args
 
 def parse(key, strptime_filename, filename):
     """

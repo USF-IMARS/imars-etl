@@ -82,8 +82,9 @@ def _validate_args(args):
         __name__,
         sys._getframe().f_code.co_name)
     )
-
+    logger.debug("pre-guess-args : " + str(args))
     args = parse_all_from_filename(args)
+    logger.debug("post-guess-args: " + str(args))
 
     ISO_8601_FMT="%Y-%m-%dT%H:%M:%S"
     try:
