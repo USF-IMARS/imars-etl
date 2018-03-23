@@ -24,7 +24,7 @@ class Test_load(TestCase):
             imars_etl.py load
                 --dry_run
                 -f /fake/filepath.png
-                -t 6
+                -t -1
                 -d '2018-02-26T13:00'
                 -j '{"status":1, "area_id":1}'
         """
@@ -32,7 +32,7 @@ class Test_load(TestCase):
             verbose=0,
             dry_run=True,
             filepath="/fake/filepath.png",
-            product_type_id=6,
+            product_type_id=-1,
             date="2018-02-26T13:00",
             json='{"status":1,"area_id":1}'
         )
@@ -40,7 +40,7 @@ class Test_load(TestCase):
             load(test_args),
             'INSERT INTO file'
             + ' (status,date_time,area_id,product_type_id,filepath)'
-            + ' VALUES (1,"2018-02-26T13:00",1,6,"/fake/filepath.png")'
+            + ' VALUES (1,"2018-02-26T13:00",1,-1,"/srv/imars-objects/test_test_test/simple_file_with_no_args.txt")'
         )
 
     def test_load_missing_date_unguessable(self):
@@ -117,7 +117,7 @@ class Test_load(TestCase):
             imars_etl.load({
                 "dry_run": True,
                 "filepath": "/fake/filepath.png",
-                "product_type_id": 6,
+                "product_type_id": -1,
                 "date": "2018-02-26T13:00",
                 "json": '{"status":1, "area_id":1}'
             })
@@ -125,21 +125,20 @@ class Test_load(TestCase):
         result = load({
             "dry_run": True,
             "filepath": "/fake/filepath.png",
-            "product_type_id": 6,
+            "product_type_id": -1,
             "date": "2018-02-26T13:00",
             "json": '{"status":1, "area_id":1}'
         })
-
         self.assertEqual(
             result,
             'INSERT INTO file'
             + ' (status,date_time,area_id,product_type_id,filepath)'
-            + ' VALUES (1,"2018-02-26T13:00",1,6,"/fake/filepath.png")'
+            + ' VALUES (1,"2018-02-26T13:00",1,-1,"/srv/imars-objects/test_test_test/simple_file_with_no_args.txt")'
         )
 
     def test_load_att_wv2_m1bs(self):
         """
-        load att_wv2_m1bs with inferred date from filepath passes
+        load att_wv2_m1bs with inferred date from filepath
         """
         test_args = {
             "verbose":3,

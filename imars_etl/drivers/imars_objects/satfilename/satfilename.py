@@ -56,6 +56,12 @@ _products = {
     #   "basename": "A%Y%j%H%M00.L1A_LAC.x.hdf.bz2"
     #   "path"    : "/srv/imars-objects/{region}/{product_type_id}/"
     # }
+    "test_test_test":{
+        "//": "this is a fake type used for testing only",
+        "basename": "simple_file_with_no_args.txt",
+        "path"    : "/srv/imars-objects/test_test_test",
+        "product_type_id": -1
+    },
     "zip_wv2_ftp_ingest":{
         "basename": "wv2_%Y_%m_{tag}.zip",
         "path"    : "/srv/imars-objects/{product_type_name}",

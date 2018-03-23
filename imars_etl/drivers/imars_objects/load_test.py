@@ -24,7 +24,7 @@ class Test_imars_obj_load(TestCase):
     # === bash CLI
     def test_load_zip_wv2_ftp_ingest(self):
         """
-        load zip_wv2_ftp_ingest passes
+        load zip_wv2_ftp_ingest
         """
         test_args = {
             "verbose":3,
@@ -34,12 +34,10 @@ class Test_imars_obj_load(TestCase):
             "date":"2017-03-01T00:00",
             "datetime": datetime(2017,3,1),
             "forced_basename": "wv2_2017_03_RB2.zip",
-            "json":'{"status":1,"area_id":1}'
+            "json":'{"status":1,"area_id":1}',
+            "tag": "RB2"
         }
         self.assertEqual(
-            _load(**test_args),
-            [   'mv',
-                '/srv/imars-objects/ftp-ingest/wv2_2017_03_RB2.zip',
-                '/srv/imars-objects/zip_wv2_ftp_ingest/wv2_2017_03_RB2.zip'
-            ]
+            _load(test_args),
+            '/srv/imars-objects/zip_wv2_ftp_ingest/wv2_2017_03_RB2.zip'
         )
