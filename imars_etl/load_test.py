@@ -84,7 +84,7 @@ class Test_load(TestCase):
             'INSERT INTO file'
             + ' (date_time,area_id,product_type_id,filepath)'
             + ' VALUES ("2000-06-01T00:00:00",1,6,'
-            + '"/path/w/parseable/date/wv2_2000_06_myTag.zip")'
+            + '"/srv/imars-objects/zip_wv2_ftp_ingest/wv2_2000_06_myTag.zip")'
         )
 
     def test_wv2_zip_ingest_example(self):
