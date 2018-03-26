@@ -73,7 +73,7 @@ def _load_dir(args):
         logger.debug("searching w/ {}...".format(regex))
         for root, dirs, files in os.walk(args.directory):
             for filename in files:
-                logger.debug("{}?".format(filename))
+                # logger.debug("{}?".format(filename))
                 if prod_reg.match(filename):
                     fpath = os.path.join(root,filename)
                     logger.debug("load {}...".format(fpath))

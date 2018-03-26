@@ -31,7 +31,7 @@ data = {
         INGEST_FMTS: {
             "att_from_zip_wv2_ftp_ingest":{
                 # "example": "16FEB12162518-M1BS-057522945010_01_P002.ATT",
-                REGX: ".*/[0-3][0-9][A-Z]\{3\}[0-9]\{8\}-M1BS-[0-9_]*_P[0-9]\{3\}.ATT",
+                REGX: "[0-3][0-9][A-Z]{3}[0-9]{8}-M1BS-[0-9_]*_P[0-9]{3}.ATT",
                 F_FMT: "%y%b%d%H%M%S-M1BS-{idNumber}_P{passNumber}.ATT"
                 # TODO: update this to work w/ #3 :
                 # "path_format": "%y%b%d%H%M%S-M1BS-{idNumber:12d}_{whatThis:2d}_P{passNumber:3d}.ATT"
@@ -49,7 +49,7 @@ data = {
     "att_wv2_p1bs": {
         INGEST_FMTS: {
             "att_from_zip_wv2_ftp_ingest":{
-                REGX: ".*/[0-3][0-9][A-Z]\{3\}[0-9]\{8\}-P1BS-[0-9_]*_P[0-9]\{3\}.ATT",
+                REGX: "[0-3][0-9][A-Z]{3}[0-9]{8}-P1BS-[0-9_]*_P[0-9]{3}.ATT",
                 F_FMT: "%y%b%d%H%M%S-P1BS-{idNumber}_P{passNumber}.ATT"
             },
         },
