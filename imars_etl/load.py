@@ -36,29 +36,8 @@ def load(args):
     connection = metadatabase.get_conn()
     try:
         with connection.cursor() as cursor:
-            try:
-                json_dict = json.loads(args.json)
-            except TypeError as t_err:  # json str is empty
-                json_dict = dict()
-            json_dict["filepath"] = '"'+args.filepath+'"'
-            json_dict["date_time"] = '"'+args.date+'"'
-            json_dict["product_type_id"] = args.product_type_id
-
-            str_concat=(lambda x, y: str(x)+","+str(y))
-            keys = reduce(
-                str_concat,
-                [str(key) for key in json_dict]
-            )
-            vals = reduce(
-                str_concat,
-                [str(json_dict[key]) for key in json_dict]
-            )
-            # logger.debug(keys)
-            # logger.debug(vals)
-            # Create a new record
-            sql = "INSERT INTO file ("+keys+") VALUES ("+vals+")"
+            sql = _make_sql_insert(args)
             logger.debug('query:\n\t'+sql)
-
             # load file into IMaRS data warehouse
             # NOTE: _load should support args.dry_run=True also
             new_filepath = _load(vars(args))
@@ -67,11 +46,31 @@ def load(args):
                 return sql
             else:
                 result = cursor.execute(sql)
-                # connection is not autocommit by default.
-                # So you must commit to save your changes.
                 connection.commit()
     finally:
        connection.close()
+
+def _make_sql_insert(args):
+    """creates SQL INSERT INTO statement with metadata from given args dict"""
+    try:
+        json_dict = json.loads(args.json)
+    except TypeError as t_err:  # json str is empty
+        json_dict = dict()
+    json_dict["filepath"] = '"'+args.filepath+'"'
+    json_dict["date_time"] = '"'+args.date+'"'
+    json_dict["product_type_id"] = args.product_type_id
+
+    str_concat=(lambda x, y: str(x)+","+str(y))
+    keys = reduce(
+        str_concat,
+        [str(key) for key in json_dict]
+    )
+    vals = reduce(
+        str_concat,
+        [str(json_dict[key]) for key in json_dict]
+    )
+    # Create a new record
+    return "INSERT INTO file ("+keys+") VALUES ("+vals+")"
 
 def _validate_args(args):
     """
