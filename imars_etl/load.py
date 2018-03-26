@@ -50,25 +50,35 @@ def _load_dir(args):
         __name__,
         sys._getframe().f_code.co_name)
     )
-    if args.product_type_id is None or args.ingest_key is None:
-        # TODO: this is probably not a hard requirement...
-        #   but I am putting it here as a safety precaution for now.
+    if args.product_type_id is None:
+        # TODO: this is probably not a hard requirement
+        #   but it seems like a good safety precaution.
         raise ArgumentError(
-            "--product_type_id and --ingest_key must be explicitly set if" +
-            " --directory is used."
+            "--product_type_id must be explicitly set if --directory is used."
         )
     else:
         insert_statements = []  #
         # TODO: mv id to name conversion into _validate_args?
         product_data = get_product_data_from_id(args.product_type_id)
-        # TODO: + ingest key to argparse
-        try:
-            regex = product_data["ingest_formats"][args.ingest_key]["find_regex"]
-        except KeyError as k_err:
-            raise KeyError("no ingest_key '{}' in product {}".format(
-                args.ingest_key,
-                args.product_type_id
-            ))
+        if args.ingest_key is not None:
+            try:  # just the one regex
+                regex = product_data["ingest_formats"][args.ingest_key]["find_regex"]
+            except KeyError as k_err:
+                raise KeyError("no ingest_key '{}' in product {}".format(
+                    args.ingest_key,
+                    args.product_type_id
+                ))
+        elif len(product_data["ingest_formats"]) == 1:
+            # if there is only 1 ingest_format then we must use that one
+            ingest_key, regex = dict(product_data["ingest_formats"]).popitem()
+        else:
+            # we don't know what ingest_format to use
+            raise KeyError(
+                "--ingest_key must be given for product # {}".format(
+                    args.product_type_id
+                )
+            )
+
         prod_reg = re.compile(r'{}'.format(regex))
         logger.debug("searching w/ {}...".format(regex))
         for root, dirs, files in os.walk(args.directory):
