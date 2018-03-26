@@ -12,7 +12,7 @@ def _load(args):
     ul_target = satfilename.get_name(args)
     logger.debug(["mv", args['filepath'], ul_target])
 
-    if not args['dry_run']:  # don't actuall move if test mode
+    if not args['dry_run']:  # don't actually move if test mode
         shutil.move(args['filepath'], ul_target)
 
     return ul_target

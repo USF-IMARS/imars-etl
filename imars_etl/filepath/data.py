@@ -27,7 +27,9 @@ PATH="path"
 BASE="basename"
 PID="product_type_id"
 
-def wv2_ingest_prod(m1bs_or_p1bs, ext, pid, ingest_id="from_zip_wv2_ftp_ingest"):
+def wv2_ingest_prod(m1bs_or_p1bs, ext, pid, up_ext=True,
+    ingest_id="from_zip_wv2_ftp_ingest"
+):
     """
     shorthand to build a dict for wv2 ingest products because they all have many
     things in common.
@@ -40,6 +42,9 @@ def wv2_ingest_prod(m1bs_or_p1bs, ext, pid, ingest_id="from_zip_wv2_ftp_ingest")
         lowercase file extension (with leading '.')
     pid : int
         product_type_id
+    up_ext : boolean
+        if True we expect file extensions to be all upper-case on ingest.
+        this is the case for all files except those in /GIS_FILES
     """
     WV2_OUT_PATH="/srv/imars-objects/extra_data/WV02/%Y.%m"
 
@@ -88,10 +93,10 @@ data = {
     "xml_wv2_m1bs": wv2_ingest_prod('M', '.xml', 15),
     "jpg_wv2_m1bs": wv2_ingest_prod('M', '-BROWSE.jpg', 16),
     "txt_wv2_m1bs": wv2_ingest_prod('M', '_README.txt', 17),
-    "shx_wv2_m1bs": wv2_ingest_prod('M', '.shx', 18),
-    "shp_wv2_m1bs": wv2_ingest_prod('M', '.shp', 19),
-    "prj_wv2_m1bs": wv2_ingest_prod('M', '.prj', 20),
-    "dbf_wv2_m1bs": wv2_ingest_prod('M', '.dbf', 21),
+    "shx_wv2_m1bs": wv2_ingest_prod('M', '.shx', 18, up_ext=False),
+    "shp_wv2_m1bs": wv2_ingest_prod('M', '.shp', 19, up_ext=False),
+    "prj_wv2_m1bs": wv2_ingest_prod('M', '.prj', 20, up_ext=False),
+    "dbf_wv2_m1bs": wv2_ingest_prod('M', '.dbf', 21, up_ext=False),
     "eph_wv2_p1bs": wv2_ingest_prod('P', '.eph', 22),
     "geo_wv2_p1bs": wv2_ingest_prod('P', '.geo', 23),
     "imd_wv2_p1bs": wv2_ingest_prod('P', '.imd', 24),
@@ -101,9 +106,9 @@ data = {
     "xml_wv2_p1bs": wv2_ingest_prod('P', '.xml', 28),
     "jpg_wv2_p1bs": wv2_ingest_prod('P', '-BROWSE.jpg', 29),
     "txt_wv2_p1bs": wv2_ingest_prod('P', '_README.txt', 30),
-    "shx_wv2_p1bs": wv2_ingest_prod('P', '.shx', 31),
-    "shp_wv2_p1bs": wv2_ingest_prod('P', '.shp', 32),
-    "dbf_wv2_p1bs": wv2_ingest_prod('P', '.dbf', 33),
+    "shx_wv2_p1bs": wv2_ingest_prod('P', '.shx', 31, up_ext=False),
+    "shp_wv2_p1bs": wv2_ingest_prod('P', '.shp', 32, up_ext=False),
+    "dbf_wv2_p1bs": wv2_ingest_prod('P', '.dbf', 33, up_ext=False),
     "zip_wv2_ftp_ingest": {
         "ingest_formats": {
             "matts_wv2_ftp_ingest":{
