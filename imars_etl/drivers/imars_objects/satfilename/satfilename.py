@@ -45,76 +45,7 @@ Filenames in `geo` and `geo_v2` are probably similar, but shoud not be identical
 import logging
 import sys
 
-from imars_etl.drivers.imars_objects.satfilename.BaseSatFilepath import BaseSatFilepath
-
-ISO_8601_FMT="%Y-%m-%dT%H:%M:%SZ"
-
-PATH_ROOT="/srv/imars-objects/{region}/{product_type_id}/"
-# TODO: create this from the metadata database rather than duplicating it here.
-_products = {
-    # "product_type_id": {
-    #   "basename": "A%Y%j%H%M00.L1A_LAC.x.hdf.bz2"
-    #   "path"    : "/srv/imars-objects/{region}/{product_type_id}/"
-    # }
-    "test_test_test":{
-        "//": "this is a fake type used for testing only",
-        "basename": "simple_file_with_no_args.txt",
-        "path"    : "/srv/imars-objects/test_test_test",
-        "product_type_id": -1
-    },
-    "zip_wv2_ftp_ingest":{
-        "basename": "wv2_%Y_%m_{tag}.zip",
-        "path"    : "/srv/imars-objects/{product_type_name}",
-        "product_type_id": 6
-    },
-    "att_wv2_m1bs":{
-        "basename": "WV02_%Y%m%d%H%M%S_0000000000000000_%y%b%d%H%M%S-M1BS-{idNumber}_P{passNumber}.att",  # NOTE: how to %b in all caps?
-        "path": "/srv/imars-objects/extra_data/WV02/%Y.%m",
-        "product_type_id": 7
-    }
-    ### === others from the metadata db that in need of adding:
-    # "png_chl_7d": {
-    #     "name": "FGB_A1km_chlor_a_%Y%j_%Y%j_7D_MEAN.png"
-    # },
-    ### === legacy values from pre-metadata db times:
-    # "l1a_lac_hdf_bz2":{
-    #     "//": "zipped l1a (myd01) files from OB.DAAC",
-    #     "basename": "A%Y%j%H%M00.L1A_LAC.x.hdf.bz2"
-    # }
-    # "myd01": {
-    #     "//": "modis aqua l1. I *think* these files are the same as l1a_LAC," +
-    #         + " but from LANCE.",
-    #     "basename": "A%Y%j.%H%M.hdf"
-    # }
-    # "geo": {
-    #     "basename": "A%Y%j%H%M00.GEO"
-    # }
-    # "l1b": {
-    #     "basename": "A%Y%j%H%M00.L1B_LAC"
-    # }
-    # "hkm": {
-    #     "basename": "A%Y%j%H%M00.L1B_HKM"
-    # }
-    # "qkm": {
-    #     "basename": "A%Y%j%H%M00.L1B_QKM"
-    # }
-    # "l2": {
-    #     "basename": "A%Y%j%H%M00.L2"
-    # }
-    # "l3": {
-    #     "basename": ISO_8601_FMT+"_l3.nc"
-    # }
-    # "l3_pass": {
-    #     "basename": ISO_8601_FMT+"_l3.nc"
-    # }
-    # "metadata-ini": {
-    #     "basename": "metadata_"+ISO_8601_FMT+".ini"
-    # }
-    # "png": {
-    #     "path": "/srv/imars-objects/modis_aqua_{region_shortname}/png_{variable_name}"
-    #     "basename": ISO_8601_FMT + "_{variable_name}.png"
-    # }
-}
+from imars_etl.filepath.data import get_imars_object_paths
 
 def get_name(args, forced_basename=None):
     """
@@ -134,8 +65,7 @@ def get_name(args, forced_basename=None):
         args.get('product_type_name','???'),
         args.get('product_type_id',-999999))
     )
-    for prod_name in _products:
-        prod_meta = _products[prod_name]
+    for prod_name, prod_meta in get_imars_object_paths().items():
         logger.debug("is {} (#{})?".format(prod_name, prod_meta['product_type_id']))
         if (
                    args.get('product_type_name','') == prod_name
