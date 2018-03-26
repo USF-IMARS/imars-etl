@@ -24,41 +24,83 @@ PATH="path"
 BASE="basename"
 PID="product_type_id"
 
+def wv2_ingest_prod(m1bs_or_p1bs, ext, pid, ingest_id="from_zip_wv2_ftp_ingest"):
+    """
+    shorthand to build a dict for wv2 ingest products because they all have many
+    things in common.
+
+    Parameters
+    ----------
+    m1bs_or_p1bs : char
+        m || p to indicate m1bs or p1bs
+    ext : str
+        lowercase file extension (with leading '.')
+    pid : int
+        product_type_id
+    """
+    WV2_OUT_PATH="/srv/imars-objects/extra_data/WV02/%Y.%m"
+
+    m1bs_or_p1bs = m1bs_or_p1bs.upper()
+    assert(m1bs_or_p1bs=='M' or m1bs_or_p1bs=='P')
+
+    regx_rt = "[0-3][0-9][A-Z]{3}[0-9]{8}-" + m1bs_or_p1bs + "1BS-[0-9_]*_P[0-9]{3}"
+    fmt_rt  = "%y%b%d%H%M%S-" + m1bs_or_p1bs + "1BS-{idNumber}_P{passNumber}"
+    base_rt = "WV02_%Y%m%d%H%M%S_0000000000000000_%y%b%d%H%M%S-" + m1bs_or_p1bs + "1BS-{idNumber}_P{passNumber}"
+
+    EXT = ext.upper()
+
+    return {  # == short_name from imars_product_metadata db
+        INGEST_FMTS: {
+            ingest_id:{
+                REGX:  regx_rt + EXT,
+                F_FMT: fmt_rt  + EXT
+                # TODO: update this to work w/ #3 :
+                # "path_format": "%y%b%d%H%M%S-M1BS-{idNumber:12d}_{whatThis:2d}_P{passNumber:3d}.ATT"
+            }
+        },
+        I_OBJ_FMT: {
+            PATH: WV2_OUT_PATH,
+            BASE: base_rt + ext,
+            # TODO: update this to work w/ #3 :
+            # "basename": "WV02_%Y%m%d%H%M%S_0000000000000000_%y%b%d%H%M%S-M1BS-{idNumber:12d}_{whatThis:2d}_P{passNumber:3d}.att",
+            PID: pid  # TODO: use metadata db for product_type_id
+        },
+    }
+
 # NOTE: can FIND_REGEX be removed by allowing imars-etl to search the dir
 #       w/ INGESTABLE_FORMAT instead?
 data = {
-    "att_wv2_m1bs": {  # == short_name from imars_product_metadata db
-        INGEST_FMTS: {
-            "att_from_zip_wv2_ftp_ingest":{
-                # "example": "16FEB12162518-M1BS-057522945010_01_P002.ATT",
-                REGX: "[0-3][0-9][A-Z]{3}[0-9]{8}-M1BS-[0-9_]*_P[0-9]{3}.ATT",
-                F_FMT: "%y%b%d%H%M%S-M1BS-{idNumber}_P{passNumber}.ATT"
-                # TODO: update this to work w/ #3 :
-                # "path_format": "%y%b%d%H%M%S-M1BS-{idNumber:12d}_{whatThis:2d}_P{passNumber:3d}.ATT"
-            },
-            # {...more could go here...}
-        },
-        I_OBJ_FMT: {
-            PATH: "/srv/imars-objects/extra_data/WV02/%Y.%m",
-            BASE: "WV02_%Y%m%d%H%M%S_0000000000000000_%y%b%d%H%M%S-M1BS-{idNumber}_P{passNumber}.att",
-            # TODO: update this to work w/ #3 :
-            # "basename": "WV02_%Y%m%d%H%M%S_0000000000000000_%y%b%d%H%M%S-M1BS-{idNumber:12d}_{whatThis:2d}_P{passNumber:3d}.att",
-            PID: 7  # TODO: use metadata db for product_type_id
-        },
-    },
-    "att_wv2_p1bs": {
-        INGEST_FMTS: {
-            "att_from_zip_wv2_ftp_ingest":{
-                REGX: "[0-3][0-9][A-Z]{3}[0-9]{8}-P1BS-[0-9_]*_P[0-9]{3}.ATT",
-                F_FMT: "%y%b%d%H%M%S-P1BS-{idNumber}_P{passNumber}.ATT"
-            },
-        },
-        I_OBJ_FMT: {
-            PATH: "/srv/imars-objects/extra_data/WV02/%Y.%m",
-            BASE: "WV02_%Y%m%d%H%M%S_0000000000000000_%y%b%d%H%M%S-P1BS-{idNumber}_P{passNumber}.att",
-            PID: 8
-        },
-    },
+    "att_wv2_m1bs": wv2_ingest_prod(
+        'M', '.att', 7, ingest_id="att_from_zip_wv2_ftp_ingest"
+    ),
+    "att_wv2_p1bs":  wv2_ingest_prod(
+        'P', '.att', 8, ingest_id="att_from_zip_wv2_ftp_ingest"
+    ),
+    "eph_wv2_m1bs": wv2_ingest_prod('M', '.eph', 9),
+    "geo_wv2_m1bs": wv2_ingest_prod('M', '.geo', 10),
+    "imd_wv2_m1bs": wv2_ingest_prod('M', '.imd', 11),
+    "ntf_wv2_m1bs": wv2_ingest_prod('M', '.ntf', 12),
+    "rpb_wv2_m1bs": wv2_ingest_prod('M', '.rpb', 13),
+    "til_wv2_m1bs": wv2_ingest_prod('M', '.til', 14),
+    "xml_wv2_m1bs": wv2_ingest_prod('M', '.xml', 15),
+    "jpg_wv2_m1bs": wv2_ingest_prod('M', '-BROWSE.jpg', 16),
+    "txt_wv2_m1bs": wv2_ingest_prod('M', '_README.txt', 17),
+    "shx_wv2_m1bs": wv2_ingest_prod('M', '.shx', 18),
+    "shp_wv2_m1bs": wv2_ingest_prod('M', '.shp', 19),
+    "prj_wv2_m1bs": wv2_ingest_prod('M', '.prj', 20),
+    "dbf_wv2_m1bs": wv2_ingest_prod('M', '.dbf', 21),
+    "eph_wv2_m1bs": wv2_ingest_prod('P', '.eph', 22),
+    "geo_wv2_m1bs": wv2_ingest_prod('P', '.geo', 23),
+    "imd_wv2_m1bs": wv2_ingest_prod('P', '.imd', 24),
+    "ntf_wv2_m1bs": wv2_ingest_prod('P', '.ntf', 25),
+    "rpb_wv2_m1bs": wv2_ingest_prod('P', '.rpb', 26),
+    "til_wv2_m1bs": wv2_ingest_prod('P', '.til', 27),
+    "xml_wv2_m1bs": wv2_ingest_prod('P', '.xml', 28),
+    "jpg_wv2_m1bs": wv2_ingest_prod('P', '-BROWSE.jpg', 29),
+    "txt_wv2_m1bs": wv2_ingest_prod('P', '_README.txt', 30),
+    "shx_wv2_m1bs": wv2_ingest_prod('P', '.shx', 31),
+    "shp_wv2_m1bs": wv2_ingest_prod('P', '.shp', 32),
+    "dbf_wv2_m1bs": wv2_ingest_prod('P', '.dbf', 33),
     "zip_wv2_ftp_ingest": {
         "ingest_formats": {
             "matts_wv2_ftp_ingest":{
