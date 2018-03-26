@@ -165,13 +165,3 @@ def _validate_args(args):
     setattr(args, "datetime", dt)
 
     return args
-
-def _guess_arg_value(args, arg_to_guess):
-    """
-    Attempts to guess a value for the given arg_to_guess using info from the
-    other args (mostly args.filepath).
-    Will overwrite args[arg_to_guess] if it finds a more appropriate value.
-    """
-    # try to guess the arg using filepath
-    v, fp = parse_param(arg_to_guess, args.filepath, args.filepath)
-    return v

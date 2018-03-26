@@ -31,22 +31,6 @@ def parse_all_from_filename(args):
         __name__,
         sys._getframe().f_code.co_name)
     )
-    # these are soft-required args, ones that we might try to guess if not
-    # given, but we have to give up if we cannot figure them out.
-    # required_args = ['product_type_id','date']
-    #
-    # for arg in required_args:
-    #     try:
-    #         if getattr(args, arg, None) is None:
-    #             logger.debug("attempting to guess {}".format(arg))
-    #             guessed_val = _guess_arg_value(args, arg)
-    #             logger.debug("my guess: {}".format(guessed_val))
-    #             setattr(args, arg, guessed_val)
-    #         # else keep the given value
-    #     except ValueError as v_err:
-    #         logger.debug("failed to guess value for '{}'".format(arg))
-    #         logger.debug(v_err)
-    # logger.debug("parsing '{}'".format(args.filepath))
     for pattern_name, pattern in get_ingest_formats().items():
         # check if args.filepath matches this pattern
         if filename_matches_pattern(args.filepath, pattern):
@@ -180,9 +164,12 @@ def _parse_date(filename, pattern):
     strptime_filename = filename  # values replaced by key string below
 
     # === replace named args with key so we can strptime
+    
     for key in valid_pattern_vars:  # for each possible argname
         if (key in pattern):  # if the argname is in the pattern
             val, strptime_filename = parse_param(key, strptime_filename, filename)
+
+
     logger.debug("parse_date(\n\tfilename='{}',\n\tpattern= '{}'\n)".format(
         strptime_filename,
         strptime_pattern
