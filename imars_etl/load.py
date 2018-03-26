@@ -70,7 +70,8 @@ def _load_dir(args):
                 ))
         elif len(product_data["ingest_formats"]) == 1:
             # if there is only 1 ingest_format then we must use that one
-            ingest_key, regex = product_data["ingest_formats"].itervalues().next()
+            ingest_key = product_data["ingest_formats"].keys()[0]
+            regex = product_data["ingest_formats"][ingest_key]['find_regex']
         else:
             # we don't know what ingest_format to use
             raise KeyError(
