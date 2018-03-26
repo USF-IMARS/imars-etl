@@ -2,6 +2,9 @@
 dict which maps `imars_product_metadata.product.short_name` to expected
    filename patterns. Used to infer metadata from the filepath.
 """
+import logging
+import sys
+
 ISO_8601_FMT="%Y-%m-%dT%H:%M:%SZ"
 # dict containing valid values for given variables that can be used in the
 # filename patterns below.
@@ -89,18 +92,18 @@ data = {
     "shp_wv2_m1bs": wv2_ingest_prod('M', '.shp', 19),
     "prj_wv2_m1bs": wv2_ingest_prod('M', '.prj', 20),
     "dbf_wv2_m1bs": wv2_ingest_prod('M', '.dbf', 21),
-    "eph_wv2_m1bs": wv2_ingest_prod('P', '.eph', 22),
-    "geo_wv2_m1bs": wv2_ingest_prod('P', '.geo', 23),
-    "imd_wv2_m1bs": wv2_ingest_prod('P', '.imd', 24),
-    "ntf_wv2_m1bs": wv2_ingest_prod('P', '.ntf', 25),
-    "rpb_wv2_m1bs": wv2_ingest_prod('P', '.rpb', 26),
-    "til_wv2_m1bs": wv2_ingest_prod('P', '.til', 27),
-    "xml_wv2_m1bs": wv2_ingest_prod('P', '.xml', 28),
-    "jpg_wv2_m1bs": wv2_ingest_prod('P', '-BROWSE.jpg', 29),
-    "txt_wv2_m1bs": wv2_ingest_prod('P', '_README.txt', 30),
-    "shx_wv2_m1bs": wv2_ingest_prod('P', '.shx', 31),
-    "shp_wv2_m1bs": wv2_ingest_prod('P', '.shp', 32),
-    "dbf_wv2_m1bs": wv2_ingest_prod('P', '.dbf', 33),
+    "eph_wv2_p1bs": wv2_ingest_prod('P', '.eph', 22),
+    "geo_wv2_p1bs": wv2_ingest_prod('P', '.geo', 23),
+    "imd_wv2_p1bs": wv2_ingest_prod('P', '.imd', 24),
+    "ntf_wv2_p1bs": wv2_ingest_prod('P', '.ntf', 25),
+    "rpb_wv2_p1bs": wv2_ingest_prod('P', '.rpb', 26),
+    "til_wv2_p1bs": wv2_ingest_prod('P', '.til', 27),
+    "xml_wv2_p1bs": wv2_ingest_prod('P', '.xml', 28),
+    "jpg_wv2_p1bs": wv2_ingest_prod('P', '-BROWSE.jpg', 29),
+    "txt_wv2_p1bs": wv2_ingest_prod('P', '_README.txt', 30),
+    "shx_wv2_p1bs": wv2_ingest_prod('P', '.shx', 31),
+    "shp_wv2_p1bs": wv2_ingest_prod('P', '.shp', 32),
+    "dbf_wv2_p1bs": wv2_ingest_prod('P', '.dbf', 33),
     "zip_wv2_ftp_ingest": {
         "ingest_formats": {
             "matts_wv2_ftp_ingest":{
@@ -175,9 +178,17 @@ data = {
 
 def get_product_data_from_id(prod_id):
     """used to index product data by id number instead of short_name"""
+    logger = logging.getLogger("{}.{}".format(
+        __name__,
+        sys._getframe().f_code.co_name)
+    )
+    logger.setLevel(logging.INFO)
+    logger.debug("get_data_from_pid({})".format(prod_id))
     for product_short_name, product_data in data.items():
         pid = product_data["imars_object_format"]["product_type_id"]
+        logger.debug("pid is {}?".format(pid))
         if pid == prod_id:
+            logger.debug("y!")
             return product_data
     else:
         raise KeyError("product_type_id {} not found".format(prod_id))
