@@ -58,7 +58,6 @@ def parse_args(argvs):
     parser_load.set_defaults(func=load)
     # required args
     required_named_args = parser_load.add_mutually_exclusive_group(
-        'mutually exclusive required named arguments',
         required=True
     )
     required_named_args.add_argument("-f", "--filepath",
