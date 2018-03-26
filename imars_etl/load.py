@@ -76,7 +76,7 @@ def _make_sql_insert(args):
     except TypeError as t_err:  # json str is empty
         json_dict = dict()
     json_dict["filepath"] = '"'+args.filepath+'"'
-    json_dict["date_time"] = '"'+args.date+'"'
+    json_dict["date_time"] = '"'+args.time+'"'
     json_dict["product_type_id"] = args.product_type_id
 
     str_concat=(lambda x, y: str(x)+","+str(y))
@@ -106,10 +106,10 @@ def _validate_args(args):
 
     ISO_8601_FMT="%Y-%m-%dT%H:%M:%S"
     try:
-        dt = datetime.strptime(args.date, ISO_8601_FMT)
+        dt = datetime.strptime(args.time, ISO_8601_FMT)
         logger.debug("full datetime parsed")
     except ValueError as v_err:
-        dt = datetime.strptime(args.date, ISO_8601_FMT[:-3])
+        dt = datetime.strptime(args.time, ISO_8601_FMT[:-3])
         logger.debug("partial datetime parsed (no seconds)")
     setattr(args, "datetime", dt)
 

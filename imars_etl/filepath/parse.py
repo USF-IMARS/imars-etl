@@ -49,8 +49,8 @@ def parse_all_from_filename(args):
         # check if args.filepath matches this pattern
         if filename_matches_pattern(args.filepath, pattern):
             logger.debug('matches pattern "{}"'.format(pattern))
-            setattr(args, 'date', _parse_date(args.filepath, pattern))
-            logger.debug('date extracted: {}'.format(args.date))
+            setattr(args, 'time', _parse_date(args.filepath, pattern))
+            logger.debug('date extracted: {}'.format(args.time))
             # get list of attributes which are in the pattern:
             attribs_in_pattern = [ s.split("}")[0] for s in pattern.split("{")[1:] ]
             for param in attribs_in_pattern:
@@ -79,7 +79,7 @@ def parse(key, strptime_filename, filename):
     )
     # logger.debug("parsing '" + key + "' from filename '" + filename + "'")
     try:
-        if key == "date":  # must handle date specially
+        if key == "time":  # must handle date specially
             logger.debug("parsing date from filename")
             return parse_date(filename), strptime_filename
         elif "*" in valid_pattern_vars[key]:  # if we should regex

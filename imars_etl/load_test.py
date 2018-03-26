@@ -24,8 +24,8 @@ class Test_load(TestCase):
             imars_etl.py load
                 --dry_run
                 -f /fake/filepath.png
-                -t -1
-                -d '2018-02-26T13:00'
+                -p -1
+                -p '2018-02-26T13:00'
                 -j '{"status":1, "area_id":1}'
         """
         test_args = MagicMock(
@@ -33,7 +33,7 @@ class Test_load(TestCase):
             dry_run=True,
             filepath="/fake/filepath.png",
             product_type_id=-1,
-            date="2018-02-26T13:00",
+            time="2018-02-26T13:00",
             json='{"status":1,"area_id":1}'
         )
         self.assertEqual(
@@ -48,7 +48,7 @@ class Test_load(TestCase):
         cmd missing date that cannot be guessed fails:
             imars_etl.py load
                 --dry_run
-                -t 6
+                -p 6
                 -j '{"area_id":1}'
                 -f '/my/path/without/a/date/in.it'
         """
@@ -68,7 +68,7 @@ class Test_load(TestCase):
             imars_etl.py load
                 --dry_run
                 -j '{"area_id":1}'
-                -t 6
+                -p 6
                 -f '/path/w/parseable/date/wv2_2000_06_myTag.zip'
         """
         test_args = MagicMock(
@@ -92,14 +92,14 @@ class Test_load(TestCase):
         test wv2 ingest with filename parsing passes:
             imars_etl.py load
                 --dry_run
-                -t 6
+                -p 6
                 -f '/path/w/parseable/date/wv2_2000_06_myTag.zip'
         """
         test_args = MagicMock(
             verbose=3,
             dry_run=True,
             filepath="/path/w/parseable/date/wv2_2000_06_myTag.zip",
-            date=None,
+            time=None,
             product_type_id=6
         )
         self.assertEqual(
@@ -118,7 +118,7 @@ class Test_load(TestCase):
                 "dry_run": True,
                 "filepath": "/fake/filepath.png",
                 "product_type_id": -1,
-                "date": "2018-02-26T13:00",
+                "time": "2018-02-26T13:00",
                 "json": '{"status":1, "area_id":1}'
             })
         """
@@ -126,7 +126,7 @@ class Test_load(TestCase):
             "dry_run": True,
             "filepath": "/fake/filepath.png",
             "product_type_id": -1,
-            "date": "2018-02-26T13:00",
+            "time": "2018-02-26T13:00",
             "json": '{"status":1, "area_id":1}'
         })
         self.assertEqual(
@@ -145,7 +145,7 @@ class Test_load(TestCase):
             "dry_run":True,
             "filepath":"/tmp/airflow_output_2018-03-01T20:00:00/057522945010_01_003/057522945010_01/057522945010_01_P002_MUL/16FEB12162518-M1BS-057522945010_P002.ATT",
             "product_type_id":7,
-            # "date":"2016-02-12T16:25:18",
+            # "time":"2016-02-12T16:25:18",
             # "datetime": datetime(2016,2,12,16,25,18),
             "json":'{"status":3,"area_id":5}'
         }
