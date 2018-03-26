@@ -46,8 +46,11 @@ $ imars-etl load --area 1 --date "2017-01-02T13:45" --type 4 --filepath /path/to
 # auto-parse info (date) from filename using info from `imars_etl.filepath.data`
 $ imars-etl load --area 1 --type 4 --filepath /path/to/file/wv2_2012_02_myChunk.zip
 
-# Not yet implemented (short_name values (see issue #1)):
+# Not yet implemented : short_name values (see issue #1)
 # you@computer:~/$ imars-etl load --satellite aqua --time 2017-01-02T13:45 --instrument modis /path/to/file.hdf
+
+# Not yet implemented : load all matching files from a dir (see #5)
+# you@comp:~/$ imars-etl load --from_dir --ingest_name matts_wv2_ftp_ingest -t 6 -f /tmp/myDir
 ```
 
 ## python API
