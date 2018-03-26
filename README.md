@@ -41,16 +41,16 @@ $ imars-etl -vvv extract 'date_time < "2018-01-01" AND date_time > "2018-01-07"'
 ```
 ### load
 ```bash
-$ imars-etl load --area 1 --date "2017-01-02T13:45" --type 4 --filepath /path/to/file.hdf
+$ imars-etl load --area 1 --time "2017-01-02T13:45" --product_type_id 4 --filepath /path/to/file.hdf
 
 # auto-parse info (date) from filename using info from `imars_etl.filepath.data`
-$ imars-etl load --area 1 --type 4 --filepath /path/to/file/wv2_2012_02_myChunk.zip
+$ imars-etl load --area 1 --product_type_id 4 --filepath /path/to/file/wv2_2012_02_myChunk.zip
 
 # Not yet implemented : short_name values (see issue #1)
 # you@computer:~/$ imars-etl load --satellite aqua --time 2017-01-02T13:45 --instrument modis /path/to/file.hdf
 
 # Not yet implemented : load all matching files from a dir (see #5)
-# you@comp:~/$ imars-etl load --from_dir --ingest_name matts_wv2_ftp_ingest -t 6 -f /tmp/myDir
+# you@comp:~/$ imars-etl load --ingest_name matts_wv2_ftp_ingest -p 6 --directory /tmp/myDir
 ```
 
 ## python API

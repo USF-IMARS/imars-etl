@@ -57,17 +57,23 @@ def parse_args(argvs):
     )
     parser_load.set_defaults(func=load)
     # required args
-    required_named_args = parser_load.add_argument_group('required named arguments')
-    required_named_args.add_argument("-f", "--filepath", required=True,
+    required_named_args = parser_load.add_mutually_exclusive_group(
+        'mutually exclusive required named arguments',
+        required=True
+    )
+    required_named_args.add_argument("-f", "--filepath",
         help="path to file to upload"
     )
-    required_named_args.add_argument("-d", "--date",
-        help="ISO8601-formatted date-time string of product"
-    )
-    required_named_args.add_argument("-t", "--product_type_id",
-        help="product type id", type=int
+    required_named_args.add_argument("-d", "--directory",
+        help="path to directory of files to be loaded"
     )
     # optional args
+    parser_load.add_argument("-t", "--time",
+        help="ISO8601-formatted date-time string of product"
+    )
+    parser_load.add_argument("-p", "--product_type_id",
+        help="product type id", type=int
+    )
     parser_load.add_argument("-j", "--json",
         help="string of json with given file's metadata."
     )

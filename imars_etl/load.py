@@ -2,6 +2,7 @@ from datetime import datetime
 import logging
 import sys
 import json
+from argparse import ArgumentError
 
 from imars_etl import metadatabase
 from imars_etl.filepath.parse import parse, parse_all_from_filename
@@ -22,15 +23,33 @@ def load(args):
             -d '2018-02-26T13:00'
             -j '{"status":0}'
     """
+    if isinstance(args, dict):  # args can be dict
+        args = dict_to_argparse_namespace(args)
+
+    if args.filepath is not None:
+        return _load_file(args)
+    elif args.directory is not None:
+        return _load_dir(args)
+    else:
+        # NOTE: this should be thrown by the arparse arg group before getting
+        #   here, but we throw here for the python API.
+        raise ArgumentError("one of --filepath or --directory is required.")
+
+def _load_dir(args):
+    """loads multiple files that match from a directory"""
     logger = logging.getLogger("{}.{}".format(
         __name__,
         sys._getframe().f_code.co_name)
     )
-    # logger.debug('load')
+    # TODO: for each matching files
+    # TODO: _load_file()
 
-    if isinstance(args, dict):  # args can be dict
-        args = dict_to_argparse_namespace(args)
-
+def _load_file(args):
+    """loads a single file"""
+    logger = logging.getLogger("{}.{}".format(
+        __name__,
+        sys._getframe().f_code.co_name)
+    )
     args = _validate_args(args)
 
     connection = metadatabase.get_conn()
