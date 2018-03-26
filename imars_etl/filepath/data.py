@@ -15,26 +15,48 @@ valid_pattern_vars = {
     "passNumber":["_P", "*", ".ATT"]
 }
 
+# some const strings to make reading the dict keys below easier
+INGEST_FMTS="ingest_formats"
+I_OBJ_FMT="imars_object_format"
+REGX="find_regex"
+F_FMT="path_format"
+PATH="path"
+BASE="basename"
+PID="product_type_id"
+
 # NOTE: can FIND_REGEX be removed by allowing imars-etl to search the dir
 #       w/ INGESTABLE_FORMAT instead?
 data = {
     "att_wv2_m1bs": {  # == short_name from imars_product_metadata db
-        "ingest_formats": {
+        INGEST_FMTS: {
             "att_from_zip_wv2_ftp_ingest":{
                 # "example": "16FEB12162518-M1BS-057522945010_01_P002.ATT",
-                "find_regex": ".*/[0-3][0-9][A-Z]\{3\}[0-9]\{8\}-M1BS-[0-9_]*_P[0-9]\{3\}.ATT",
-                "path_format": "%y%b%d%H%M%S-M1BS-{idNumber}_P{passNumber}.ATT"
+                REGX: ".*/[0-3][0-9][A-Z]\{3\}[0-9]\{8\}-M1BS-[0-9_]*_P[0-9]\{3\}.ATT",
+                F_FMT: "%y%b%d%H%M%S-M1BS-{idNumber}_P{passNumber}.ATT"
                 # TODO: update this to work w/ #3 :
                 # "path_format": "%y%b%d%H%M%S-M1BS-{idNumber:12d}_{whatThis:2d}_P{passNumber:3d}.ATT"
             },
             # {...more could go here...}
         },
-        "imars_object_format": {
-            "path": "/srv/imars-objects/extra_data/WV02/%Y.%m",
-            "basename": "WV02_%Y%m%d%H%M%S_0000000000000000_%y%b%d%H%M%S-M1BS-{idNumber}_P{passNumber}.att",
+        I_OBJ_FMT: {
+            PATH: "/srv/imars-objects/extra_data/WV02/%Y.%m",
+            BASE: "WV02_%Y%m%d%H%M%S_0000000000000000_%y%b%d%H%M%S-M1BS-{idNumber}_P{passNumber}.att",
             # TODO: update this to work w/ #3 :
             # "basename": "WV02_%Y%m%d%H%M%S_0000000000000000_%y%b%d%H%M%S-M1BS-{idNumber:12d}_{whatThis:2d}_P{passNumber:3d}.att",
-            "product_type_id": 7  # TODO: use metadata db for product_type_id
+            PID: 7  # TODO: use metadata db for product_type_id
+        },
+    },
+    "att_wv2_p1bs": {
+        INGEST_FMTS: {
+            "att_from_zip_wv2_ftp_ingest":{
+                REGX: ".*/[0-3][0-9][A-Z]\{3\}[0-9]\{8\}-P1BS-[0-9_]*_P[0-9]\{3\}.ATT",
+                F_FMT: "%y%b%d%H%M%S-P1BS-{idNumber}_P{passNumber}.ATT"
+            },
+        },
+        I_OBJ_FMT: {
+            PATH: "/srv/imars-objects/extra_data/WV02/%Y.%m",
+            BASE: "WV02_%Y%m%d%H%M%S_0000000000000000_%y%b%d%H%M%S-P1BS-{idNumber}_P{passNumber}.att",
+            PID: 8
         },
     },
     "zip_wv2_ftp_ingest": {
