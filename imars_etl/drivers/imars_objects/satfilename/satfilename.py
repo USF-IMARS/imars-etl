@@ -61,6 +61,7 @@ def get_name(args, forced_basename=None):
         __name__,
         sys._getframe().f_code.co_name)
     )
+    logger.setLevel(logging.INFO)
     logger.info("placing {} (#{})...".format(
         args.get('product_type_name','???'),
         args.get('product_type_id',-999999))

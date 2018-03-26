@@ -25,7 +25,7 @@ setup(name='imars_etl',
     author_email='code+imars_etl@tylar.info',
     url='https://github.com/usf-imars/imars-etl',
     tests_require=['nose'],
-    install_requires=['pymysql'],
+    install_requires=['pymysql', 'parse'],
     # entry_points={  # sets up CLI (eg bash) commands
     #     'console_scripts': [
     #         'imars-etl = imars-etl',

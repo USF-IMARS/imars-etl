@@ -179,6 +179,11 @@ data = {
     # }
 }
 
+def get_product_id(product_type_name):
+    """get product id from given name"""
+    return data[product_type_name]["imars_object_format"]["product_type_id"]
+
+
 def get_product_data_from_id(prod_id):
     """used to index product data by id number instead of short_name"""
     logger = logging.getLogger("{}.{}".format(

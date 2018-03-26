@@ -8,7 +8,9 @@ import sys
 import re
 import os
 
-from imars_etl.filepath.data import valid_pattern_vars, get_ingest_formats
+from parse import parse
+
+from imars_etl.filepath.data import valid_pattern_vars, get_ingest_formats, get_product_id, get_ingest_format
 
 def parse_all_from_filename(args):
     """
@@ -44,26 +46,42 @@ def parse_all_from_filename(args):
     #     except ValueError as v_err:
     #         logger.debug("failed to guess value for '{}'".format(arg))
     #         logger.debug(v_err)
-    logger.debug("parsing '{}'".format(args.filepath))
+    # logger.debug("parsing '{}'".format(args.filepath))
     for pattern_name, pattern in get_ingest_formats().items():
         # check if args.filepath matches this pattern
         if filename_matches_pattern(args.filepath, pattern):
             logger.debug('matches pattern "{}"'.format(pattern))
-            setattr(args, 'time', _parse_date(args.filepath, pattern))
+            setattr(args, 'datetime', _parse_date(args.filepath, pattern))
+            setattr(args, 'time', args.datetime.isoformat())
             logger.debug('date extracted: {}'.format(args.time))
-            # get list of attributes which are in the pattern:
-            attribs_in_pattern = [ s.split("}")[0] for s in pattern.split("{")[1:] ]
-            for param in attribs_in_pattern:
-                val = parse(param, args.filepath, args.filepath)[0]
-                # TODO: check guessed argument value does not overwrite
+
+            filename = args.filepath
+            # switch to basepath if path info not part of pattern
+            if "/" in filename and "/" not in pattern:
+                filename = os.path.basename(filename)
+
+            # logger.debug('args:\n{}'.format(args))
+
+            product_type_name, ingest_key = pattern_name.split('.')  # TODO: get these from args
+            setattr(args, 'product_type_name', product_type_name)
+            setattr(args, 'product_type_id',   get_product_id(product_type_name))
+            path_fmt_str = get_ingest_format(product_type_name, ingest_key)
+            path_fmt_str = args.datetime.strftime(path_fmt_str)
+            logger.debug("parsing \n\t{} with \n\t{}".format(filename, path_fmt_str))
+            params_parsed = parse(path_fmt_str, filename).named
+            logger.info("params parsed from fname: \n\t{}".format(params_parsed))
+
+            for param in params_parsed:
+                val = params_parsed[param]
                 setattr(args, param, val)
-                logger.debug('{} extracted :"{}"'.format(param, val))
+                # logger.debug('{} extracted :"{}"'.format(param, val))
+
             return args
     else:
         logger.warn("could not match filepath to any known patterns.")
         return args
 
-def parse(key, strptime_filename, filename):
+def parse_param(key, strptime_filename, filename):
     """
     Returns
     ----------
@@ -101,6 +119,7 @@ def filename_matches_pattern(filename, pattern):
         __name__,
         sys._getframe().f_code.co_name)
     )
+    logger.setLevel(logging.INFO)
     # switch to basepath if path info not part of pattern
     if "/" in filename and "/" not in pattern:
         filename = os.path.basename(filename)
@@ -125,6 +144,7 @@ def parse_date(filename):
     )
     dates_matched=[]
     for pattern_name, pattern in get_ingest_formats().items():
+        # switch to basepath if path info not part of pattern
         if "/" in filename and "/" not in pattern:
             filename = os.path.basename(filename)
 
@@ -162,12 +182,12 @@ def _parse_date(filename, pattern):
     # === replace named args with key so we can strptime
     for key in valid_pattern_vars:  # for each possible argname
         if (key in pattern):  # if the argname is in the pattern
-            val, strptime_filename = parse(key, strptime_filename, filename)
+            val, strptime_filename = parse_param(key, strptime_filename, filename)
     logger.debug("parse_date(\n\tfilename='{}',\n\tpattern= '{}'\n)".format(
         strptime_filename,
         strptime_pattern
     ))
-    result = datetime.strptime(strptime_filename, strptime_pattern).isoformat()
+    result = datetime.strptime(strptime_filename, strptime_pattern)
     logger.debug("parsed_date={}".format(result))
     return result
 
@@ -186,6 +206,7 @@ def parse_regex(key, strptime_filename, filename):
         sys._getframe().f_code.co_name)
     )
     logger.setLevel(logging.INFO)
+
     # cut out
     escaped_pre = re.escape(valid_pattern_vars[key][0])
     escaped_post= re.escape(valid_pattern_vars[key][2])

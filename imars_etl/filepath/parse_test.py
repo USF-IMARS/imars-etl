@@ -12,7 +12,7 @@ except ImportError:
 from datetime import datetime
 
 # dependencies:
-from imars_etl.filepath.parse import _parse_date
+from imars_etl.filepath.parse_param import _parse_date
 
 class Test_check_match(TestCase):
 
@@ -24,7 +24,7 @@ class Test_check_match(TestCase):
             _parse_date(
                 "wv2_2000_01_.zip",
                 "wv2_%Y_%m_.zip"
-            ),
+            ).isoformat(),
             "2000-01-01T00:00:00"
         )
     def test_parse_date_w_args(self):
@@ -33,6 +33,6 @@ class Test_check_match(TestCase):
             _parse_date(
                 "wv2_2000_01_myTagHere.zip",
                 "wv2_%Y_%m_{tag}.zip"
-            ),
+            ).isoformat(),
             "2000-01-01T00:00:00"
         )
