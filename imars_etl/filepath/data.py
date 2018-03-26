@@ -2,13 +2,9 @@
 dict which maps `imars_product_metadata.product.short_name` to expected
    filename patterns. Used to infer metadata from the filepath.
 """
-filename_patterns = {
-    "zip_wv2_ftp_ingest": "wv2_%Y_%m_{tag}.zip",
-    "att_wv2_m1bs": "%y%b%d%H%M%S-M1BS-{idNumber}_P{passNumber}.ATT"
-    # eg: 16FEB12162518-M1BS-057522945010_01_P002.ATT
-}
 # dict containing valid values for given variables that can be used in the
-# filename patters above
+# filename patterns below.
+# NOTE: this could be removed if #3 is implemented
 valid_pattern_vars = {
     "area": [
     # TODO: fill this from the database automatically
@@ -18,8 +14,8 @@ valid_pattern_vars = {
     "passNumber":["_P", "*", ".ATT"]
 }
 
-# NOTE: can FIND_REGEX be replaced by allowing imars-etl to search the dir
-#       w/ INGESTABLE_FORMAT instead? (see #3)
+# NOTE: can FIND_REGEX be removed by allowing imars-etl to search the dir
+#       w/ INGESTABLE_FORMAT instead?
 data = {
     "att_wv2_m1bs": {  # == short_name from imars_product_metadata db
         "ingest_formats": {
@@ -39,7 +35,7 @@ data = {
     },
     "zip_wv2_ftp_ingest": {
         "ingest_formats": {
-            "wv2 ftp ingest for matt":{
+            "matts_wv2_ftp_ingest":{
                 "find_regex": "/srv/imars-objects/ftp-ingest/wv2_*zip",
                 "path_format": "wv2_%Y_%m_{tag}.zip",
             }
@@ -50,3 +46,28 @@ data = {
         }
     }
 }
+
+def get_ingest_formats():
+    """
+    returns a dict of all ingest formats.
+
+    example:
+    {
+        "zip_wv2_ftp_ingest.matts_wv2_ftp_ingest": "wv2_%Y_%m_{tag}.zip",
+        "att_wv2_m1bs.att_from_zip_wv2_ftp_ingest": "%y%b%d%H%M%S-M1BS-{idNumber}_P{passNumber}.ATT",
+    }
+    """
+    res = {}
+    for product_id in data:
+        for ingest_id in data[product_id]["ingest_formats"]:
+            res[
+                "{}.{}".format(product_id, ingest_id)
+            ] = get_ingest_format(product_id, ingest_id)
+    return res
+
+def get_ingest_format(short_name, ingest_name):
+    """
+    returns ingest path format string for given product short_name and
+    ingest_name.
+    """
+    return data[short_name]["ingest_formats"][ingest_name]["path_format"]

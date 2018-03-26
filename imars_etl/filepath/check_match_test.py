@@ -12,7 +12,7 @@ except ImportError:
 
 # dependencies:
 from imars_etl.filepath import check_match
-from imars_etl.filepath.data import filename_patterns
+from imars_etl.filepath.data import get_ingest_format
 
 class Test_check_match(TestCase):
 
@@ -23,7 +23,7 @@ class Test_check_match(TestCase):
         self.assertTrue(
             check_match.check_match(
                 "wv2_2000_01_RB1.zip",
-                filename_patterns["zip_wv2_ftp_ingest"]
+                get_ingest_format("zip_wv2_ftp_ingest","matts_wv2_ftp_ingest")
             )
         )
     def test_check_zip_wv2_filepath(self):
@@ -31,7 +31,7 @@ class Test_check_match(TestCase):
         self.assertTrue(
             check_match.check_match(
                 "/this/is/a/fake/path/wv2_2000_01_RB1.zip",
-                filename_patterns["zip_wv2_ftp_ingest"]
+                get_ingest_format("zip_wv2_ftp_ingest","matts_wv2_ftp_ingest")
             )
         )
     def test_malformed_zip_wv2_filename(self):
@@ -39,6 +39,6 @@ class Test_check_match(TestCase):
         self.assertFalse(
             check_match.check_match(
                 "wv2_20a0_01_RB1.zip",
-                filename_patterns["zip_wv2_ftp_ingest"]
+                get_ingest_format("zip_wv2_ftp_ingest","matts_wv2_ftp_ingest")
             )
         )

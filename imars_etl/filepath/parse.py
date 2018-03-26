@@ -8,7 +8,7 @@ import sys
 import re
 import os
 
-from imars_etl.filepath.data import valid_pattern_vars, filename_patterns
+from imars_etl.filepath.data import valid_pattern_vars, get_ingest_formats
 
 def parse_all_from_filename(args):
     """
@@ -45,8 +45,7 @@ def parse_all_from_filename(args):
     #         logger.debug("failed to guess value for '{}'".format(arg))
     #         logger.debug(v_err)
     logger.debug("parsing '{}'".format(args.filepath))
-    for pattern_name in filename_patterns:
-        pattern = filename_patterns[pattern_name]
+    for pattern_name, pattern in get_ingest_formats().items():
         # check if args.filepath matches this pattern
         if filename_matches_pattern(args.filepath, pattern):
             logger.debug('matches pattern "{}"'.format(pattern))
@@ -118,15 +117,14 @@ def filename_matches_pattern(filename, pattern):
 def parse_date(filename):
     """
     attempts to read date from filename by checking against all patterns in
-    filepath.data.filename_patterns
+    filepath.data
     """
     logger = logging.getLogger("{}.{}".format(
         __name__,
         sys._getframe().f_code.co_name)
     )
     dates_matched=[]
-    for pattern_name in filename_patterns:
-        pattern = filename_patterns[pattern_name]
+    for pattern_name, pattern in get_ingest_formats().items():
         if "/" in filename and "/" not in pattern:
             filename = os.path.basename(filename)
 
