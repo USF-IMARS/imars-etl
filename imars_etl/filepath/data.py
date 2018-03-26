@@ -10,12 +10,10 @@ ISO_8601_FMT="%Y-%m-%dT%H:%M:%SZ"
 # filename patterns below.
 # NOTE: this could be removed if #3 is implemented
 valid_pattern_vars = {
-    "area": [
-    # TODO: fill this from the database automatically
-    ],
+    "area": [ ],
     "tag":       ["_",  "*", ".zip"],  # * matches any str between edge strings (not inclusive)
     "idNumber":  ["BS-",  "*", "_P"],
-    "passNumber":["_P", "*", ".ATT"]
+    "passNumber":["_P", "*", "."]
 }
 
 # some const strings to make reading the dict keys below easier
@@ -93,10 +91,10 @@ data = {
     "xml_wv2_m1bs": wv2_ingest_prod('M', '.xml', 15),
     "jpg_wv2_m1bs": wv2_ingest_prod('M', '-BROWSE.jpg', 16),
     "txt_wv2_m1bs": wv2_ingest_prod('M', '_README.txt', 17),
-    "shx_wv2_m1bs": wv2_ingest_prod('M', '.shx', 18, up_ext=False),
-    "shp_wv2_m1bs": wv2_ingest_prod('M', '.shp', 19, up_ext=False),
-    "prj_wv2_m1bs": wv2_ingest_prod('M', '.prj', 20, up_ext=False),
-    "dbf_wv2_m1bs": wv2_ingest_prod('M', '.dbf', 21, up_ext=False),
+    "shx_wv2_m1bs": wv2_ingest_prod('M', '_PIXEL_SHAPE.shx', 18, up_ext=False),
+    "shp_wv2_m1bs": wv2_ingest_prod('M', '_PIXEL_SHAPE.shp', 19, up_ext=False),
+    "prj_wv2_m1bs": wv2_ingest_prod('M', '_PIXEL_SHAPE.prj', 20, up_ext=False),
+    "dbf_wv2_m1bs": wv2_ingest_prod('M', '_PIXEL_SHAPE.dbf', 21, up_ext=False),
     "eph_wv2_p1bs": wv2_ingest_prod('P', '.eph', 22),
     "geo_wv2_p1bs": wv2_ingest_prod('P', '.geo', 23),
     "imd_wv2_p1bs": wv2_ingest_prod('P', '.imd', 24),
@@ -106,9 +104,9 @@ data = {
     "xml_wv2_p1bs": wv2_ingest_prod('P', '.xml', 28),
     "jpg_wv2_p1bs": wv2_ingest_prod('P', '-BROWSE.jpg', 29),
     "txt_wv2_p1bs": wv2_ingest_prod('P', '_README.txt', 30),
-    "shx_wv2_p1bs": wv2_ingest_prod('P', '.shx', 31, up_ext=False),
-    "shp_wv2_p1bs": wv2_ingest_prod('P', '.shp', 32, up_ext=False),
-    "dbf_wv2_p1bs": wv2_ingest_prod('P', '.dbf', 33, up_ext=False),
+    "shx_wv2_p1bs": wv2_ingest_prod('P', '_PIXEL_SHAPE.shx', 31, up_ext=False),
+    "shp_wv2_p1bs": wv2_ingest_prod('P', '_PIXEL_SHAPE.shp', 32, up_ext=False),
+    "dbf_wv2_p1bs": wv2_ingest_prod('P', '_PIXEL_SHAPE.dbf', 33, up_ext=False),
     "zip_wv2_ftp_ingest": {
         "ingest_formats": {
             "matts_wv2_ftp_ingest":{
