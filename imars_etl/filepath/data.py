@@ -52,7 +52,13 @@ data = {
     },
     "test_test_test":{
         "//": "this is a fake type used for testing only",
-        "ingest_formats": {},
+        "ingest_formats": {
+            "file_w_date":{
+                "//": "used to test auto date parsing from filename",
+                "find_regex": "file_w_date_[0-9]{4}.txt",
+                "path_format": "file_w_date_%Y.txt",
+            }
+        },
         "imars_object_format": {
             "path"    : "/srv/imars-objects/test_test_test",
             "basename": "simple_file_with_no_args.txt",
@@ -102,6 +108,15 @@ data = {
     #     "basename": ISO_8601_FMT + "_{variable_name}.png"
     # }
 }
+
+def get_product_data_from_id(prod_id):
+    """used to index product data by id number instead of short_name"""
+    for product_short_name, product_data in data.items():
+        pid = product_data["imars_object_format"]["product_type_id"]
+        if pid == prod_id:
+            return product_data
+    else:
+        raise KeyError("product_type_id {} not found".format(prod_id))
 
 def get_imars_object_paths():
     """

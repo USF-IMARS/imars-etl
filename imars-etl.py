@@ -74,6 +74,9 @@ def parse_args(argvs):
     parser_load.add_argument("-p", "--product_type_id",
         help="product type id", type=int
     )
+    parser_load.add_argument("-i", "--ingest_key",
+        help="explicitly identifies what ingest format to expect"
+    )
     parser_load.add_argument("-j", "--json",
         help="string of json with given file's metadata."
     )

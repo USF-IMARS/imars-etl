@@ -5,10 +5,10 @@
 from unittest import TestCase
 try:
     # py2
-    from mock import MagicMock
+    from mock import MagicMock, patch
 except ImportError:
     # py3
-    from unittest.mock import MagicMock
+    from unittest.mock import MagicMock, patch
 
 # dependencies:
 from imars_etl.load import load
@@ -20,7 +20,7 @@ class Test_load(TestCase):
     # === bash CLI (passes ArgParse objects)
     def test_load_basic(self):
         """
-        basic load cmd passes:
+        CLI basic load cmd:
             imars_etl.py load
                 --dry_run
                 -f /fake/filepath.png
@@ -45,7 +45,7 @@ class Test_load(TestCase):
 
     def test_load_missing_date_unguessable(self):
         """
-        cmd missing date that cannot be guessed fails:
+        CLI cmd missing date that cannot be guessed fails:
             imars_etl.py load
                 --dry_run
                 -p 6
@@ -64,7 +64,7 @@ class Test_load(TestCase):
 
     def test_load_missing_date_guessable(self):
         """
-        cmd missing date that *can* be guessed passes:
+        CLI cmd missing date that *can* be guessed:
             imars_etl.py load
                 --dry_run
                 -j '{"area_id":1}'
@@ -89,7 +89,7 @@ class Test_load(TestCase):
 
     def test_wv2_zip_ingest_example(self):
         """
-        test wv2 ingest with filename parsing passes:
+        CLI wv2 ingest with filename parsing:
             imars_etl.py load
                 --dry_run
                 -p 6
@@ -113,7 +113,7 @@ class Test_load(TestCase):
     # === python API (passes dicts)
     def test_load_python_basic_dict(self):
         """
-        basic imars_etl.load passes:
+        API basic imars_etl.load:
             imars_etl.load({
                 "dry_run": True,
                 "filepath": "/fake/filepath.png",
@@ -138,7 +138,7 @@ class Test_load(TestCase):
 
     def test_load_att_wv2_m1bs(self):
         """
-        load att_wv2_m1bs with inferred date from filepath
+        API load att_wv2_m1bs with inferred date from filepath
         """
         test_args = {
             "verbose":3,
@@ -156,3 +156,38 @@ class Test_load(TestCase):
             + ' VALUES (3,"2016-02-12T16:25:18",5,7,'
             + '"/srv/imars-objects/extra_data/WV02/2016.02/WV02_20160212162518_0000000000000000_16Feb12162518-M1BS-057522945010_P002.att")'
         )
+
+    def test_load_directory_att_m1bs(self):
+        """
+            CLI load directory of att_wv2_m1bs
+        """
+        FAKE_TEST_DIR="/fake/dir/of/files/w/parseable/dates"
+        with patch('os.walk') as mockwalk:
+            mockwalk.return_value = [(
+                FAKE_TEST_DIR,  # root
+                (  # dirs
+                ),
+                (  # files
+                    "file_w_date_1999.txt",
+                    "file_w_date_2018.txt",
+                ),
+            )]
+            test_args = MagicMock(
+                verbose=3,
+                dry_run=True,
+                filepath=None,
+                directory=FAKE_TEST_DIR,
+                time=None,
+                product_type_id=-1,
+                ingest_key="file_w_date"
+            )
+            self.assertEqual( load(test_args), [
+                'INSERT INTO file'
+                + ' (date_time,product_type_id,filepath)'
+                + ' VALUES ("1999-01-01T00:00:00",-1,'
+                + '"/srv/imars-objects/test_test_test/simple_file_with_no_args.txt")',
+                'INSERT INTO file'
+                + ' (date_time,product_type_id,filepath)'
+                + ' VALUES ("2018-01-01T00:00:00",-1,'
+                + '"/srv/imars-objects/test_test_test/simple_file_with_no_args.txt")',
+            ])

@@ -2,10 +2,13 @@ from datetime import datetime
 import logging
 import sys
 import json
+import os
+import re
 from argparse import ArgumentError
 
 from imars_etl import metadatabase
 from imars_etl.filepath.parse import parse, parse_all_from_filename
+from imars_etl.filepath.data import get_product_data_from_id
 from imars_etl.util import dict_to_argparse_namespace
 from imars_etl.drivers.imars_objects.load import _load
 
@@ -36,13 +39,47 @@ def load(args):
         raise ArgumentError("one of --filepath or --directory is required.")
 
 def _load_dir(args):
-    """loads multiple files that match from a directory"""
+    """
+    loads multiple files that match from a directory
+
+    returns:
+        insert_statements : str[]
+            list of insert statements for all files found
+    """
     logger = logging.getLogger("{}.{}".format(
         __name__,
         sys._getframe().f_code.co_name)
     )
-    # TODO: for each matching files
-    # TODO: _load_file()
+    if args.product_type_id is None or args.ingest_key is None:
+        # TODO: this is probably not a hard requirement...
+        #   but I am putting it here as a safety precaution for now.
+        raise ArgumentError(
+            "--product_type_id and --ingest_key must be explicitly set if" +
+            " --directory is used."
+        )
+    else:
+        insert_statements = []  #
+        # TODO: mv id to name conversion into _validate_args?
+        product_data = get_product_data_from_id(args.product_type_id)
+        # TODO: + ingest key to argparse
+        try:
+            regex = product_data["ingest_formats"][args.ingest_key]["find_regex"]
+        except KeyError as k_err:
+            raise KeyError("no ingest_key '{}' in product {}".format(
+                args.ingest_key,
+                args.product_type_id
+            ))
+        prod_reg = re.compile(r'{}'.format(regex))
+        logger.debug("searching w/ {}...".format(regex))
+        for root, dirs, files in os.walk(args.directory):
+            for filename in files:
+                logger.debug("{}?".format(filename))
+                if prod_reg.match(filename):
+                    fpath = os.path.join(root,filename)
+                    logger.debug("load {}...".format(fpath))
+                    args.filepath = fpath
+                    insert_statements.append(_load_file(args))
+        return insert_statements
 
 def _load_file(args):
     """loads a single file"""
@@ -66,6 +103,7 @@ def _load_file(args):
             else:
                 result = cursor.execute(sql)
                 connection.commit()
+                return sql
     finally:
        connection.close()
 
