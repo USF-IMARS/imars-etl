@@ -183,7 +183,6 @@ def get_product_id(product_type_name):
     """get product id from given name"""
     return data[product_type_name]["imars_object_format"]["product_type_id"]
 
-
 def get_product_data_from_id(prod_id):
     """used to index product data by id number instead of short_name"""
     logger = logging.getLogger("{}.{}".format(
@@ -229,7 +228,6 @@ def get_imars_object_paths():
     for product_id in data:
         res[product_id] = data[product_id]["imars_object_format"]
     return res
-
 
 def get_ingest_formats():
     """

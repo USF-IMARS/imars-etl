@@ -85,9 +85,10 @@ def get_name(args, forced_basename=None):
             except KeyError as k_err:
                 args['product_type_name'] = prod_name
 
-            # logger.debug(args)
+            fullpath = prod_meta['path']+"/"+_basename
+            logger.info("formatting imars-obj path \n>>'{}'".format(fullpath))
             return args['datetime'].strftime(
-                (prod_meta['path']+"/"+_basename).format(**args)
+                (fullpath).format(**args)
             )
         else:
             logger.debug("no.")

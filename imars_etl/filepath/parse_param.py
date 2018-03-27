@@ -9,6 +9,7 @@ import re
 import os
 
 from parse import parse
+logging.getLogger("parse").setLevel(logging.WARN)
 
 from imars_etl.filepath.data import valid_pattern_vars, get_ingest_formats, get_product_id, get_ingest_format
 
@@ -87,39 +88,42 @@ def parse_all_from_filename(args):
         sys._getframe().f_code.co_name)
     )
     for pattern_name, pattern in get_ingest_formats().items():
-        # check if args.filepath matches this pattern
-        if filename_matches_pattern(args.filepath, pattern):
-            logger.debug('matches pattern "{}"'.format(pattern))
-
+        try:
             filename = args.filepath
             # switch to basepath if path info not part of pattern
             if "/" in filename and "/" not in pattern:
                 filename = os.path.basename(filename)
 
+            # logger.debug('trying pattern "{}"'.format(pattern))
+            logger.debug("\n{}\n\t=?=\n{}".format(filename,pattern))
+
             # logger.debug('args:\n{}'.format(args))
 
             product_type_name, ingest_key = pattern_name.split('.')  # TODO: get these from args
-            setattr(args, 'product_type_name', product_type_name)
-            setattr(args, 'product_type_id',   get_product_id(product_type_name))
             path_fmt_str = get_ingest_format(product_type_name, ingest_key)
             path_fmt_str = _replace_strftime_dirs(path_fmt_str)
-            # path_fmt_str = args.datetime.strftime(path_fmt_str)
-            logger.debug("parsing \n\t{} with \n\t{}".format(filename, path_fmt_str))
             params_parsed = parse(path_fmt_str, filename).named
-            logger.info("params parsed from fname: \n\t{}".format(params_parsed))
 
+            dt = _strptime_parsed_pattern(filename, pattern, params_parsed)
+
+            logger.info("params parsed from fname: \n\t{}".format(params_parsed))
+            # NOTE: setattr LAST here, else args will get set before we know
+            #   that this filename matches the given pattern
             for param in params_parsed:
                 if param[:3] != "dt_":  # ignore these
                     val = params_parsed[param]
                     setattr(args, param, val)
                     # logger.debug('{} extracted :"{}"'.format(param, val))
 
-            dt = _strptime_parsed_pattern(filename, pattern, params_parsed)
             setattr(args, 'datetime', dt)
             setattr(args, 'time', args.datetime.isoformat())
             logger.debug('date extracted: {}'.format(args.time))
+            setattr(args, 'product_type_name', product_type_name)
+            setattr(args, 'product_type_id',   get_product_id(product_type_name))
 
             return args
+        except AttributeError as a_err:  # 'NoneType' object has no attribute 'named'
+            logger.debug("nope. caught error: \n>>>{}".format(a_err))
     else:
         logger.warn("could not match filepath to any known patterns.")
         return args
