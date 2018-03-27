@@ -159,7 +159,6 @@ def parse_param(key, strptime_filename, filename):
         logger.error("no filepath.data for key '" + key + "'")
         return None, strptime_filename
 
-# TODO: this is a duplicate of check_match?
 def filename_matches_pattern(filename, pattern):
     """ returns true if given filename matches given pattern """
     logger = logging.getLogger("{}.{}".format(

@@ -16,7 +16,7 @@ from imars_etl.filepath.parse_param import _parse_date, parse_all_from_filename
 from imars_etl.filepath.data import get_product_id
 
 
-class Test_check_match(TestCase):
+class Test_parse_param(TestCase):
 
     # tests:
     #########################

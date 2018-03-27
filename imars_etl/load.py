@@ -7,7 +7,7 @@ import re
 from argparse import ArgumentError
 
 from imars_etl import metadatabase
-from imars_etl.filepath.parse_param import parse_param, parse_all_from_filename
+from imars_etl.filepath.parse_param import parse_all_from_filename
 from imars_etl.filepath.data import get_product_data_from_id
 from imars_etl.util import dict_to_argparse_namespace
 from imars_etl.drivers.imars_objects.load import _load
@@ -155,7 +155,7 @@ def _validate_args(args):
     logger.debug("post-guess-args: " + str(args))
 
     ISO_8601_FMT="%Y-%m-%dT%H:%M:%S"
-    
+
     try:
         dt = datetime.strptime(args.time, ISO_8601_FMT)
         logger.debug("full datetime parsed")
