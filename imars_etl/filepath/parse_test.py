@@ -27,12 +27,15 @@ class Test_check_match(TestCase):
             verbose=3,
             dry_run=True,
             filepath="16FEB12162518-M1BS-057488585010_01_P003-BROWSE.JPG",
-            product_type_id=get_product_id("jpg_wv2_m1bs"),
         )
         res_args = parse_all_from_filename(test_args)
+        self.assertEqual( res_args.datetime, datetime(2016,2,12,16,25,18) )
+        self.assertEqual( res_args.idNumber, "057488585010_01" )
+        self.assertEqual( res_args.passNumber, "003" )
+        self.assertEqual( res_args.product_type_name, "jpg_wv2_m1bs" )
         self.assertEqual(
-            res_args.datetime,
-            datetime(2016,2,12,16,25,18)
+            res_args.product_type_id,
+            get_product_id("jpg_wv2_m1bs")
         )
 
     # === _parse_date
