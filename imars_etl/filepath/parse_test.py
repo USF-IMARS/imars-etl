@@ -38,6 +38,33 @@ class Test_check_match(TestCase):
             get_product_id("jpg_wv2_m1bs")
         )
 
+    def test_parse_filename_shx_wv2_p1bs(self):
+        """parse_all_from_filename on shx_wv2_p1bs *_PIXEL_SHAPE.shx """
+        test_args = MagicMock(
+            verbose=3,
+            dry_run=True,
+            filepath="16FEB12162518-P1BS-057488585010_01_P003_PIXEL_SHAPE.shx",
+        )
+        res_args = parse_all_from_filename(test_args)
+        self.assertEqual( res_args.datetime, datetime(2016,2,12,16,25,18) )
+        self.assertEqual( res_args.idNumber, "057488585010_01" )
+        self.assertEqual( res_args.passNumber, "003" )
+        self.assertEqual( res_args.product_type_name, "shx_wv2_p1bs" )
+        self.assertEqual(
+            res_args.product_type_id,
+            get_product_id("shx_wv2_p1bs")
+        )
+
+
+
+
+
+
+
+
+
+
+
     # === _parse_date
     def test_parse_date_no_args(self):
         """ _parse_date works for pattern w/ no-named-args """
