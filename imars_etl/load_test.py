@@ -29,7 +29,7 @@ class Test_load(TestCase):
                 -j '{"status":1, "area_id":1}'
         """
         test_args = MagicMock(
-            verbose=0,
+            verbose=3,
             dry_run=True,
             filepath="/fake/filepath.png",
             product_type_id=-1,
@@ -119,7 +119,8 @@ class Test_load(TestCase):
                 "filepath": "/fake/filepath.png",
                 "product_type_id": -1,
                 "time": "2018-02-26T13:00",
-                "json": '{"status":1, "area_id":1}'
+                "json": '{"status":1, "area_id":1}',
+                "verbose": 3
             })
         """
         result = load({
@@ -127,7 +128,8 @@ class Test_load(TestCase):
             "filepath": "/fake/filepath.png",
             "product_type_id": -1,
             "time": "2018-02-26T13:00",
-            "json": '{"status":1, "area_id":1}'
+            "json": '{"status":1, "area_id":1}',
+            "verbose": 3
         })
         self.assertEqual(
             result,

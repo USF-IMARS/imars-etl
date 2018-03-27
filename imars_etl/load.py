@@ -155,7 +155,7 @@ def _validate_args(args):
     logger.debug("post-guess-args: " + str(args))
 
     ISO_8601_FMT="%Y-%m-%dT%H:%M:%S"
-
+    
     try:
         dt = datetime.strptime(args.time, ISO_8601_FMT)
         logger.debug("full datetime parsed")
