@@ -12,7 +12,7 @@ except ImportError:
 from datetime import datetime
 
 # dependencies:
-from imars_etl.filepath.parse_param import _parse_date, parse_all_from_filename
+from imars_etl.filepath.parse_param import parse_all_from_filename
 from imars_etl.filepath.data import get_product_id
 
 
@@ -53,34 +53,4 @@ class Test_parse_param(TestCase):
         self.assertEqual(
             res_args.product_type_id,
             get_product_id("shx_wv2_p1bs")
-        )
-
-
-
-
-
-
-
-
-
-
-
-    # === _parse_date
-    def test_parse_date_no_args(self):
-        """ _parse_date works for pattern w/ no-named-args """
-        self.assertEqual(
-            _parse_date(
-                "wv2_2000_01_.zip",
-                "wv2_%Y_%m_.zip"
-            ).isoformat(),
-            "2000-01-01T00:00:00"
-        )
-    def test_parse_date_w_args(self):
-        """ _parse_date works for pattern w/ 1 regex named arg """
-        self.assertEqual(
-            _parse_date(
-                "wv2_2000_01_myTagHere.zip",
-                "wv2_%Y_%m_{tag}.zip"
-            ).isoformat(),
-            "2000-01-01T00:00:00"
         )
