@@ -50,47 +50,55 @@ def _load_dir(args):
         __name__,
         sys._getframe().f_code.co_name)
     )
-    if args.product_type_id is None:
+    if args.product_type_id is None and args.product_type_name is None:
         # TODO: this is probably not a hard requirement
         #   but it seems like a good safety precaution.
         raise ArgumentError(
-            "--product_type_id must be explicitly set if --directory is used."
+            "--product_type_id or --product_type_name must be" +
+            " explicitly set if --directory is used."
         )
+    elif args.product_type_id is None and args.product_type_name is not None:
+        setattr(args, "product_type_id", get_product_id(args.product_type_name))
+    elif args.product_type_id is not None and args.product_type_name is None:
+        setattr(args, "product_type_name", get_product_name(args.product_type_id))
     else:
-        insert_statements = []  #
-        # TODO: mv id to name conversion into _validate_args?
-        product_data = get_product_data_from_id(args.product_type_id)
-        if args.ingest_key is not None:
-            try:  # just the one regex
-                regex = product_data["ingest_formats"][args.ingest_key]["find_regex"]
-            except KeyError as k_err:
-                raise KeyError("no ingest_key '{}' in product {}".format(
-                    args.ingest_key,
-                    args.product_type_id
-                ))
-        elif len(product_data["ingest_formats"]) == 1:
-            # if there is only 1 ingest_format then we must use that one
-            ingest_key = product_data["ingest_formats"].keys()[0]
-            regex = product_data["ingest_formats"][ingest_key]['find_regex']
-        else:
-            # we don't know what ingest_format to use
-            raise KeyError(
-                "--ingest_key must be given for product # {}".format(
-                    args.product_type_id
-                )
-            )
+        # both given TODO: check for match?
+        pass
 
-        prod_reg = re.compile(r'{}'.format(regex))
-        logger.debug("searching w/ {}...".format(regex))
-        for root, dirs, files in os.walk(args.directory):
-            for filename in files:
-                # logger.debug("{}?".format(filename))
-                if prod_reg.match(filename):
-                    fpath = os.path.join(root,filename)
-                    logger.debug("load {}...".format(fpath))
-                    args.filepath = fpath
-                    insert_statements.append(_load_file(args))
-        return insert_statements
+    insert_statements = []  #
+    # TODO: mv id to name conversion into _validate_args?
+    product_data = get_product_data_from_id(args.product_type_id)
+    if args.ingest_key is not None:
+        try:  # just the one regex
+            regex = product_data["ingest_formats"][args.ingest_key]["find_regex"]
+        except KeyError as k_err:
+            raise KeyError("no ingest_key '{}' in product {}".format(
+                args.ingest_key,
+                args.product_type_id
+            ))
+    elif len(product_data["ingest_formats"]) == 1:
+        # if there is only 1 ingest_format then we must use that one
+        ingest_key = product_data["ingest_formats"].keys()[0]
+        regex = product_data["ingest_formats"][ingest_key]['find_regex']
+    else:
+        # we don't know what ingest_format to use
+        raise KeyError(
+            "--ingest_key must be given for product # {}".format(
+                args.product_type_id
+            )
+        )
+
+    prod_reg = re.compile(r'{}'.format(regex))
+    logger.debug("searching w/ {}...".format(regex))
+    for root, dirs, files in os.walk(args.directory):
+        for filename in files:
+            # logger.debug("{}?".format(filename))
+            if prod_reg.match(filename):
+                fpath = os.path.join(root,filename)
+                logger.debug("load {}...".format(fpath))
+                args.filepath = fpath
+                insert_statements.append(_load_file(args))
+    return insert_statements
 
 def _load_file(args):
     """loads a single file"""

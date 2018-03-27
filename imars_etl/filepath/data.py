@@ -170,26 +170,30 @@ data = {
     # }
 }
 
+def get_product_name(product_type_id):
+    """get product name from given id"""
+    logger = logging.getLogger("{}.{}".format(
+        __name__,
+        sys._getframe().f_code.co_name)
+    )
+    logger.setLevel(logging.INFO)
+    logger.debug("get_data_from_pid({})".format(product_type_id))
+    for product_short_name, product_data in data.items():
+        pid = product_data["imars_object_format"]["product_type_id"]
+        logger.debug("pid is {}?".format(pid))
+        if pid == product_type_id:
+            logger.debug("y!")
+            return product_short_name
+    else:
+        raise KeyError("product_type_id {} not found".format(prod_id))
+
 def get_product_id(product_type_name):
     """get product id from given name"""
     return data[product_type_name]["imars_object_format"]["product_type_id"]
 
 def get_product_data_from_id(prod_id):
     """used to index product data by id number instead of short_name"""
-    logger = logging.getLogger("{}.{}".format(
-        __name__,
-        sys._getframe().f_code.co_name)
-    )
-    logger.setLevel(logging.INFO)
-    logger.debug("get_data_from_pid({})".format(prod_id))
-    for product_short_name, product_data in data.items():
-        pid = product_data["imars_object_format"]["product_type_id"]
-        logger.debug("pid is {}?".format(pid))
-        if pid == prod_id:
-            logger.debug("y!")
-            return product_data
-    else:
-        raise KeyError("product_type_id {} not found".format(prod_id))
+    return data[get_product_name(prod_id)]
 
 def get_imars_object_paths():
     """
