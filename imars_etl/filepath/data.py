@@ -6,15 +6,6 @@ import logging
 import sys
 
 ISO_8601_FMT="%Y-%m-%dT%H:%M:%SZ"
-# dict containing valid values for given variables that can be used in the
-# filename patterns below.
-# NOTE: this could be removed if #3 is implemented
-valid_pattern_vars = {
-    "area": [ ],
-    "tag":       ["_",  "*", ".zip"],  # * matches any str between edge strings (not inclusive)
-    "idNumber":  ["BS-",  "*", "_P"],
-    "passNumber":["_P", "*", "."]
-}
 
 # some const strings to make reading the dict keys below easier
 INGEST_FMTS="ingest_formats"

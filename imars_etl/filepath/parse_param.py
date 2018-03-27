@@ -11,7 +11,7 @@ import os
 from parse import parse
 logging.getLogger("parse").setLevel(logging.WARN)
 
-from imars_etl.filepath.data import valid_pattern_vars, get_ingest_formats, get_product_id, get_ingest_format
+from imars_etl.filepath.data import get_ingest_formats, get_product_id, get_ingest_format
 
 STRFTIME_MAP = {
     "%a":  "{dt_a:3w}",  # Weekday as locale's abbreviated name.   |  Mon
@@ -127,80 +127,3 @@ def parse_all_from_filename(args):
     else:
         logger.warn("could not match filepath to any known patterns.")
         return args
-
-def parse_regex(key, strptime_filename, filename):
-    """
-    returns
-    ----------
-    value : str
-        value of key read from filename. `None` if failed to read
-    strptime_filename : str
-        modified filename with read in value replaced by key. Unmodified if
-        value failed to read.
-    """
-    logger = logging.getLogger("{}.{}".format(
-        __name__,
-        sys._getframe().f_code.co_name)
-    )
-    logger.setLevel(logging.INFO)
-
-    # cut out
-    escaped_pre = re.escape(valid_pattern_vars[key][0])
-    escaped_post= re.escape(valid_pattern_vars[key][2])
-    regex = (
-        escaped_pre
-        + "[^"+escaped_pre+"]+".format(key)
-        + escaped_post
-    )
-    try:
-        logger.debug("re.search({},{})".format(regex,strptime_filename))
-        regex_result = re.search(regex, strptime_filename)
-        # logger.debug("regex_result: " + str(regex_result))
-        matched_string = regex_result.group(0)
-        strptime_filename = strptime_filename.replace(
-            matched_string,
-            valid_pattern_vars[key][0] + key + valid_pattern_vars[key][2]
-        )
-        # remove pre & post strings:
-        matched_string = matched_string.replace(valid_pattern_vars[key][0],"")
-        matched_string = matched_string.replace(valid_pattern_vars[key][2],"")
-        logger.debug("matched_str : " + matched_string)
-        return matched_string, strptime_filename
-    except AttributeError as a_err:  # no regex match
-        logger.debug(
-            "no match for '" + key + "'"
-            + " regex '" + regex + "'"
-            + " in filename '" + filename + "'"
-        )
-        return None, strptime_filename
-
-def parse_list(key, strptime_filename, filename):
-    """
-    returns
-    ----------
-    value : str
-        value of key read from filename. `None` if failed to read
-    strptime_filename : str
-        modified filename with read in value replaced by key. Unmodified if
-        value failed to read.
-    """
-    logger = logging.getLogger("{}.{}".format(
-        __name__,
-        sys._getframe().f_code.co_name)
-    )
-    # check for each of the possible valid values
-    for valid_pattern in valid_pattern_vars[key]:
-        logger.debug("pattern test: " + valid_pattern)
-        if valid_pattern in filename:
-            strptime_filename = strptime_filename.replace(
-                valid_pattern,
-                key
-            )
-            return valid_pattern, strptime_filename
-    else:
-        logger.info(
-            "value read from filename for " + key
-            + " is not in list of valid keys: "
-            + str(valid_pattern_vars[key])
-        )
-        return None, strptime_filename
