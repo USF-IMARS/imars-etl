@@ -159,9 +159,9 @@ class Test_load(TestCase):
             + '"/srv/imars-objects/extra_data/WV02/2016.02/WV02_20160212162518_0000000000000000_16Feb12162518-M1BS-057522945010_P002.att")'
         )
 
-    def test_load_directory_att_m1bs(self):
+    def test_load_directory_by_product_type_id_number(self):
         """
-            CLI load directory of att_wv2_m1bs
+            CLI load directory using product_type_id
         """
         FAKE_TEST_DIR="/fake/dir/of/files/w/parseable/dates"
         with patch('os.walk') as mockwalk:
@@ -181,6 +181,42 @@ class Test_load(TestCase):
                 directory=FAKE_TEST_DIR,
                 time=None,
                 product_type_id=-1,
+                ingest_key="file_w_date"
+            )
+            self.assertEqual( load(test_args), [
+                'INSERT INTO file'
+                + ' (date_time,product_type_id,filepath)'
+                + ' VALUES ("1999-01-01T00:00:00",-1,'
+                + '"/srv/imars-objects/test_test_test/simple_file_with_no_args.txt")',
+                'INSERT INTO file'
+                + ' (date_time,product_type_id,filepath)'
+                + ' VALUES ("2018-01-01T00:00:00",-1,'
+                + '"/srv/imars-objects/test_test_test/simple_file_with_no_args.txt")',
+            ])
+
+    def test_load_directory_short_name(self):
+        """
+            CLI load dir using product_type_name (short_name)
+        """
+        FAKE_TEST_DIR="/fake/dir/of/files/w/parseable/dates"
+        with patch('os.walk') as mockwalk:
+            mockwalk.return_value = [(
+                FAKE_TEST_DIR,  # root
+                (  # dirs
+                ),
+                (  # files
+                    "file_w_date_1999.txt",
+                    "file_w_date_2018.txt",
+                ),
+            )]
+            test_args = MagicMock(
+                verbose=3,
+                dry_run=True,
+                filepath=None,
+                directory=FAKE_TEST_DIR,
+                time=None,
+                product_type_name="test_test_test",
+                product_type_id=None,
                 ingest_key="file_w_date"
             )
             self.assertEqual( load(test_args), [

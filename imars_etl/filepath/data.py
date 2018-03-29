@@ -185,7 +185,7 @@ def get_product_name(product_type_id):
             logger.debug("y!")
             return product_short_name
     else:
-        raise KeyError("product_type_id {} not found".format(prod_id))
+        raise KeyError("product_type_id {} not found".format(product_type_id))
 
 def get_product_id(product_type_name):
     """get product id from given name"""
