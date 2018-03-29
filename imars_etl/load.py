@@ -4,7 +4,6 @@ import sys
 import json
 import os
 import re
-from argparse import ArgumentError
 
 from imars_etl import metadatabase
 from imars_etl.filepath.parse_param import parse_all_from_filename
@@ -36,7 +35,7 @@ def load(args):
     else:
         # NOTE: this should be thrown by the arparse arg group before getting
         #   here, but we throw here for the python API.
-        raise ArgumentError("one of --filepath or --directory is required.")
+        raise ValueError("one of --filepath or --directory is required.")
 
 def _load_dir(args):
     """
@@ -53,7 +52,7 @@ def _load_dir(args):
     if args.product_type_id is None and args.product_type_name is None:
         # TODO: this is probably not a hard requirement
         #   but it seems like a good safety precaution.
-        raise ArgumentError(
+        raise ValueError(
             "--product_type_id or --product_type_name must be" +
             " explicitly set if --directory is used."
         )
@@ -165,11 +164,20 @@ def _validate_args(args):
     ISO_8601_FMT="%Y-%m-%dT%H:%M:%S"
 
     try:
-        dt = datetime.strptime(args.time, ISO_8601_FMT)
-        logger.debug("full datetime parsed")
-    except ValueError as v_err:
-        dt = datetime.strptime(args.time, ISO_8601_FMT[:-3])
-        logger.debug("partial datetime parsed (no seconds)")
+        try:
+            dt = datetime.strptime(args.time, ISO_8601_FMT)
+            logger.debug("full datetime parsed")
+        except ValueError as v_err:
+            dt = datetime.strptime(args.time, ISO_8601_FMT[:-3])
+            logger.debug("partial datetime parsed (no seconds)")
+    except TypeError as t_err:
+        logger.error("{}\n\n".format(t_err))
+        raise ValueError(
+            "Could not determine datetime for product(s)." +
+            " Please input more information by using more arguments" +
+            " or try to debug using super-verbose mode -vvv."
+        )
+
     setattr(args, "datetime", dt)
 
     return args
