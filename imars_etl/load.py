@@ -164,12 +164,11 @@ def _validate_args(args):
     ISO_8601_FMT="%Y-%m-%dT%H:%M:%S"
 
     try:
-        try:
-            dt = datetime.strptime(args.time, ISO_8601_FMT)
-            logger.debug("full datetime parsed")
-        except ValueError as v_err:
-            dt = datetime.strptime(args.time, ISO_8601_FMT[:-3])
-            logger.debug("partial datetime parsed (no seconds)")
+        dt = datetime.strptime(args.time, ISO_8601_FMT)
+        logger.debug("full datetime parsed")
+    except ValueError as v_err:
+        dt = datetime.strptime(args.time, ISO_8601_FMT[:-3])
+        logger.debug("partial datetime parsed (no seconds)")
     except TypeError as t_err:
         logger.error("{}\n\n".format(t_err))
         raise ValueError(
