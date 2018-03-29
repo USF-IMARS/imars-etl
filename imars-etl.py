@@ -66,12 +66,17 @@ def parse_args(argvs):
     required_named_args.add_argument("-d", "--directory",
         help="path to directory of files to be loaded"
     )
+    # args required only with --directory
+    parser_load.add_argument("-n",
+        "--product_type_name", "--name", "--short_name",
+        help="product type id short_name"
+    )
+    parser_load.add_argument("-p", "--product_type_id", "--pid",
+    help="product type id (pid)", type=int
+    )
     # optional args
     parser_load.add_argument("-t", "--time",
         help="ISO8601-formatted date-time string of product"
-    )
-    parser_load.add_argument("-p", "--product_type_id",
-        help="product type id", type=int
     )
     parser_load.add_argument("-i", "--ingest_key",
         help="explicitly identifies what ingest format to expect"
