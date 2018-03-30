@@ -48,45 +48,8 @@ def _load_dir(args):
         __name__,
         sys._getframe().f_code.co_name)
     )
-    if args.product_type_id is None and args.product_type_name is None:
-        # TODO: this is probably not a hard requirement
-        #   but it seems like a good safety precaution.
-        raise ValueError(
-            "--product_type_id or --product_type_name must be" +
-            " explicitly set if --directory is used."
-        )
-    elif args.product_type_id is None and args.product_type_name is not None:
-        setattr(args, "product_type_id", get_product_id(args.product_type_name))
-    elif args.product_type_id is not None and args.product_type_name is None:
-        setattr(args, "product_type_name", get_product_name(args.product_type_id))
-    else:
-        # both given TODO: check for match?
-        pass
-
     insert_statements = []  #
-    # TODO: mv id to name conversion into _validate_args?
-    product_data = get_product_data_from_id(args.product_type_id)
-    if args.ingest_key is not None:
-        try:  # use the one given fmt string
-            fmt = product_data["ingest_formats"][args.ingest_key]["path_format"]
-        except KeyError as k_err:
-            raise KeyError("no ingest_key '{}' in product {}".format(
-                args.ingest_key,
-                args.product_type_id
-            ))
-    elif len(product_data["ingest_formats"]) == 1:
-        # if there is only 1 ingest_format then we must use that one
-        ingest_key = product_data["ingest_formats"].keys()[0]
-        fmt = product_data["ingest_formats"][ingest_key]['path_format']
-    else:
-        # we don't know what ingest_format to use
-        raise KeyError(
-            "--ingest_key must be given for product # {}".format(
-                args.product_type_id
-            )
-        )
-
-    logger.debug("searching w/ '{}'...".format(fmt))
+    # logger.debug("searching w/ '{}'...".format(fmt))
     for root, dirs, files in os.walk(args.directory):
         for filename in files:
             # try:
@@ -155,6 +118,39 @@ def _validate_args(args):
         sys._getframe().f_code.co_name)
     )
     logger.setLevel(logging.INFO)
+
+    # === validate product name and id
+    if (  # require name or id for directory loading
+            getattr(args, 'directory', None) is not None and
+            getattr(args, 'product_type_id', None) is None and
+            getattr(args, 'product_type_name', None) is None
+        ):
+        # NOTE: this is probably not a hard requirement
+        #   but it seems like a good safety precaution.
+        raise ValueError(
+            "--product_type_id or --product_type_name must be" +
+            " explicitly set if --directory is used."
+        )
+    elif (  # fill id from name
+        getattr(args, 'product_type_id', None) is None and
+        getattr(args, 'product_type_name', None) is not None
+    ):
+        setattr(args, "product_type_id", get_product_id(args.product_type_name))
+    elif (  # fill name from id
+        getattr(args, 'product_type_id', None) is not None and
+        getattr(args, 'product_type_name', None) is None
+    ):
+        setattr(args, "product_type_name", get_product_name(args.product_type_id))
+    else:
+        pass
+        # TODO: ensure that given id and name match
+        # assert(
+        #     args.product_type_id == args.get_product_id(args.product_type_name)
+        # )
+
+    product_data = get_product_data_from_id(args.product_type_id)
+
+
     logger.debug("pre-guess-args : " + str(args))
     args = parse_all_from_filename(args)
     logger.debug("post-guess-args: " + str(args))

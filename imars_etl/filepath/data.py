@@ -235,9 +235,27 @@ def get_ingest_formats():
             ] = get_ingest_format(product_id, ingest_id)
     return res
 
-def get_ingest_format(short_name, ingest_name):
+def get_ingest_format(short_name, ingest_name=None):
     """
     returns ingest path format string for given product short_name and
     ingest_name.
     """
-    return data[short_name]["ingest_formats"][ingest_name]["path_format"]
+    if ingest_name is not None:
+        try:  # use the one given fmt string
+            return data[short_name]["ingest_formats"][ingest_name]["path_format"]
+        except KeyError as k_err:
+            raise KeyError("no ingest_key '{}' in product {}".format(
+                ingest_name,
+                short_name
+            ))
+    elif len(data[short_name]["ingest_formats"]) == 1:
+        # if there is only 1 ingest_format then we must use that one
+        ingest_key = data[short_name]["ingest_formats"].keys()[0]
+        return data[short_name]["ingest_formats"][ingest_key]['path_format']
+    else:
+        # we don't know what ingest_format to use
+        raise KeyError(
+            "--ingest_key must be given for product # {}".format(
+                args.product_type_id
+            )
+        )

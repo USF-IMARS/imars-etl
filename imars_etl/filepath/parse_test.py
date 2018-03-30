@@ -27,6 +27,8 @@ class Test_parse_param(TestCase):
             verbose=3,
             dry_run=True,
             filepath="16FEB12162518-M1BS-057488585010_01_P003-BROWSE.JPG",
+            product_type_id=None,
+            product_type_name=None,
         )
         res_args = parse_all_from_filename(test_args)
         self.assertEqual( res_args.datetime, datetime(2016,2,12,16,25,18) )
@@ -44,6 +46,8 @@ class Test_parse_param(TestCase):
             verbose=3,
             dry_run=True,
             filepath="16FEB12162518-P1BS-057488585010_01_P003_PIXEL_SHAPE.shx",
+            product_type_id=None,
+            product_type_name=None
         )
         res_args = parse_all_from_filename(test_args)
         self.assertEqual( res_args.datetime, datetime(2016,2,12,16,25,18) )
