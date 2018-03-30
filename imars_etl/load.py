@@ -3,7 +3,6 @@ import logging
 import sys
 import json
 import os
-import re
 
 from imars_etl import metadatabase
 from imars_etl.filepath.parse_param import parse_all_from_filename
@@ -68,8 +67,8 @@ def _load_dir(args):
     # TODO: mv id to name conversion into _validate_args?
     product_data = get_product_data_from_id(args.product_type_id)
     if args.ingest_key is not None:
-        try:  # just the one regex
-            regex = product_data["ingest_formats"][args.ingest_key]["find_regex"]
+        try:  # use the one given fmt string
+            fmt = product_data["ingest_formats"][args.ingest_key]["path_format"]
         except KeyError as k_err:
             raise KeyError("no ingest_key '{}' in product {}".format(
                 args.ingest_key,
@@ -78,7 +77,7 @@ def _load_dir(args):
     elif len(product_data["ingest_formats"]) == 1:
         # if there is only 1 ingest_format then we must use that one
         ingest_key = product_data["ingest_formats"].keys()[0]
-        regex = product_data["ingest_formats"][ingest_key]['find_regex']
+        fmt = product_data["ingest_formats"][ingest_key]['path_format']
     else:
         # we don't know what ingest_format to use
         raise KeyError(
@@ -87,16 +86,15 @@ def _load_dir(args):
             )
         )
 
-    prod_reg = re.compile(r'{}'.format(regex))
-    logger.debug("searching w/ {}...".format(regex))
+    logger.debug("searching w/ '{}'...".format(fmt))
     for root, dirs, files in os.walk(args.directory):
         for filename in files:
-            # logger.debug("{}?".format(filename))
-            if prod_reg.match(filename):
-                fpath = os.path.join(root,filename)
-                logger.debug("load {}...".format(fpath))
-                args.filepath = fpath
-                insert_statements.append(_load_file(args))
+            # try:
+            fpath = os.path.join(root,filename)
+            logger.debug("load {}...".format(fpath))
+            args.filepath = fpath
+            insert_statements.append(_load_file(args))
+            # except
     return insert_statements
 
 def _load_file(args):

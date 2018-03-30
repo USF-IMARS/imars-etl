@@ -10,7 +10,6 @@ ISO_8601_FMT="%Y-%m-%dT%H:%M:%SZ"
 # some const strings to make reading the dict keys below easier
 INGEST_FMTS="ingest_formats"
 I_OBJ_FMT="imars_object_format"
-REGX="find_regex"
 F_FMT="path_format"
 PATH="path"
 BASE="basename"
@@ -40,7 +39,6 @@ def wv2_ingest_prod(m1bs_or_p1bs, ext, pid, up_ext=True,
     m1bs_or_p1bs = m1bs_or_p1bs.upper()
     assert(m1bs_or_p1bs=='M' or m1bs_or_p1bs=='P')
 
-    regx_rt = "[0-3][0-9][A-Z]{3}[0-9]{8}-" + m1bs_or_p1bs + "1BS-[0-9_]*_P[0-9]{3}"
     fmt_rt  = "%y%b%d%H%M%S-" + m1bs_or_p1bs + "1BS-{idNumber}_P{passNumber}"
     base_rt = "WV02_%Y%m%d%H%M%S_0000000000000000_%y%b%d%H%M%S-" + m1bs_or_p1bs + "1BS-{idNumber}_P{passNumber}"
 
@@ -49,7 +47,6 @@ def wv2_ingest_prod(m1bs_or_p1bs, ext, pid, up_ext=True,
     return {  # == short_name from imars_product_metadata db
         INGEST_FMTS: {
             ingest_id:{
-                REGX:  regx_rt + EXT,
                 F_FMT: fmt_rt  + EXT
                 # TODO: update this to work w/ #3 :
                 # "path_format": "%y%b%d%H%M%S-M1BS-{idNumber:12d}_{whatThis:2d}_P{passNumber:3d}.ATT"
@@ -64,8 +61,6 @@ def wv2_ingest_prod(m1bs_or_p1bs, ext, pid, up_ext=True,
         },
     }
 
-# NOTE: can FIND_REGEX be removed by allowing imars-etl to search the dir
-#       w/ INGESTABLE_FORMAT instead?
 data = {
     "att_wv2_m1bs": wv2_ingest_prod(
         'M', '.att', 7, ingest_id="att_from_zip_wv2_ftp_ingest"
@@ -101,7 +96,6 @@ data = {
     "zip_wv2_ftp_ingest": {
         "ingest_formats": {
             "matts_wv2_ftp_ingest":{
-                "find_regex": "/srv/imars-objects/ftp-ingest/wv2_*zip",
                 "path_format": "wv2_%Y_%m_{tag}.zip",
             }
         },
@@ -116,7 +110,6 @@ data = {
         "ingest_formats": {
             "file_w_date":{
                 "//": "used to test auto date parsing from filename",
-                "find_regex": "file_w_date_[0-9]{4}.txt",
                 "path_format": "file_w_date_%Y.txt",
             }
         },
