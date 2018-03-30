@@ -52,12 +52,13 @@ def _load_dir(args):
     # logger.debug("searching w/ '{}'...".format(fmt))
     for root, dirs, files in os.walk(args.directory):
         for filename in files:
-            # try:
-            fpath = os.path.join(root,filename)
-            logger.debug("load {}...".format(fpath))
-            args.filepath = fpath
-            insert_statements.append(_load_file(args))
-            # except
+            try:
+                fpath = os.path.join(root,filename)
+                args.filepath = fpath
+                insert_statements.append(_load_file(args))
+                logger.debug("loading {}...".format(fpath))
+            except SyntaxError as s_err:
+                logger.debug("skipping {}...".format(fpath))
     return insert_statements
 
 def _load_file(args):
