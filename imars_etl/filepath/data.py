@@ -237,8 +237,13 @@ def get_ingest_formats():
 
 def get_ingest_format(short_name, ingest_name=None):
     """
-    returns ingest path format string for given product short_name and
-    ingest_name.
+    returns
+    -------
+    ingest_fmt_str : str
+        ingest path format string for given product short_name and ingest_name.
+    ingest_name : str
+        name of the ingest_key used. Only useful if ingest_name=None,
+        else it just passes through unaltered.
     """
     if ingest_name is not None:
         try:  # use the one given fmt string

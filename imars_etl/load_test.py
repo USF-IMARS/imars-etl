@@ -23,7 +23,7 @@ class Test_load(TestCase):
         CLI basic load cmd:
             imars_etl.py load
                 --dry_run
-                -f /fake/filepath.png
+                -f /fake/path/file_w_date_2018.txt
                 -p -1
                 -p '2018-02-26T13:00'
                 -j '{"status":1, "area_id":1}'
@@ -31,8 +31,9 @@ class Test_load(TestCase):
         test_args = MagicMock(
             verbose=3,
             dry_run=True,
-            filepath="/fake/filepath.png",
+            filepath="/fake/path/file_w_date_2018.txt",
             product_type_id=-1,
+            product_type_name=None,
             time="2018-02-26T13:00",
             json='{"status":1,"area_id":1}',
             ingest_key=None
@@ -73,12 +74,13 @@ class Test_load(TestCase):
                 -f '/path/w/parseable/date/wv2_2000_06_myTag.zip'
         """
         test_args = MagicMock(
-            verbose=0,
+            verbose=3,
             dry_run=True,
             filepath="/path/w/parseable/date/wv2_2000_06_myTag.zip",
             date=None,
             json='{"area_id":1}',
             product_type_id=6,
+            product_type_name=None,
             ingest_key=None
         )
         self.assertEqual(
@@ -103,7 +105,8 @@ class Test_load(TestCase):
             filepath="/path/w/parseable/date/wv2_2000_06_myTag.zip",
             time=None,
             product_type_id=6,
-            ingest_key=None
+            ingest_key=None,
+            product_type_name=None
         )
         self.assertEqual(
             load(test_args),
@@ -119,7 +122,7 @@ class Test_load(TestCase):
         API basic imars_etl.load:
             imars_etl.load({
                 "dry_run": True,
-                "filepath": "/fake/filepath.png",
+                "filepath": "/fake/path/file_w_date_2018.txt",
                 "product_type_id": -1,
                 "time": "2018-02-26T13:00",
                 "json": '{"status":1, "area_id":1}',
@@ -128,7 +131,7 @@ class Test_load(TestCase):
         """
         result = load({
             "dry_run": True,
-            "filepath": "/fake/filepath.png",
+            "filepath": "/fake/path/file_w_date_2018.txt",
             "product_type_id": -1,
             "time": "2018-02-26T13:00",
             "json": '{"status":1, "area_id":1}',

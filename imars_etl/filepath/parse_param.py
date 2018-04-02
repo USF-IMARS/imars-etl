@@ -72,6 +72,8 @@ def _parse_from_product_type_and_filename(args, pattern, pattern_name):
     """
     Uses given pattern to parse args.filepath and fill any other arguments
     that can be inferred.
+
+    args.product_type_name must be set before calling
     """
     logger = logging.getLogger("{}.{}".format(
         __name__,
@@ -88,8 +90,9 @@ def _parse_from_product_type_and_filename(args, pattern, pattern_name):
 
     # logger.debug('args:\n{}'.format(args))
 
-    product_type_name, ingest_key = pattern_name.split('.')  # TODO: get these from args
-    path_fmt_str = get_ingest_format(product_type_name, ingest_key)
+    path_fmt_str = get_ingest_format(
+        args.product_type_name, getattr(args, 'ingest_key', None)
+    )
     path_fmt_str = _replace_strftime_dirs(path_fmt_str)
     params_parsed = parse(path_fmt_str, filename)
     if params_parsed is None:
@@ -111,8 +114,8 @@ def _parse_from_product_type_and_filename(args, pattern, pattern_name):
     setattr(args, 'datetime', dt)
     setattr(args, 'time', args.datetime.isoformat())
     logger.debug('date extracted: {}'.format(args.time))
-    setattr(args, 'product_type_name', product_type_name)
-    setattr(args, 'product_type_id',   get_product_id(product_type_name))
+    # setattr(args, 'product_type_name', args.product_type_name)
+    setattr(args, 'product_type_id',   get_product_id(args.product_type_name))
 
     return args
 
@@ -137,23 +140,28 @@ def parse_all_from_filename(args):
         __name__,
         sys._getframe().f_code.co_name)
     )
-    if (
-        getattr(args, 'product_type_name', None) is not None and
-        getattr(args, 'ingest_key', None) is not None
-    ):
+    if ( getattr(args, 'product_type_name', None) is not None ):
+        ing_key = getattr(args, 'ingest_key', None)
+        if (ing_key is None):
+            ing_fmt = get_ingest_format(args.product_type_name)
+        else:
+            ing_fmt = get_ingest_format(args.product_type_name, args.ingest_key)
+
         args = _parse_from_product_type_and_filename(
             args,
-            get_ingest_format(args.product_type_name, args.ingest_key),
-            '{}.{}'.format(args.product_type_name, args.ingest_key)
+            ing_fmt,
+            '{}.{}'.format(args.product_type_name, ing_key)
         )
         return args
     else:  # try all patterns
         for pattern_name, pattern in get_ingest_formats().items():
             try:
+                setattr(args, 'product_type_name', pattern_name.split(".")[0])
                 args = _parse_from_product_type_and_filename(args, pattern, pattern_name)
                 return args
             except SyntaxError as s_err:  # filepath does not match
                 logger.debug("nope. caught error: \n>>>{}".format(s_err))
+                setattr(args, 'product_type_name', None)
         else:
             logger.warn("could not match filepath to any known patterns.")
             return args

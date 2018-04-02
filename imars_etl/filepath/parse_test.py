@@ -29,6 +29,7 @@ class Test_parse_param(TestCase):
             filepath="16FEB12162518-M1BS-057488585010_01_P003-BROWSE.JPG",
             product_type_id=None,
             product_type_name=None,
+            ingest_key=None,
         )
         res_args = parse_all_from_filename(test_args)
         self.assertEqual( res_args.datetime, datetime(2016,2,12,16,25,18) )
@@ -47,7 +48,8 @@ class Test_parse_param(TestCase):
             dry_run=True,
             filepath="16FEB12162518-P1BS-057488585010_01_P003_PIXEL_SHAPE.shx",
             product_type_id=None,
-            product_type_name=None
+            product_type_name=None,
+            ingest_key=None
         )
         res_args = parse_all_from_filename(test_args)
         self.assertEqual( res_args.datetime, datetime(2016,2,12,16,25,18) )
@@ -58,3 +60,21 @@ class Test_parse_param(TestCase):
             res_args.product_type_id,
             get_product_id("shx_wv2_p1bs")
         )
+
+    def test_guess_ingest_key(self):
+        """parse_all_from_filename can guess ingest_key if only 1 option"""
+        test_args = MagicMock(
+            verbose=3,
+            dry_run=True,
+            filepath="file_w_date_1997.txt",
+            product_type_id=None,
+            product_type_name="test_test_test",
+            ingest_key=None
+        )
+        res_args = parse_all_from_filename(test_args)
+        self.assertEqual( res_args.datetime, datetime(1997,1,1))
+        self.assertEqual(
+            res_args.product_type_id,
+            get_product_id("test_test_test")
+        )
+        self.assertEqual(res_args.ingest_key, "file_w_date")
