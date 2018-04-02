@@ -10,6 +10,7 @@ from imars_etl.load import load
 from imars_etl.extract import extract
 
 def parse_args(argvs):
+    print(argvs)
     # =========================================================================
     # === set up arguments
     # =========================================================================

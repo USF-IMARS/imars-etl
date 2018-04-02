@@ -12,6 +12,7 @@ except ImportError:
 
 # dependencies:
 from imars_etl.load import load
+from imars_etl.cli import parse_args
 
 class Test_load(TestCase):
 
@@ -28,16 +29,15 @@ class Test_load(TestCase):
                 -p '2018-02-26T13:00'
                 -j '{"status":1, "area_id":1}'
         """
-        test_args = MagicMock(
-            verbose=3,
-            dry_run=True,
-            filepath="/fake/path/file_w_date_2018.txt",
-            product_type_id=-1,
-            product_type_name=None,
-            time="2018-02-26T13:00",
-            json='{"status":1,"area_id":1}',
-            ingest_key=None
-        )
+        test_args = parse_args([
+            '-vvv',
+            'load',
+            '--dry_run',
+            '-f', "/fake/path/file_w_date_2018.txt",
+            '-p', '-1',
+            '-t', "2018-02-26T13:00",
+            '-j', '{"status":1,"area_id":1}',
+        ])
         self.assertEqual(
             load(test_args),
             'INSERT INTO file'
@@ -54,14 +54,14 @@ class Test_load(TestCase):
                 -j '{"area_id":1}'
                 -f '/my/path/without/a/date/in.it'
         """
-        test_args = MagicMock(
-            verbose=0,
-            dry_run=True,
-            filepath="/my/path/without/a/date/in.it",
-            date=None,
-            json='{"area_id":1}',
-            product_type_id=6
-        )
+        test_args = parse_args([
+            '-vvv',
+            'load',
+            '--dry_run',
+            '-f', "/my/path/without/a/date/in.it",
+            '-j', '{"area_id":1}',
+            '-p', '6'
+        ])
         self.assertRaises(Exception, load, test_args)
 
     def test_load_missing_date_guessable(self):
@@ -73,16 +73,14 @@ class Test_load(TestCase):
                 -p 6
                 -f '/path/w/parseable/date/wv2_2000_06_myTag.zip'
         """
-        test_args = MagicMock(
-            verbose=3,
-            dry_run=True,
-            filepath="/path/w/parseable/date/wv2_2000_06_myTag.zip",
-            date=None,
-            json='{"area_id":1}',
-            product_type_id=6,
-            product_type_name=None,
-            ingest_key=None
-        )
+        test_args = parse_args([
+            '-vvv',
+            'load',
+            '--dry_run',
+            '-f', "/path/w/parseable/date/wv2_2000_06_myTag.zip",
+            '-j', '{"area_id":1}',
+            '-p', '6',
+        ])
         self.assertEqual(
             load(test_args),
             'INSERT INTO file'
@@ -99,15 +97,13 @@ class Test_load(TestCase):
                 -p 6
                 -f '/path/w/parseable/date/wv2_2000_06_myTag.zip'
         """
-        test_args = MagicMock(
-            verbose=3,
-            dry_run=True,
-            filepath="/path/w/parseable/date/wv2_2000_06_myTag.zip",
-            time=None,
-            product_type_id=6,
-            ingest_key=None,
-            product_type_name=None
-        )
+        test_args = parse_args([
+            '-vvv',
+            'load',
+            '--dry_run',
+            '-f', "/path/w/parseable/date/wv2_2000_06_myTag.zip",
+            '-p', '6',
+        ])
         self.assertEqual(
             load(test_args),
             'INSERT INTO file'
@@ -180,16 +176,14 @@ class Test_load(TestCase):
                     "file_w_date_2018.txt",
                 ),
             )]
-            test_args = MagicMock(
-                verbose=3,
-                dry_run=True,
-                filepath=None,
-                directory=FAKE_TEST_DIR,
-                time=None,
-                product_type_id=-1,
-                product_type_name=None,
-                ingest_key="file_w_date"
-            )
+            test_args = parse_args([
+                '-vvv',
+                'load',
+                '--dry_run',
+                '-d', FAKE_TEST_DIR,
+                '-p', '-1',
+                '-i', "file_w_date"
+            ])
             self.assertEqual( load(test_args), [
                 'INSERT INTO file'
                 + ' (date_time,product_type_id,filepath)'
@@ -216,16 +210,14 @@ class Test_load(TestCase):
                     "file_w_date_2018.txt",
                 ),
             )]
-            test_args = MagicMock(
-                verbose=3,
-                dry_run=True,
-                filepath=None,
-                directory=FAKE_TEST_DIR,
-                time=None,
-                product_type_name="test_test_test",
-                product_type_id=None,
-                ingest_key="file_w_date"
-            )
+            test_args = parse_args([
+                '-vvv',
+                'load',
+                '--dry_run',
+                '-d', FAKE_TEST_DIR,
+                '-n', "test_test_test",
+                '-i', "file_w_date"
+            ])
             self.assertEqual( load(test_args), [
                 'INSERT INTO file'
                 + ' (date_time,product_type_id,filepath)'
@@ -256,16 +248,14 @@ class Test_load(TestCase):
                     "my-fake_file.name.THAT_does_not-match_anyKnownFormat.EXTEN"
                 ),
             )]
-            test_args = MagicMock(
-                verbose=3,
-                dry_run=True,
-                filepath=None,
-                directory=FAKE_TEST_DIR,
-                time=None,
-                product_type_name="test_test_test",
-                product_type_id=None,
-                ingest_key="file_w_date"
-            )
+            test_args = parse_args([
+                '-vvv',
+                'load',
+                '--dry_run',
+                '-d', FAKE_TEST_DIR,
+                '-n', "test_test_test",
+                '-i', "file_w_date"
+            ])
             self.assertEqual( load(test_args), [
                 'INSERT INTO file'
                 + ' (date_time,product_type_id,filepath)'

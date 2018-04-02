@@ -14,6 +14,7 @@ from datetime import datetime
 # dependencies:
 from imars_etl.filepath.parse_param import parse_all_from_filename
 from imars_etl.filepath.data import get_product_id
+from imars_etl.cli import parse_args
 
 
 class Test_parse_param(TestCase):
@@ -23,14 +24,12 @@ class Test_parse_param(TestCase):
     # === parse_all_from_filename
     def test_parse_filename_browse_jpg(self):
         """parse_all_from_filename on jpg_wv2_m1bs *-BROWSE.jpg """
-        test_args = MagicMock(
-            verbose=3,
-            dry_run=True,
-            filepath="16FEB12162518-M1BS-057488585010_01_P003-BROWSE.JPG",
-            product_type_id=None,
-            product_type_name=None,
-            ingest_key=None,
-        )
+        test_args = parse_args([
+            '-vvv',
+            'load',
+            '--dry_run',
+            '-f', "16FEB12162518-M1BS-057488585010_01_P003-BROWSE.JPG",
+        ])
         res_args = parse_all_from_filename(test_args)
         self.assertEqual( res_args.datetime, datetime(2016,2,12,16,25,18) )
         self.assertEqual( res_args.idNumber, "057488585010_01" )
@@ -43,14 +42,12 @@ class Test_parse_param(TestCase):
 
     def test_parse_filename_shx_wv2_p1bs(self):
         """parse_all_from_filename on shx_wv2_p1bs *_PIXEL_SHAPE.shx """
-        test_args = MagicMock(
-            verbose=3,
-            dry_run=True,
-            filepath="16FEB12162518-P1BS-057488585010_01_P003_PIXEL_SHAPE.shx",
-            product_type_id=None,
-            product_type_name=None,
-            ingest_key=None
-        )
+        test_args = parse_args([
+            '-vvv',
+            'load',
+            '--dry_run',
+            '-f', "16FEB12162518-P1BS-057488585010_01_P003_PIXEL_SHAPE.shx"
+        ])
         res_args = parse_all_from_filename(test_args)
         self.assertEqual( res_args.datetime, datetime(2016,2,12,16,25,18) )
         self.assertEqual( res_args.idNumber, "057488585010_01" )
@@ -63,14 +60,13 @@ class Test_parse_param(TestCase):
 
     def test_guess_ingest_key(self):
         """parse_all_from_filename can guess ingest_key if only 1 option"""
-        test_args = MagicMock(
-            verbose=3,
-            dry_run=True,
-            filepath="file_w_date_1997.txt",
-            product_type_id=None,
-            product_type_name="test_test_test",
-            ingest_key=None
-        )
+        test_args = parse_args([
+            '-vvv',
+            'load',
+            '--dry_run',
+            '-f', "file_w_date_1997.txt",
+            '-n', "test_test_test",
+        ])
         res_args = parse_all_from_filename(test_args)
         self.assertEqual( res_args.datetime, datetime(1997,1,1))
         self.assertEqual(
