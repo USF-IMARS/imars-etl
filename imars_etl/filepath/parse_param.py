@@ -108,17 +108,30 @@ def _parse_from_product_type_and_filename(args, pattern, pattern_name):
     for param in params_parsed:
         if param[:3] != "dt_":  # ignore these
             val = params_parsed[param]
-            setattr(args, param, val)
+            args = setattr_unless_exists(args, param, val)
             # logger.debug('{} extracted :"{}"'.format(param, val))
 
-    setattr(args, 'datetime', dt)
-    setattr(args, 'time', args.datetime.isoformat())
+    args = setattr_unless_exists(args, 'datetime', dt)
+    args = setattr_unless_exists(args, 'time', args.datetime.isoformat())
     logger.debug('date extracted: {}'.format(args.time))
     # setattr(args, 'product_type_name', args.product_type_name)
-    setattr(args, 'product_type_id',   get_product_id(args.product_type_name))
+    args = setattr_unless_exists(
+        args, 'product_type_id',   get_product_id(args.product_type_name)
+    )
 
     return args
 
+def setattr_unless_exists(args, key, val):
+    """ sets args.key with val unless args.key already exists """
+    logger = logging.getLogger("{}.{}".format(
+        __name__,
+        sys._getframe().f_code.co_name)
+    )
+    logger.debug("args.{}\t:{}".format(key,getattr(args,key,None)))
+    if getattr(args, key, None) is None:
+        logger.debug("\t|-> {}".format(val))
+        setattr(args, key, val)
+    return args
 
 def parse_all_from_filename(args):
     """
