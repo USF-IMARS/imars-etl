@@ -3,6 +3,7 @@ import logging
 import sys
 import json
 import os
+import copy
 
 from imars_etl import metadatabase
 from imars_etl.filepath.parse_param import parse_all_from_filename
@@ -50,6 +51,7 @@ def _load_dir(args):
     )
     insert_statements = []  #
     # logger.debug("searching w/ '{}'...".format(fmt))
+    orig_args = copy.deepcopy(args)
     for root, dirs, files in os.walk(args.directory):
         for filename in files:
             try:
@@ -57,6 +59,7 @@ def _load_dir(args):
                 args.filepath = fpath
                 insert_statements.append(_load_file(args))
                 logger.debug("loading {}...".format(fpath))
+                args = copy.deepcopy(orig_args)  # reset args
             except SyntaxError as s_err:
                 logger.debug("skipping {}...".format(fpath))
     return insert_statements
