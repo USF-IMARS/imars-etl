@@ -15,7 +15,7 @@ except ImportError:
 from datetime import datetime
 
 # dependencies:
-from imars_etl.drivers.imars_objects.load import _load
+from imars_etl.drivers.imars_objects.load import load_file
 
 class Test_imars_obj_load(TestCase):
 
@@ -38,6 +38,6 @@ class Test_imars_obj_load(TestCase):
             "tag": "RB2"
         }
         self.assertEqual(
-            _load(test_args),
+            load_file(test_args),
             '/srv/imars-objects/zip_wv2_ftp_ingest/wv2_2017_03_RB2.zip'
         )

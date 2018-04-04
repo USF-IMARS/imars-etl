@@ -6,11 +6,12 @@ import errno
 
 from imars_etl.drivers.imars_objects.satfilename import satfilename
 
-def _load(args):
+def load_file(args):
     logger = logging.getLogger("{}.{}".format(
         __name__,
         sys._getframe().f_code.co_name)
     )
+    # logger.debug('_load(args)| args=\n\t{}'.format(args))
     ul_target = satfilename.get_name(args)
     logger.debug(["mv", args['filepath'], ul_target])
 

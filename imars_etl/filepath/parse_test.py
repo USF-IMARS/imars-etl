@@ -68,7 +68,7 @@ class Test_parse_param(TestCase):
             '-n', "test_test_test",
         ])
         res_args = parse_all_from_filename(test_args)
-        self.assertEqual( res_args.datetime, datetime(1997,1,1))
+        self.assertEqual( res_args.datetime, datetime(1997,1,1) )
         self.assertEqual(
             res_args.product_type_id,
             get_product_id("test_test_test")
