@@ -8,6 +8,7 @@ import os
 
 from imars_etl.load import load
 from imars_etl.extract import extract
+from imars_etl.get_metadata import get_metadata
 
 def parse_args(argvs):
     # print(argvs)
@@ -49,7 +50,17 @@ def parse_args(argvs):
     parser_extract.set_defaults(func=extract)
     parser_extract.add_argument("sql",
         help="SQL `WHERE _____` style selector string."
+    )  # NOTE: same as get_metadata.sql
+
+    # === get_metadata
+    parser_get_metadata = subparsers.add_parser(
+        'get_metadata',
+        help="prints json-formatted metadata for first entry in given args.sql"
     )
+    parser_get_metadata.set_defaults(func=get_metadata)
+    parser_get_metadata.add_argument("sql",
+        help="SQL `WHERE _____` style selector string."
+    )  # NOTE: same as extract.sql
 
     # === load
     parser_load = subparsers.add_parser(
