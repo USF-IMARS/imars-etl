@@ -8,6 +8,7 @@ import os
 
 from imars_etl.load import load
 from imars_etl.extract import extract
+from imars_etl.id_lookup import id_lookup
 from imars_etl.get_metadata import get_metadata
 
 def parse_args(argvs):
@@ -61,6 +62,20 @@ def parse_args(argvs):
     parser_get_metadata.add_argument("sql",
         help="SQL `WHERE _____` style selector string."
     )  # NOTE: same as extract.sql
+
+    # === id_lookup
+    parser_id_lookup = subparsers.add_parser(
+        'id_lookup',
+        help="translates between numeric id numbers & short names"
+    )
+    parser_id_lookup.set_defaults(func=id_lookup)
+
+    parser_id_lookup.add_argument( "table",
+        help="name of the table we use (eg: area, product, status)"
+    )
+    parser_id_lookup.add_argument( "value",
+        help="id # or short_name to translate."
+    )
 
     # === load
     parser_load = subparsers.add_parser(

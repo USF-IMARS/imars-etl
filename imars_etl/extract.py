@@ -3,10 +3,7 @@ import sys
 
 from imars_etl import metadatabase
 from imars_etl.util import dict_to_argparse_namespace
-
-class EXIT_STATUS(object):
-    NO_MATCHING_FILES = 7
-    MULTIPLE_MATCH = 6
+from imars_etl.util.exit_status import EXIT_STATUS
 
 def extract(args):
     """
