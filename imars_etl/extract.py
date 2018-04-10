@@ -27,5 +27,5 @@ def extract(args):
     # NOTE: currently this just gives the path because we assume:
     #   1. that the path is in /srv/imars-objects
     #   2. that the system is set up to access /srv/imars-objects
-    print result
+    print(result)
     return result
