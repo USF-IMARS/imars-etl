@@ -2,7 +2,6 @@ import logging
 import sys
 
 from imars_etl.util import dict_to_argparse_namespace, get_sql_result
-from imars_etl.util.exit_status import EXIT_STATUS
 
 def id_lookup(args):
     """
