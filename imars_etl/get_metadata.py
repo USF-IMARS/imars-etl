@@ -33,7 +33,11 @@ def get_metadata(args):
             # Read a single record
             sql = "SELECT * FROM file WHERE {}".format(args.sql)
             cursor.execute(sql)
-            result = cursor.fetchone()
+
+            if args.first is True:
+                result = [cursor.fetchone()]
+            else:
+                result = cursor.fetchmany(2)
             if (result is None):
                 logger.error("No files found matching given metadata")
                 exit(EXIT_STATUS.NO_MATCHING_FILES)

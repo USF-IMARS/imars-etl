@@ -43,15 +43,22 @@ def parse_args(argvs):
         help='addtnl help for subcommands: `projectname $subcommand -h`'
     )
 
+    # === sub-cmd arguments shared between multiple subcommands:
+    SQL = {  # "sql"
+        "help":"SQL `WHERE _____` style selector string.",
+    }
+    FIRST = {  # "--first"
+        "help": "return first result if multiple rather than exiting w/ error",
+        "action":"store_true"
+    }
+
     # === extract
     parser_extract = subparsers.add_parser(
         'extract',
         help='download file from data warehouse'
     )
     parser_extract.set_defaults(func=extract)
-    parser_extract.add_argument("sql",
-        help="SQL `WHERE _____` style selector string."
-    )  # NOTE: same as get_metadata.sql
+    parser_extract.add_argument("sql", **SQL)
 
     # === get_metadata
     parser_get_metadata = subparsers.add_parser(
@@ -59,9 +66,8 @@ def parse_args(argvs):
         help="prints json-formatted metadata for first entry in given args.sql"
     )
     parser_get_metadata.set_defaults(func=get_metadata)
-    parser_get_metadata.add_argument("sql",
-        help="SQL `WHERE _____` style selector string."
-    )  # NOTE: same as extract.sql
+    parser_get_metadata.add_argument("sql", **SQL)
+    parser_get_metadata.add_argument("--first", **FIRST)
 
     # === id_lookup
     parser_id_lookup = subparsers.add_parser(
