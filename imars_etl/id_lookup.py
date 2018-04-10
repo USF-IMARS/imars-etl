@@ -1,7 +1,7 @@
 import logging
 import sys
 
-from imars_etl.util import dict_to_argparse_namespace, print_and_return_sql
+from imars_etl.util import dict_to_argparse_namespace, get_sql_result
 from imars_etl.util.exit_status import EXIT_STATUS
 
 def id_lookup(args):
@@ -24,7 +24,7 @@ def id_lookup(args):
         column_given = 'short_name'
         column_to_get= 'id'
 
-    translation = print_and_return_sql(
+    translation = get_sql_result(
         args,
         "SELECT {} FROM {} WHERE {}={}".format(
             column_to_get,

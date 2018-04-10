@@ -4,7 +4,7 @@ import sys
 from imars_etl import metadatabase
 from imars_etl.util.exit_status import EXIT_STATUS
 
-def print_and_return_sql(args, sql):
+def get_sql_result(args, sql):
     logger = logging.getLogger("{}.{}".format(
         __name__,
         sys._getframe().f_code.co_name)
@@ -29,7 +29,6 @@ def print_and_return_sql(args, sql):
                 logger.error(result)
                 exit(EXIT_STATUS.MULTIPLE_MATCH)
             else:
-                print(result[0])
                 return result[0]
 
     finally:

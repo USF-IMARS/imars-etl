@@ -1,7 +1,7 @@
 import logging
 import sys
 
-from imars_etl.util import dict_to_argparse_namespace, print_and_return_sql
+from imars_etl.util import dict_to_argparse_namespace, get_sql_result
 
 def get_metadata(args):
     """
@@ -24,7 +24,9 @@ def get_metadata(args):
     if isinstance(args, dict):  # args can be dict
         args = dict_to_argparse_namespace(args)
 
-    return print_and_return_sql(
+    result = get_sql_result(
         args,
         "SELECT * FROM file WHERE {}".format(args.sql)
     )
+    print(result)
+    return result

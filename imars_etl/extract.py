@@ -1,7 +1,7 @@
 import logging
 import sys
 
-from imars_etl.util import dict_to_argparse_namespace, print_and_return_sql
+from imars_etl.util import dict_to_argparse_namespace, get_sql_result
 from imars_etl.util.exit_status import EXIT_STATUS
 
 def extract(args):
@@ -19,7 +19,7 @@ def extract(args):
     if isinstance(args, dict):  # args can be dict
         args = dict_to_argparse_namespace(args)
 
-    result = print_and_return_sql(
+    result = get_sql_result(
         args,
         "SELECT filepath FROM file WHERE {}".format(args.sql)
     )
@@ -28,4 +28,5 @@ def extract(args):
     # NOTE: currently this just gives the path because we assume:
     #   1. that the path is in /srv/imars-objects
     #   2. that the system is set up to access /srv/imars-objects
+    print result
     return result
