@@ -1,8 +1,7 @@
 import logging
 import sys
 
-from imars_etl import metadatabase
-from imars_etl.util import dict_to_argparse_namespace
+from imars_etl.util import dict_to_argparse_namespace, print_and_return_sql
 from imars_etl.util.exit_status import EXIT_STATUS
 
 def id_lookup(args):
@@ -25,30 +24,15 @@ def id_lookup(args):
         column_given = 'short_name'
         column_to_get= 'id'
 
-    connection = metadatabase.get_conn()
-    try:
-        with connection.cursor() as cursor:
-            # Read a single record
-            sql = "SELECT {} FROM {} WHERE {}={}".format(
-                column_to_get,
-                args.table,
-                column_given,
-                value
-            )
-            logger.debug("query:" + sql)
-            cursor.execute(sql)
-            result = cursor.fetchone()
-            if (result is None):
-                logger.error("No files found matching given metadata")
-                exit(EXIT_STATUS.NO_MATCHING_FILES)
-            elif (len(result) > 1):
-                logger.error("Too many results!")
-                logger.error(result)
-                exit(EXIT_STATUS.MULTIPLE_MATCH)
-            else:
-                translation = result[column_to_get]
-                print(translation)
-                return translation
+    translation = print_and_return_sql(
+        args,
+        "SELECT {} FROM {} WHERE {}={}".format(
+            column_to_get,
+            args.table,
+            column_given,
+            value
+        )
+    )[column_to_get]
 
-    finally:
-        connection.close()
+    print(translation)
+    return translation

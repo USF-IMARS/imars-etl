@@ -15,11 +15,11 @@ def print_and_return_sql(args, sql):
         with connection.cursor() as cursor:
             cursor.execute(sql)
 
-            if args.first is True:
+            if getattr(args, "first", False) is True:
                 result = [cursor.fetchone()]
             else:
                 result = cursor.fetchmany(2)
-                
+
             if (not result):
                 logger.error("No files found matching given metadata")
                 exit(EXIT_STATUS.NO_MATCHING_FILES)
