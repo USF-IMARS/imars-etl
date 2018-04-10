@@ -8,7 +8,7 @@ import copy
 from imars_etl.filepath.parse_param import parse_all_from_filename
 from imars_etl.filepath.data import get_product_data_from_id, get_product_id, get_product_name
 from imars_etl.util import dict_to_argparse_namespace, get_sql_result
-from imars_etl.drivers import imars_objects
+from imars_etl.drivers.imars_objects import load_file
 
 def load(args):
     """
@@ -73,7 +73,7 @@ def _load_file(args):
 
     # load file into IMaRS data warehouse
     # NOTE: _load should support args.dry_run=True also
-    new_filepath = imars_objects.load.load_file(vars(args))
+    new_filepath = load_file.load_file(vars(args))
     sql = _make_sql_insert(args)
     sql = sql.replace(args.filepath, new_filepath)
     if args.dry_run:  # test mode returns the sql string

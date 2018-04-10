@@ -281,7 +281,10 @@ class Test_load(TestCase):
             ])
 
     @patch('os.walk')
-    @patch('imars_etl.drivers.imars_objects.load.load_file')
+    @patch(
+        'imars_etl.drivers.imars_objects.load_file.load_file',
+        return_value = "/fake/imars-obj/path"
+    )
     def test_load_directory_leaves_unmatched_files_alone(self, mock_driver_load, mockwalk):
         """
             CLI load dir does not mess with files it cannot identify
@@ -312,7 +315,6 @@ class Test_load(TestCase):
             '-i', "file_w_date"
         ])
 
-        mock_driver_load.return_value = "/fake/imars-obj/path"
         res = load(test_args)
 
         # only two files match type "test_test_test", so expect 2 loads
