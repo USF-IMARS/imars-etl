@@ -1,10 +1,7 @@
 import logging
 import sys
 
-from imars_etl import metadatabase
-from imars_etl.util import dict_to_argparse_namespace
-from imars_etl.util.exit_status import EXIT_STATUS
-
+from imars_etl.util import dict_to_argparse_namespace, print_and_return_sql
 
 def get_metadata(args):
     """
@@ -27,33 +24,4 @@ def get_metadata(args):
     if isinstance(args, dict):  # args can be dict
         args = dict_to_argparse_namespace(args)
 
-    connection = metadatabase.get_conn()
-    try:
-        with connection.cursor() as cursor:
-            # Read a single record
-            sql = "SELECT * FROM file WHERE {}".format(args.sql)
-            cursor.execute(sql)
-
-            if args.first is True:
-                result = [cursor.fetchone()]
-            else:
-                result = cursor.fetchmany(2)
-            if (result is None):
-                logger.error("No files found matching given metadata")
-                exit(EXIT_STATUS.NO_MATCHING_FILES)
-            elif (len(result) > 1):
-                # TODO: request more info from user
-                logger.error("Too many results!")
-                logger.error(result)
-                exit(EXIT_STATUS.MULTIPLE_MATCH)
-            else:
-                # TODO: download & then print a path to where the file can be
-                # accessed on the local machine.
-                # NOTE: currently this just gives the path because we assume:
-                #   1. that the path is in /srv/imars-objects
-                #   2. that the system is set up to access /srv/imars-objects
-                print(result)
-                return result
-
-    finally:
-        connection.close()
+    print_and_return_sql(args, "SELECT * FROM file WHERE {}".format(args.sql))
