@@ -59,6 +59,7 @@ def parse_args(argvs):
     )
     parser_extract.set_defaults(func=extract)
     parser_extract.add_argument("sql", **SQL)
+    parser_extract.add_argument("--first", **FIRST)
 
     # === get_metadata
     parser_get_metadata = subparsers.add_parser(

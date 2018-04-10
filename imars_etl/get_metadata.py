@@ -24,4 +24,7 @@ def get_metadata(args):
     if isinstance(args, dict):  # args can be dict
         args = dict_to_argparse_namespace(args)
 
-    print_and_return_sql(args, "SELECT * FROM file WHERE {}".format(args.sql))
+    return print_and_return_sql(
+        args,
+        "SELECT * FROM file WHERE {}".format(args.sql)
+    )

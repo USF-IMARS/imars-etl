@@ -10,8 +10,7 @@ except ImportError:
     # py3
     from unittest.mock import MagicMock
 
-# dependencies:
-from imars_etl.extract import extract
+from imars_etl.cli import parse_args
 
 class Test_extract(TestCase):
 
@@ -25,12 +24,14 @@ class Test_extract(TestCase):
                 "sql": 'status=-1 AND area_id=-10 AND product_type_id=-99'
             })
         """
+        from imars_etl.extract import extract
         # result = extract()
 
         self.assertRaises(
             SystemExit,
             extract,
-            {
-                "sql": 'status=-1 AND area_id=-10 AND product_type_id=-99'
-            }
+            parse_args([
+                'extract',
+                'status=-1 AND area_id=-10 AND product_type_id=-99'
+            ])
         )
