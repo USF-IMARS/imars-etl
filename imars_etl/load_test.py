@@ -72,7 +72,7 @@ class Test_load(TestCase):
                 --dry_run
                 -j '{"area_id":1}'
                 -p 6
-                -f '/path/w/parseable/date/wv2_2000_06_myTag.zip'
+                -f '/path/w/parseable/date/wv2_1989-06-07T1112_myTag.zip'
         """
         from imars_etl.load import load
         from imars_etl.cli import parse_args
@@ -80,7 +80,7 @@ class Test_load(TestCase):
             '-vvv',
             'load',
             '--dry_run',
-            '-f', "/path/w/parseable/date/wv2_2000_06_myTag.zip",
+            '-f', "/path/w/parseable/date/wv2_1989-06-07T1112_myTag.zip",
             '-j', '{"area_id":1}',
             '-p', '6',
         ])
@@ -88,8 +88,8 @@ class Test_load(TestCase):
             load(test_args),
             'INSERT INTO file'
             + ' (date_time,area_id,product_type_id,filepath)'
-            + ' VALUES ("2000-06-01T00:00:00",1,6,'
-            + '"/srv/imars-objects/zip_wv2_ftp_ingest/wv2_2000_06_myTag.zip")'
+            + ' VALUES ("1989-06-07T11:12:00",1,6,'
+            + '"/srv/imars-objects/zip_wv2_ftp_ingest/wv2_1989-06-07T1112_myTag.zip")'
         )
 
     def test_wv2_zip_ingest_example(self):
@@ -106,15 +106,15 @@ class Test_load(TestCase):
             '-vvv',
             'load',
             '--dry_run',
-            '-f', "/path/w/parseable/date/wv2_2000_06_myTag.zip",
+            '-f', "/path/w/parseable/date/wv2_2000-06-07T1122_myTag.zip",
             '-p', '6',
         ])
         self.assertEqual(
             load(test_args),
             'INSERT INTO file'
             + ' (date_time,product_type_id,filepath)'
-            + ' VALUES ("2000-06-01T00:00:00",6,'
-            + '"/srv/imars-objects/zip_wv2_ftp_ingest/wv2_2000_06_myTag.zip")'
+            + ' VALUES ("2000-06-07T11:22:00",6,'
+            + '"/srv/imars-objects/zip_wv2_ftp_ingest/wv2_2000-06-07T1122_myTag.zip")'
         )
 
     # === python API (passes dicts)

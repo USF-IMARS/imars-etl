@@ -29,15 +29,15 @@ class Test_imars_obj_load(TestCase):
         test_args = {
             "verbose":3,
             "dry_run":True,
-            "filepath":"/srv/imars-objects/ftp-ingest/wv2_2017_03_RB2.zip",
+            "filepath":"/srv/imars-objects/ftp-ingest/wv2_2017-03-01T2233_RB2.zip",
             "product_type_id":6,
-            "date":"2017-03-01T00:00",
-            "datetime": datetime(2017,3,1),
-            "forced_basename": "wv2_2017_03_RB2.zip",
+            "date":"2017-03-01T22:33",
+            "datetime": datetime(2017,3,1,22,33),
+            "forced_basename": "wv2_2017-03-01T2233_RB2.zip",
             "json":'{"status":1,"area_id":1}',
             "tag": "RB2"
         }
         self.assertEqual(
             load_file(test_args),
-            '/srv/imars-objects/zip_wv2_ftp_ingest/wv2_2017_03_RB2.zip'
+            '/srv/imars-objects/zip_wv2_ftp_ingest/wv2_2017-03-01T2233_RB2.zip'
         )

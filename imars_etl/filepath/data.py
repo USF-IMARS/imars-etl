@@ -96,12 +96,12 @@ data = {
     "zip_wv2_ftp_ingest": {
         "ingest_formats": {
             "matts_wv2_ftp_ingest":{
-                "path_format": "wv2_%Y_%m_{tag}.zip",
+                "path_format": "wv2_%Y-%m-%dT%H%M_{tag}.zip",
             }
         },
         "imars_object_format":{
             "path": "/srv/imars-objects/zip_wv2_ftp_ingest",
-            "basename": "wv2_%Y_%m_{tag}.zip",
+            "basename": "wv2_%Y-%m-%dT%H%M_{tag}.zip",
             "product_type_id": 6
         },
     },
