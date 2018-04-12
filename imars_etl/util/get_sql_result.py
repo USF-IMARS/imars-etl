@@ -29,7 +29,15 @@ def get_sql_result(args, sql, check_result=True):
                 logger.error(result)
                 exit(EXIT_STATUS.MULTIPLE_MATCH)
             else:
-                return result[0]
+                try:
+                    return result[0]
+                except IndexError as i_err:
+                    if check_result:
+                        raise
+                    else:  # we don't care about the error
+                        logger.info("no result from sql request")
+                        return result
+
 
     finally:
         connection.close()
