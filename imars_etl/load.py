@@ -81,7 +81,8 @@ def _load_file(args):
     else:
         return get_sql_result(
             args,
-            sql
+            sql,
+            check_result=False
         )
 
 def _make_sql_insert(args):
