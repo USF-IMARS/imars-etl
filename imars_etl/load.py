@@ -51,6 +51,7 @@ def _load_dir(args):
     insert_statements = []  #
     # logger.debug("searching w/ '{}'...".format(fmt))
     orig_args = copy.deepcopy(args)
+    loaded_count=0
     for root, dirs, files in os.walk(args.directory):
         for filename in files:
             try:
@@ -59,8 +60,10 @@ def _load_dir(args):
                 insert_statements.append(_load_file(args))
                 logger.debug("loading {}...".format(fpath))
                 args = copy.deepcopy(orig_args)  # reset args
+                loaded_count+=1
             except SyntaxError as s_err:
                 logger.debug("skipping {}...".format(fpath))
+    logger.info("{} files loaded successfully.".format(loaded_count))
     return insert_statements
 
 def _load_file(args):
