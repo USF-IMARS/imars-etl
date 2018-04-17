@@ -85,7 +85,8 @@ def _load_file(args):
         return get_sql_result(
             args,
             sql,
-            check_result=False
+            check_result=False,
+            should_commit=(not args.dry_run),
         )
 
 def _make_sql_insert(args):
