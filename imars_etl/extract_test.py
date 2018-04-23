@@ -19,7 +19,7 @@ class Test_extract(TestCase):
     # === python API
     def test_extract_API_basic_none_found(self):
         """
-        basic imars_etl.extract on with fields exits as expected:
+        basic imars_etl.extract on impossible query sysExits:
             imars_etl.extract({
                 "sql": 'status=-1 AND area_id=-10 AND product_type_id=-99'
             })

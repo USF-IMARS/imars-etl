@@ -15,7 +15,7 @@ except ImportError:
 from datetime import datetime
 
 # dependencies:
-from imars_etl.drivers.imars_objects.load import load_file
+from imars_etl.drivers.imars_objects.load_file import load_file
 
 class Test_imars_obj_load(TestCase):
 
