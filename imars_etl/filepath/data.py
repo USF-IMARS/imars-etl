@@ -255,7 +255,7 @@ def get_ingest_format(short_name, ingest_name=None):
             ))
     elif len(data[short_name]["ingest_formats"]) == 1:
         # if there is only 1 ingest_format then we must use that one
-        ingest_key = data[short_name]["ingest_formats"].keys()[0]
+        ingest_key = list(data[short_name]["ingest_formats"].keys())[0]
         return data[short_name]["ingest_formats"][ingest_key]['path_format']
     else:
         # we don't know what ingest_format to use

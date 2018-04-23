@@ -99,15 +99,14 @@ def _make_sql_insert(args):
     json_dict["date_time"] = '"'+args.time+'"'
     json_dict["product_type_id"] = args.product_type_id
 
-    str_concat=(lambda x, y: str(x)+","+str(y))
-    keys = reduce(
-        str_concat,
-        [str(key) for key in json_dict]
-    )
-    vals = reduce(
-        str_concat,
-        [str(json_dict[key]) for key in json_dict]
-    )
+    keys=""
+    vals=""
+    for key in json_dict:
+        keys += str(key)+","
+        vals += str(json_dict[key])+","
+    keys=keys[:-1] # trim last comma
+    vals=vals[:-1]
+
     # Create a new record
     return "INSERT INTO file ("+keys+") VALUES ("+vals+")"
 

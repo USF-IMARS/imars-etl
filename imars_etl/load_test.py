@@ -10,7 +10,45 @@ except ImportError:
     # py3
     from unittest.mock import MagicMock, patch
 
+def parse_keys_vals_from_sql_insert(sql_str):
+    # 'INSERT INTO file (
+    # product_type_id,filepath,date_time) VALUES (
+    # 6,"/srv/imars-objects/zip_wv2_ftp_ingest/wv2_2000-06-07T1122_m...")'
+    pre,keys,vals = sql_str.split('(')
+    keys = keys.split(')')[0].split(',')
+    vals = vals.split(')')[0].split(',')
+    return keys, vals
+
 class Test_load(TestCase):
+    def assertSQLInsertKeyValuesMatch(self, sql_str, keys, vals):
+        """
+        asserts that keys and values in SQL INSERT statement match the given.
+        expected form of the sql_str is:
+
+        'INSERT INTO file (status,date_time) VALUES (1,"2018-02-26T13:00")'
+        """
+        exp_keys,exp_vals = parse_keys_vals_from_sql_insert(sql_str)
+        try:  # py3
+            self.assertCountEqual(keys,exp_keys)
+            self.assertCountEqual(vals,exp_vals)
+        except AttributeError as a_err:
+            # py2
+            self.assertItemsEqual(keys, exp_keys)
+            self.assertItemsEqual(vals, exp_vals)
+
+    def assertSQLsEquals(self, sql_str_arry, keys_arry, vals_arry):
+        """
+        asserts that keys and values in array of SQL INSERT statements match
+        the given arrays of keys & vals.
+        """
+        assert(len(sql_str_arry) == len(keys_arry) == len(vals_arry))
+        for i,sql in enumerate(sql_str_arry):
+            self.assertSQLInsertKeyValuesMatch(
+                sql,
+                keys_arry[i],
+                vals_arry[i]
+            )
+
 
     # tests:
     #########################
@@ -37,11 +75,16 @@ class Test_load(TestCase):
             '-t', "2018-02-26T13:00",
             '-j', '{"status":1,"area_id":1}',
         ])
-        self.assertEqual(
+        self.assertSQLInsertKeyValuesMatch(
             load(test_args),
-            'INSERT INTO file'
-            + ' (status,date_time,area_id,product_type_id,filepath)'
-            + ' VALUES (1,"2018-02-26T13:00",1,-1,"/srv/imars-objects/test_test_test/simple_file_with_no_args.txt")'
+            ['status','date_time','area_id','product_type_id','filepath'],
+            [
+                '1',
+                '"2018-02-26T13:00"',
+                '1',
+                '-1',
+                '"/srv/imars-objects/test_test_test/simple_file_with_no_args.txt"'
+            ]
         )
 
     def test_load_missing_date_unguessable(self):
@@ -84,12 +127,13 @@ class Test_load(TestCase):
             '-j', '{"area_id":1}',
             '-p', '6',
         ])
-        self.assertEqual(
+        self.assertSQLInsertKeyValuesMatch(
             load(test_args),
-            'INSERT INTO file'
-            + ' (date_time,area_id,product_type_id,filepath)'
-            + ' VALUES ("1989-06-07T11:12:00",1,6,'
-            + '"/srv/imars-objects/zip_wv2_ftp_ingest/wv2_1989-06-07T1112_myTag.zip")'
+            ['date_time','area_id','product_type_id','filepath'],
+            [
+            '"1989-06-07T11:12:00"','1','6',
+            '"/srv/imars-objects/zip_wv2_ftp_ingest/wv2_1989-06-07T1112_myTag.zip"'
+            ]
         )
 
     def test_wv2_zip_ingest_example(self):
@@ -109,12 +153,17 @@ class Test_load(TestCase):
             '-f', "/path/w/parseable/date/wv2_2000-06-07T1122_myTag.zip",
             '-p', '6',
         ])
-        self.assertEqual(
-            load(test_args),
-            'INSERT INTO file'
-            + ' (date_time,product_type_id,filepath)'
-            + ' VALUES ("2000-06-07T11:22:00",6,'
-            + '"/srv/imars-objects/zip_wv2_ftp_ingest/wv2_2000-06-07T1122_myTag.zip")'
+        res = load(test_args)
+        # 'INSERT INTO file (
+        # product_type_id,filepath,date_time) VALUES (
+        # 6,"/srv/imars-objects/zip_wv2_ftp_ingest/wv2_2000-06-07T1122_m...")'
+        self.assertSQLInsertKeyValuesMatch(
+            res,
+            ['product_type_id','filepath','date_time'],
+            ['"/srv/imars-objects/zip_wv2_ftp_ingest/wv2_2000-06-07T1122_myTag.zip"',
+                '6',
+                '"2000-06-07T11:22:00"'
+            ]
         )
 
     # === python API (passes dicts)
@@ -131,7 +180,7 @@ class Test_load(TestCase):
             })
         """
         from imars_etl.load import load
-        result = load({
+        res = load({
             "dry_run": True,
             "filepath": "/fake/path/file_w_date_2018.txt",
             "product_type_id": -1,
@@ -139,11 +188,19 @@ class Test_load(TestCase):
             "json": '{"status":1, "area_id":1}',
             "verbose": 3
         })
-        self.assertEqual(
-            result,
-            'INSERT INTO file'
-            + ' (status,date_time,area_id,product_type_id,filepath)'
-            + ' VALUES (1,"2018-02-26T13:00",1,-1,"/srv/imars-objects/test_test_test/simple_file_with_no_args.txt")'
+        #'INSERT INTO file'
+        # + ' (status,date_time,area_id,product_type_id,filepath)'
+        # + ' VALUES (1,"2018-02-26T13:00",1,-1,"/srv/imars-objects/test_test_test/simple_file_with_no_args.txt")'
+        self.assertSQLInsertKeyValuesMatch(
+            res,
+            ['status','date_time','area_id','product_type_id','filepath'],
+            [
+                '1',
+                '"2018-02-26T13:00"',
+                '1',
+                '-1',
+                '"/srv/imars-objects/test_test_test/simple_file_with_no_args.txt"'
+            ]
         )
 
     def test_load_att_wv2_m1bs(self):
@@ -160,12 +217,16 @@ class Test_load(TestCase):
             # "datetime": datetime(2016,2,12,16,25,18),
             "json":'{"status":3,"area_id":5}'
         }
-        self.assertEqual(
+        self.assertSQLInsertKeyValuesMatch(
             load(test_args),
-            'INSERT INTO file'
-            + ' (status,date_time,area_id,product_type_id,filepath)'
-            + ' VALUES (3,"2016-02-12T16:25:18",5,7,'
-            + '"/srv/imars-objects/extra_data/WV02/2016.02/WV02_20160212162518_0000000000000000_16Feb12162518-M1BS-057522945010_P002.att")'
+            ['status','date_time','area_id','product_type_id','filepath'],
+            [
+                '3',
+                '"2016-02-12T16:25:18"',
+                '5',
+                '7',
+                '"/srv/imars-objects/extra_data/WV02/2016.02/WV02_20160212162518_0000000000000000_16Feb12162518-M1BS-057522945010_P002.att"'
+            ]
         )
 
     def test_load_directory_by_product_type_id_number(self):
@@ -193,16 +254,25 @@ class Test_load(TestCase):
                 '-p', '-1',
                 '-i', "file_w_date"
             ])
-            self.assertEqual( load(test_args), [
-                'INSERT INTO file'
-                + ' (date_time,product_type_id,filepath)'
-                + ' VALUES ("1999-01-01T00:00:00",-1,'
-                + '"/srv/imars-objects/test_test_test/simple_file_with_no_args.txt")',
-                'INSERT INTO file'
-                + ' (date_time,product_type_id,filepath)'
-                + ' VALUES ("2018-01-01T00:00:00",-1,'
-                + '"/srv/imars-objects/test_test_test/simple_file_with_no_args.txt")',
-            ])
+            self.assertSQLsEquals(
+                load(test_args),
+                [
+                    ['date_time','product_type_id','filepath'],
+                    ['date_time','product_type_id','filepath']
+                ],
+                [
+                    [
+                    '"1999-01-01T00:00:00"',
+                    '-1',
+                    '"/srv/imars-objects/test_test_test/simple_file_with_no_args.txt"'
+                    ],
+                    [
+                        '"2018-01-01T00:00:00"',
+                        '-1',
+                        '"/srv/imars-objects/test_test_test/simple_file_with_no_args.txt"'
+                    ]
+                ]
+            )
 
     def test_load_directory_short_name(self):
         """
@@ -229,16 +299,23 @@ class Test_load(TestCase):
                 '-n', "test_test_test",
                 '-i', "file_w_date"
             ])
-            self.assertEqual( load(test_args), [
-                'INSERT INTO file'
-                + ' (date_time,product_type_id,filepath)'
-                + ' VALUES ("1999-01-01T00:00:00",-1,'
-                + '"/srv/imars-objects/test_test_test/simple_file_with_no_args.txt")',
-                'INSERT INTO file'
-                + ' (date_time,product_type_id,filepath)'
-                + ' VALUES ("2018-01-01T00:00:00",-1,'
-                + '"/srv/imars-objects/test_test_test/simple_file_with_no_args.txt")',
-            ])
+            sql_strs = load(test_args)
+            self.assertEqual(len(sql_strs), 2)
+            self.assertSQLsEquals(
+                sql_strs,
+                [
+                    ['date_time','product_type_id','filepath'],
+                    ['date_time','product_type_id','filepath']
+                ],
+                [
+                    ['"1999-01-01T00:00:00"','-1',
+                    '"/srv/imars-objects/test_test_test/simple_file_with_no_args.txt"'
+                    ],
+                    ['"2018-01-01T00:00:00"','-1',
+                    '"/srv/imars-objects/test_test_test/simple_file_with_no_args.txt"'
+                    ]
+                ]
+            )
 
     def test_load_directory_only_loads_files_of_given_type(self):
         """
@@ -269,16 +346,25 @@ class Test_load(TestCase):
                 '-n', "test_test_test",
                 '-i', "file_w_date"
             ])
-            self.assertEqual( load(test_args), [
-                'INSERT INTO file'
-                + ' (date_time,product_type_id,filepath)'
-                + ' VALUES ("1999-01-01T00:00:00",-1,'
-                + '"/srv/imars-objects/test_test_test/simple_file_with_no_args.txt")',
-                'INSERT INTO file'
-                + ' (date_time,product_type_id,filepath)'
-                + ' VALUES ("2018-01-01T00:00:00",-1,'
-                + '"/srv/imars-objects/test_test_test/simple_file_with_no_args.txt")',
-            ])
+            self.assertSQLsEquals(
+                load(test_args),
+                [
+                    ['date_time','product_type_id','filepath'],
+                    ['date_time','product_type_id','filepath']
+                ],
+                [
+                    [
+                        '"1999-01-01T00:00:00"',
+                        '-1',
+                        '"/srv/imars-objects/test_test_test/simple_file_with_no_args.txt"'
+                    ],
+                    [
+                        '"2018-01-01T00:00:00"',
+                        '-1',
+                        '"/srv/imars-objects/test_test_test/simple_file_with_no_args.txt"'
+                    ]
+                ]
+            )
 
     @patch('os.walk')
     @patch(
