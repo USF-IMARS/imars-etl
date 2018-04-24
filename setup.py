@@ -20,7 +20,7 @@ def read(*filenames, **kwargs):
 long_description = read('README.md') #, 'CHANGES.txt')
 
 setup(name='imars_etl',
-    version=imars_etl.__version__,
+    version=VERSION,
     description='Interface for IMaRS ETL operations',
     long_description=long_description,
     author='Tylar Murray',
