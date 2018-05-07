@@ -59,7 +59,7 @@ $ imars-etl load --area 1 --product_id 4 --filepath /path/to/file/wv2_2012_02_my
 ```python
 from imars_etl import extract
 local_filepath = extract({
-    "sql": "product_id=3 AND status=3"
+    "sql": "product_id=3 AND status_id=3"
 })
 ```
 ### load
@@ -71,6 +71,6 @@ load({
     "product_id": 6,
     "area_id": 2,
     "date_time": "2018-03-06T17:14",
-    "status": 3
+    "status_id": 3
 })
 ```

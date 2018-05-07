@@ -25,7 +25,7 @@ class Test_load(TestCase):
         asserts that keys and values in SQL INSERT statement match the given.
         expected form of the sql_str is:
 
-        'INSERT INTO file (status,date_time) VALUES (1,"2018-02-26T13:00")'
+        'INSERT INTO file (status_id,date_time) VALUES (1,"2018-02-26T13:00")'
         """
         exp_keys,exp_vals = parse_keys_vals_from_sql_insert(sql_str)
         try:  # py3
@@ -61,7 +61,7 @@ class Test_load(TestCase):
                 -f /fake/path/file_w_date_2018.txt
                 -p -1
                 -p '2018-02-26T13:00'
-                -j '{"status":1, "area_id":1}'
+                -j '{"status_id":1, "area_id":1}'
         """
         from imars_etl.load import load
         from imars_etl.cli import parse_args
@@ -73,11 +73,11 @@ class Test_load(TestCase):
             '-f', "/fake/path/file_w_date_2018.txt",
             '-p', '-1',
             '-t', "2018-02-26T13:00",
-            '-j', '{"status":1,"area_id":1}',
+            '-j', '{"status_id":1,"area_id":1}',
         ])
         self.assertSQLInsertKeyValuesMatch(
             load(test_args),
-            ['status','date_time','area_id','product_id','filepath'],
+            ['status_id','date_time','area_id','product_id','filepath'],
             [
                 '1',
                 '"2018-02-26T13:00"',
@@ -175,7 +175,7 @@ class Test_load(TestCase):
                 "filepath": "/fake/path/file_w_date_2018.txt",
                 "product_id": -1,
                 "time": "2018-02-26T13:00",
-                "json": '{"status":1, "area_id":1}',
+                "json": '{"status_id":1, "area_id":1}',
                 "verbose": 3
             })
         """
@@ -185,15 +185,15 @@ class Test_load(TestCase):
             "filepath": "/fake/path/file_w_date_2018.txt",
             "product_id": -1,
             "time": "2018-02-26T13:00",
-            "json": '{"status":1, "area_id":1}',
+            "json": '{"status_id":1, "area_id":1}',
             "verbose": 3
         })
         #'INSERT INTO file'
-        # + ' (status,date_time,area_id,product_id,filepath)'
+        # + ' (status_id,date_time,area_id,product_id,filepath)'
         # + ' VALUES (1,"2018-02-26T13:00",1,-1,"/srv/imars-objects/test_test_test/simple_file_with_no_args.txt")'
         self.assertSQLInsertKeyValuesMatch(
             res,
-            ['status','date_time','area_id','product_id','filepath'],
+            ['status_id','date_time','area_id','product_id','filepath'],
             [
                 '1',
                 '"2018-02-26T13:00"',
@@ -215,11 +215,11 @@ class Test_load(TestCase):
             "product_id":7,
             # "time":"2016-02-12T16:25:18",
             # "datetime": datetime(2016,2,12,16,25,18),
-            "json":'{"status":3,"area_id":5}'
+            "json":'{"status_id":3,"area_id":5}'
         }
         self.assertSQLInsertKeyValuesMatch(
             load(test_args),
-            ['status','date_time','area_id','product_id','filepath'],
+            ['status_id','date_time','area_id','product_id','filepath'],
             [
                 '3',
                 '"2016-02-12T16:25:18"',

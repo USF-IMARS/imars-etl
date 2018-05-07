@@ -22,7 +22,7 @@ def load(args):
             -a 1
             -t 1
             -d '2018-02-26T13:00'
-            -j '{"status":0}'
+            -j '{"status_id":0}'
     """
     if isinstance(args, dict):  # args can be dict
         args = dict_to_argparse_namespace(args)

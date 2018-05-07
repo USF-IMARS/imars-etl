@@ -21,7 +21,7 @@ class Test_extract(TestCase):
         """
         basic imars_etl.extract on impossible query sysExits:
             imars_etl.extract({
-                "sql": 'status=-1 AND area_id=-10 AND product_id=-99'
+                "sql": 'status_id=-1 AND area_id=-10 AND product_id=-99'
             })
         """
         from imars_etl.extract import extract
@@ -32,6 +32,6 @@ class Test_extract(TestCase):
             extract,
             parse_args([
                 'extract',
-                'status=-1 AND area_id=-10 AND product_id=-99'
+                'status_id=-1 AND area_id=-10 AND product_id=-99'
             ])
         )
