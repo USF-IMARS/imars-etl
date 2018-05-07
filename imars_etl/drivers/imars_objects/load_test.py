@@ -30,7 +30,7 @@ class Test_imars_obj_load(TestCase):
             "verbose":3,
             "dry_run":True,
             "filepath":"/srv/imars-objects/ftp-ingest/wv2_2017-03-01T2233_RB2.zip",
-            "product_type_id":6,
+            "product_id":6,
             "date":"2017-03-01T22:33",
             "datetime": datetime(2017,3,1,22,33),
             "forced_basename": "wv2_2017-03-01T2233_RB2.zip",

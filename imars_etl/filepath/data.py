@@ -13,7 +13,7 @@ I_OBJ_FMT="imars_object_format"
 F_FMT="path_format"
 PATH="path"
 BASE="basename"
-PID="product_type_id"
+PID="product_id"
 
 def wv2_ingest_prod(m1bs_or_p1bs, ext, pid, up_ext=True,
     ingest_id="from_zip_wv2_ftp_ingest"
@@ -29,7 +29,7 @@ def wv2_ingest_prod(m1bs_or_p1bs, ext, pid, up_ext=True,
     ext : str
         lowercase file extension (with leading '.')
     pid : int
-        product_type_id
+        product_id
     up_ext : boolean
         if True we expect file extensions to be all upper-case on ingest.
         this is the case for all files except those in /GIS_FILES
@@ -57,7 +57,7 @@ def wv2_ingest_prod(m1bs_or_p1bs, ext, pid, up_ext=True,
             BASE: base_rt + ext,
             # TODO: update this to work w/ #3 :
             # "basename": "WV02_%Y%m%d%H%M%S_0000000000000000_%y%b%d%H%M%S-M1BS-{idNumber:12d}_{whatThis:2d}_P{passNumber:3d}.att",
-            PID: pid  # TODO: use metadata db for product_type_id
+            PID: pid  # TODO: use metadata db for product_id
         },
     }
 
@@ -102,7 +102,7 @@ data = {
         "imars_object_format":{
             "path": "/srv/imars-objects/zip_wv2_ftp_ingest",
             "basename": "wv2_%Y-%m-%dT%H%M_{tag}.zip",
-            "product_type_id": 6
+            "product_id": 6
         },
     },
     "test_test_test":{
@@ -116,7 +116,7 @@ data = {
         "imars_object_format": {
             "path"    : "/srv/imars-objects/test_test_test",
             "basename": "simple_file_with_no_args.txt",
-            "product_type_id": -1
+            "product_id": -1
         },
     },
     ### === others from the metadata db that in need of adding:
@@ -163,26 +163,26 @@ data = {
     # }
 }
 
-def get_product_name(product_type_id):
+def get_product_name(product_id):
     """get product name from given id"""
     logger = logging.getLogger("{}.{}".format(
         __name__,
         sys._getframe().f_code.co_name)
     )
     logger.setLevel(logging.INFO)
-    logger.debug("get_data_from_pid({})".format(product_type_id))
+    logger.debug("get_data_from_pid({})".format(product_id))
     for product_short_name, product_data in data.items():
-        pid = product_data["imars_object_format"]["product_type_id"]
+        pid = product_data["imars_object_format"]["product_id"]
         logger.debug("pid is {}?".format(pid))
-        if pid == product_type_id:
+        if pid == product_id:
             logger.debug("y!")
             return product_short_name
     else:
-        raise KeyError("product_type_id {} not found".format(product_type_id))
+        raise KeyError("product_id {} not found".format(product_id))
 
 def get_product_id(product_type_name):
     """get product id from given name"""
-    return data[product_type_name]["imars_object_format"]["product_type_id"]
+    return data[product_type_name]["imars_object_format"]["product_id"]
 
 def get_product_data_from_id(prod_id):
     """used to index product data by id number instead of short_name"""
@@ -198,17 +198,17 @@ def get_imars_object_paths():
             "//": "this is a fake type used for testing only",
             "basename": "simple_file_with_no_args.txt",
             "path"    : "/srv/imars-objects/test_test_test",
-            "product_type_id": -1
+            "product_id": -1
         },
         "zip_wv2_ftp_ingest":{
             "basename": "wv2_%Y_%m_{tag}.zip",
             "path"    : "/srv/imars-objects/{product_type_name}",
-            "product_type_id": 6
+            "product_id": 6
         },
         "att_wv2_m1bs":{
             "basename": "WV02_%Y%m%d%H%M%S_0000000000000000_%y%b%d%H%M%S-M1BS-{idNumber}_P{passNumber}.att",  # NOTE: how to %b in all caps?
             "path": "/srv/imars-objects/extra_data/WV02/%Y.%m",
-            "product_type_id": 7
+            "product_id": 7
         }
     }
     """
@@ -261,6 +261,6 @@ def get_ingest_format(short_name, ingest_name=None):
         # we don't know what ingest_format to use
         raise KeyError(
             "--ingest_key must be given for product # {}".format(
-                args.product_type_id
+                args.product_id
             )
         )

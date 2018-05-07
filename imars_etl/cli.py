@@ -105,7 +105,7 @@ def parse_args(argvs):
         "--product_type_name", "--name", "--short_name",
         help="product type id short_name"
     )
-    parser_load.add_argument("-p", "--product_type_id", "--pid",
+    parser_load.add_argument("-p", "--product_id", "--pid",
         help="product type id (pid)", type=int
     )
     # optional args

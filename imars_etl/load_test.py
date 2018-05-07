@@ -12,7 +12,7 @@ except ImportError:
 
 def parse_keys_vals_from_sql_insert(sql_str):
     # 'INSERT INTO file (
-    # product_type_id,filepath,date_time) VALUES (
+    # product_id,filepath,date_time) VALUES (
     # 6,"/srv/imars-objects/zip_wv2_ftp_ingest/wv2_2000-06-07T1122_m...")'
     pre,keys,vals = sql_str.split('(')
     keys = keys.split(')')[0].split(',')
@@ -77,7 +77,7 @@ class Test_load(TestCase):
         ])
         self.assertSQLInsertKeyValuesMatch(
             load(test_args),
-            ['status','date_time','area_id','product_type_id','filepath'],
+            ['status','date_time','area_id','product_id','filepath'],
             [
                 '1',
                 '"2018-02-26T13:00"',
@@ -129,7 +129,7 @@ class Test_load(TestCase):
         ])
         self.assertSQLInsertKeyValuesMatch(
             load(test_args),
-            ['date_time','area_id','product_type_id','filepath'],
+            ['date_time','area_id','product_id','filepath'],
             [
             '"1989-06-07T11:12:00"','1','6',
             '"/srv/imars-objects/zip_wv2_ftp_ingest/wv2_1989-06-07T1112_myTag.zip"'
@@ -155,11 +155,11 @@ class Test_load(TestCase):
         ])
         res = load(test_args)
         # 'INSERT INTO file (
-        # product_type_id,filepath,date_time) VALUES (
+        # product_id,filepath,date_time) VALUES (
         # 6,"/srv/imars-objects/zip_wv2_ftp_ingest/wv2_2000-06-07T1122_m...")'
         self.assertSQLInsertKeyValuesMatch(
             res,
-            ['product_type_id','filepath','date_time'],
+            ['product_id','filepath','date_time'],
             ['"/srv/imars-objects/zip_wv2_ftp_ingest/wv2_2000-06-07T1122_myTag.zip"',
                 '6',
                 '"2000-06-07T11:22:00"'
@@ -173,7 +173,7 @@ class Test_load(TestCase):
             imars_etl.load({
                 "dry_run": True,
                 "filepath": "/fake/path/file_w_date_2018.txt",
-                "product_type_id": -1,
+                "product_id": -1,
                 "time": "2018-02-26T13:00",
                 "json": '{"status":1, "area_id":1}',
                 "verbose": 3
@@ -183,17 +183,17 @@ class Test_load(TestCase):
         res = load({
             "dry_run": True,
             "filepath": "/fake/path/file_w_date_2018.txt",
-            "product_type_id": -1,
+            "product_id": -1,
             "time": "2018-02-26T13:00",
             "json": '{"status":1, "area_id":1}',
             "verbose": 3
         })
         #'INSERT INTO file'
-        # + ' (status,date_time,area_id,product_type_id,filepath)'
+        # + ' (status,date_time,area_id,product_id,filepath)'
         # + ' VALUES (1,"2018-02-26T13:00",1,-1,"/srv/imars-objects/test_test_test/simple_file_with_no_args.txt")'
         self.assertSQLInsertKeyValuesMatch(
             res,
-            ['status','date_time','area_id','product_type_id','filepath'],
+            ['status','date_time','area_id','product_id','filepath'],
             [
                 '1',
                 '"2018-02-26T13:00"',
@@ -212,14 +212,14 @@ class Test_load(TestCase):
             "verbose":3,
             "dry_run":True,
             "filepath":"/tmp/airflow_output_2018-03-01T20:00:00/057522945010_01_003/057522945010_01/057522945010_01_P002_MUL/16FEB12162518-M1BS-057522945010_P002.ATT",
-            "product_type_id":7,
+            "product_id":7,
             # "time":"2016-02-12T16:25:18",
             # "datetime": datetime(2016,2,12,16,25,18),
             "json":'{"status":3,"area_id":5}'
         }
         self.assertSQLInsertKeyValuesMatch(
             load(test_args),
-            ['status','date_time','area_id','product_type_id','filepath'],
+            ['status','date_time','area_id','product_id','filepath'],
             [
                 '3',
                 '"2016-02-12T16:25:18"',
@@ -229,9 +229,9 @@ class Test_load(TestCase):
             ]
         )
 
-    def test_load_directory_by_product_type_id_number(self):
+    def test_load_directory_by_product_id_number(self):
         """
-            CLI load directory using product_type_id
+            CLI load directory using product_id
         """
         FAKE_TEST_DIR="/fake/dir/of/files/w/parseable/dates"
         with patch('os.walk') as mockwalk:
@@ -257,8 +257,8 @@ class Test_load(TestCase):
             self.assertSQLsEquals(
                 load(test_args),
                 [
-                    ['date_time','product_type_id','filepath'],
-                    ['date_time','product_type_id','filepath']
+                    ['date_time','product_id','filepath'],
+                    ['date_time','product_id','filepath']
                 ],
                 [
                     [
@@ -304,8 +304,8 @@ class Test_load(TestCase):
             self.assertSQLsEquals(
                 sql_strs,
                 [
-                    ['date_time','product_type_id','filepath'],
-                    ['date_time','product_type_id','filepath']
+                    ['date_time','product_id','filepath'],
+                    ['date_time','product_id','filepath']
                 ],
                 [
                     ['"1999-01-01T00:00:00"','-1',
@@ -349,8 +349,8 @@ class Test_load(TestCase):
             self.assertSQLsEquals(
                 load(test_args),
                 [
-                    ['date_time','product_type_id','filepath'],
-                    ['date_time','product_type_id','filepath']
+                    ['date_time','product_id','filepath'],
+                    ['date_time','product_id','filepath']
                 ],
                 [
                     [

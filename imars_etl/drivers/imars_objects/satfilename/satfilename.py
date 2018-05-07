@@ -64,13 +64,13 @@ def get_name(args, forced_basename=None):
     logger.setLevel(logging.INFO)
     logger.info("placing {} (#{})...".format(
         args.get('product_type_name','???'),
-        args.get('product_type_id',-999999))
+        args.get('product_id',-999999))
     )
     for prod_name, prod_meta in get_imars_object_paths().items():
-        logger.debug("is {} (#{})?".format(prod_name, prod_meta['product_type_id']))
+        logger.debug("is {} (#{})?".format(prod_name, prod_meta['product_id']))
         if (
                    args.get('product_type_name','') == prod_name
-                or args.get('product_type_id',-999999) == prod_meta['product_type_id']
+                or args.get('product_id',-999999) == prod_meta['product_id']
             ):  # if file type or id is given and matches a known type
             logger.debug('y!')
 

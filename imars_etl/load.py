@@ -97,7 +97,7 @@ def _make_sql_insert(args):
         json_dict = dict()
     json_dict["filepath"] = '"'+args.filepath+'"'
     json_dict["date_time"] = '"'+args.time+'"'
-    json_dict["product_type_id"] = args.product_type_id
+    json_dict["product_id"] = args.product_id
 
     keys=""
     vals=""
@@ -124,33 +124,33 @@ def _validate_args(args):
     # === validate product name and id
     if (  # require name or id for directory loading
             getattr(args, 'directory', None) is not None and
-            getattr(args, 'product_type_id', None) is None and
+            getattr(args, 'product_id', None) is None and
             getattr(args, 'product_type_name', None) is None
         ):
         # NOTE: this is probably not a hard requirement
         #   but it seems like a good safety precaution.
         raise ValueError(
-            "--product_type_id or --product_type_name must be" +
+            "--product_id or --product_type_name must be" +
             " explicitly set if --directory is used."
         )
     elif (  # fill id from name
-        getattr(args, 'product_type_id', None) is None and
+        getattr(args, 'product_id', None) is None and
         getattr(args, 'product_type_name', None) is not None
     ):
-        setattr(args, "product_type_id", get_product_id(args.product_type_name))
+        setattr(args, "product_id", get_product_id(args.product_type_name))
     elif (  # fill name from id
-        getattr(args, 'product_type_id', None) is not None and
+        getattr(args, 'product_id', None) is not None and
         getattr(args, 'product_type_name', None) is None
     ):
-        setattr(args, "product_type_name", get_product_name(args.product_type_id))
+        setattr(args, "product_type_name", get_product_name(args.product_id))
     else:
         pass
         # TODO: ensure that given id and name match
         # assert(
-        #     args.product_type_id == args.get_product_id(args.product_type_name)
+        #     args.product_id == args.get_product_id(args.product_type_name)
         # )
 
-    product_data = get_product_data_from_id(args.product_type_id)
+    product_data = get_product_data_from_id(args.product_id)
 
 
     logger.debug("pre-guess-args : " + str(args))

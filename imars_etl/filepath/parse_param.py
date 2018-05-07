@@ -116,7 +116,7 @@ def _parse_from_product_type_and_filename(args, pattern, pattern_name):
     logger.debug('date extracted: {}'.format(args.time))
     # setattr(args, 'product_type_name', args.product_type_name)
     args = setattr_unless_exists(
-        args, 'product_type_id',   get_product_id(args.product_type_name)
+        args, 'product_id',   get_product_id(args.product_type_name)
     )
 
     return args

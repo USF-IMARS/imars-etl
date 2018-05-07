@@ -36,7 +36,7 @@ class Test_parse_param(TestCase):
         self.assertEqual( res_args.passNumber, "003" )
         self.assertEqual( res_args.product_type_name, "jpg_wv2_m1bs" )
         self.assertEqual(
-            res_args.product_type_id,
+            res_args.product_id,
             get_product_id("jpg_wv2_m1bs")
         )
 
@@ -54,7 +54,7 @@ class Test_parse_param(TestCase):
         self.assertEqual( res_args.passNumber, "003" )
         self.assertEqual( res_args.product_type_name, "shx_wv2_p1bs" )
         self.assertEqual(
-            res_args.product_type_id,
+            res_args.product_id,
             get_product_id("shx_wv2_p1bs")
         )
 
@@ -70,7 +70,7 @@ class Test_parse_param(TestCase):
         res_args = parse_all_from_filename(test_args)
         self.assertEqual( res_args.datetime, datetime(1997,1,1) )
         self.assertEqual(
-            res_args.product_type_id,
+            res_args.product_id,
             get_product_id("test_test_test")
         )
         # this fails... but I don't think we really care.

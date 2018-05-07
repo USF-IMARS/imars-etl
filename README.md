@@ -24,7 +24,7 @@ The IMaRS-ETL tool abstracts the details of this process so that the user need n
 ```bash
 $ /opt/imars-etl/imars-etl.py extract --sql "area_id=1"
 $ imars-etl.py -v extract 'date_time LIKE "2018-01-%"'
-$ imars-etl extract 'area_id=1 && product_type_id=1'
+$ imars-etl extract 'area_id=1 && product_id=1'
 $ imars-etl -vvv extract 'date_time < "2018-01-01" AND date_time > "2018-01-07"'
 
 # Not yet implemented (short_name values (see issue #1)):
@@ -41,10 +41,10 @@ $ imars-etl -vvv extract 'date_time < "2018-01-01" AND date_time > "2018-01-07"'
 ```
 ### load
 ```bash
-$ imars-etl load --area 1 --time "2017-01-02T13:45" --product_type_id 4 --filepath /path/to/file.hdf
+$ imars-etl load --area 1 --time "2017-01-02T13:45" --product_id 4 --filepath /path/to/file.hdf
 
 # auto-parse info (date) from filename using info from `imars_etl.filepath.data`
-$ imars-etl load --area 1 --product_type_id 4 --filepath /path/to/file/wv2_2012_02_myChunk.zip
+$ imars-etl load --area 1 --product_id 4 --filepath /path/to/file/wv2_2012_02_myChunk.zip
 
 # Not yet implemented : short_name values (see issue #1)
 # you@computer:~/$ imars-etl load --satellite aqua --time 2017-01-02T13:45 --instrument modis /path/to/file.hdf
@@ -59,7 +59,7 @@ $ imars-etl load --area 1 --product_type_id 4 --filepath /path/to/file/wv2_2012_
 ```python
 from imars_etl import extract
 local_filepath = extract({
-    "sql": "product_type_id=3 AND status=3"
+    "sql": "product_id=3 AND status=3"
 })
 ```
 ### load
@@ -68,7 +68,7 @@ from imars_etl import load
 my_local_file_path = "/tmp/myfile.png"
 load({
     "filepath": my_local_file_path,
-    "product_type_id": 6,
+    "product_id": 6,
     "area_id": 2,
     "date_time": "2018-03-06T17:14",
     "status": 3
