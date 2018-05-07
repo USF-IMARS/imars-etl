@@ -106,7 +106,7 @@ def parse_args(argvs):
         help="product type id short_name"
     )
     parser_load.add_argument("-p", "--product_type_id", "--pid",
-    help="product type id (pid)", type=int
+        help="product type id (pid)", type=int
     )
     # optional args
     parser_load.add_argument("-t", "--time",
@@ -124,6 +124,16 @@ def parse_args(argvs):
     )
     # ===
     args = parser.parse_args(argvs)
+    try:
+        args.func
+    except AttributeError as a_err:
+        SEP="\n-------------------------------------------------------------\n"
+        print(SEP)
+        parser.print_help()
+        print(SEP)
+        raise ValueError(
+            "\n\n\tSubcommand is required. See help above."
+        )
     # =========================================================================
     # =========================================================================
     # === set up logging behavior
