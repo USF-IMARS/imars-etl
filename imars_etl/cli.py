@@ -128,6 +128,10 @@ def parse_args(argvs):
         default="imars_objects",
         choices=STORAGE_DRIVERS.keys()
     )
+    parser_load.add_argument("--duplicates_ok",
+        help="do not raise error if trying to load file already in database",
+        action="store_true"
+    )
     # ===
     args = parser.parse_args(argvs)
     try:

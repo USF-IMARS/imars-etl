@@ -5,6 +5,8 @@ import json
 import os
 import copy
 
+from pymysql.err import IntegrityError
+
 from imars_etl.filepath.parse_param import parse_all_from_filename
 from imars_etl.filepath.data import get_product_data_from_id, get_product_id, get_product_name
 from imars_etl.util import dict_to_argparse_namespace, get_sql_result
@@ -68,6 +70,11 @@ def _load_dir(args):
                 loaded_count+=1
             except SyntaxError as s_err:
                 logger.debug("skipping {}...".format(fpath))
+            except IntegrityError as i_err:
+                if getattr(args,'duplicates_ok', False):
+                    logger.warn("IntegrityError: Duplicate entry for file '{}'")
+                else:
+                    raise
     logger.info("{} files loaded successfully.".format(loaded_count))
     return insert_statements
 
@@ -81,7 +88,11 @@ def _load_file(args):
 
     # load file into IMaRS data warehouse
     # NOTE: _load should support args.dry_run=True also
-    new_filepath = STORAGE_DRIVERS[args.storage_driver].load_file(vars(args))
+    try:
+        new_filepath = STORAGE_DRIVERS[args.storage_driver](vars(args))
+    except TypeError:  # for some reason nosetests needs it like this:
+        new_filepath = STORAGE_DRIVERS[args.storage_driver].load_file(vars(args))
+
     sql = _make_sql_insert(args)
     sql = sql.replace(args.filepath, new_filepath)
     if args.dry_run:  # test mode returns the sql string
