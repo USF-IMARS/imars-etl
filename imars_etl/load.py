@@ -10,6 +10,11 @@ from imars_etl.filepath.data import get_product_data_from_id, get_product_id, ge
 from imars_etl.util import dict_to_argparse_namespace, get_sql_result
 from imars_etl.drivers.imars_objects import load_file
 
+STORAGE_DRIVERS = {  # map from input strings to load_file functions for each backend
+    'imars_objects': load_file,
+    'no_upload': lambda x: "FILE LOAD SKIPPED",
+}
+
 def load(args):
     """
     args can be a dict or argparse.Namespace
@@ -76,7 +81,7 @@ def _load_file(args):
 
     # load file into IMaRS data warehouse
     # NOTE: _load should support args.dry_run=True also
-    new_filepath = load_file.load_file(vars(args))
+    new_filepath = STORAGE_DRIVERS[args.storage_driver].load_file(vars(args))
     sql = _make_sql_insert(args)
     sql = sql.replace(args.filepath, new_filepath)
     if args.dry_run:  # test mode returns the sql string
@@ -120,6 +125,11 @@ def _validate_args(args):
         sys._getframe().f_code.co_name)
     )
     logger.setLevel(logging.INFO)
+
+    setattr(
+                args, 'storage_driver',
+        getattr(args, 'storage_driver', 'imars_objects')
+    )
 
     # === validate product name and id
     if (  # require name or id for directory loading

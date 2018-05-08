@@ -6,7 +6,7 @@ import logging
 from logging.handlers import RotatingFileHandler
 import os
 
-from imars_etl.load import load
+from imars_etl.load import load, STORAGE_DRIVERS
 from imars_etl.extract import extract
 from imars_etl.id_lookup import id_lookup
 from imars_etl.get_metadata import get_metadata
@@ -121,6 +121,12 @@ def parse_args(argvs):
     parser_load.add_argument("--dry_run",
         help="test run only, does not actually insert into database",
         action="store_true"
+    )
+    parser_load.add_argument("--storage_driver",
+        help="driver to use for loading the file into object storage. "
+            + "ie: which backend to use",
+        default="imars_objects",
+        choices=STORAGE_DRIVERS.keys()
     )
     # ===
     args = parser.parse_args(argvs)
