@@ -59,6 +59,8 @@ def _load_dir(args):
     # logger.debug("searching w/ '{}'...".format(fmt))
     orig_args = copy.deepcopy(args)
     loaded_count=0
+    skipped_count=0
+    duplicate_count=0
     for root, dirs, files in os.walk(args.directory):
         for filename in files:
             try:
@@ -70,12 +72,20 @@ def _load_dir(args):
                 loaded_count+=1
             except SyntaxError as s_err:
                 logger.debug("skipping {}...".format(fpath))
+                skipped_count+=1
             except IntegrityError as i_err:
                 if getattr(args,'duplicates_ok', False):
-                    logger.warn("IntegrityError: Duplicate entry for file '{}'")
+                    logger.warn(
+                        "IntegrityError: Duplicate entry for '{}'".format(
+                            fpath
+                        )
+                    )
+                    duplicate_count+=1
                 else:
                     raise
-    logger.info("{} files loaded successfully.".format(loaded_count))
+    logger.info("{} files loaded, {} skipped, {} duplicates.".format(
+        loaded_count, skipped_count, duplicate_count
+    ))
     return insert_statements
 
 def _load_file(args):
