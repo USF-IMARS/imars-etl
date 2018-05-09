@@ -14,7 +14,7 @@ from imars_etl.drivers.imars_objects import load_file
 
 STORAGE_DRIVERS = {  # map from input strings to load_file functions for each backend
     'imars_objects': load_file,
-    'no_upload': lambda x: "FILE LOAD SKIPPED",
+    'no_upload': lambda args: args['filepath'],
 }
 
 def load(args):

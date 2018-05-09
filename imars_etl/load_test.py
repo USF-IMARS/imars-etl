@@ -87,6 +87,44 @@ class Test_load(TestCase):
             ]
         )
 
+    def test_load_basic(self):
+        """
+        CLI using `no_upload` `storage_driver` passes path through unchanged
+            imars_etl.py load
+                --dry_run
+                --storage_driver no_upload
+                -f /fake/path/file_w_date_2018.txt
+                -p -1
+                -p '2018-02-26T13:00'
+                -j '{"status_id":1, "area_id":1}'
+        """
+        from imars_etl.load import load
+        from imars_etl.cli import parse_args
+
+        FPATH="/fake/path/file_w_date_2018.txt"
+
+        test_args = parse_args([
+            '-vvv',
+            'load',
+            '--dry_run',
+            '--storage_driver', 'no_upload',
+            '-f', FPATH,
+            '-p', '-1',
+            '-t', "2018-02-26T13:00",
+            '-j', '{"status_id":1,"area_id":1}',
+        ])
+        self.assertSQLInsertKeyValuesMatch(
+            load(test_args),
+            ['status_id','date_time','area_id','product_id','filepath'],
+            [
+                '1',
+                '"2018-02-26T13:00"',
+                '1',
+                '-1',
+                '"{}"'.format(FPATH)
+            ]
+        )
+
     def test_load_missing_date_unguessable(self):
         """
         CLI cmd missing date that cannot be guessed fails:
