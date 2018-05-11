@@ -130,7 +130,12 @@ data = {
             "basename": "A%Y%j.%H%M.hdf",
             "product_id": 5
         },
-        "ingest_formats": {}
+        "ingest_formats": {
+            "modis_std_ish":{
+                "//": "sorta like https://lpdaac.usgs.gov/dataset_discovery/modis",
+                "path_format": "A%Y%j.%H%M.hdf",
+            }
+        }
     },
     ### === others from the metadata db that in need of adding:
     # "png_chl_7d": {
