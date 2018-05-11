@@ -74,7 +74,15 @@ def _load_dir(args):
                 logger.debug("skipping {}...".format(fpath))
                 skipped_count+=1
             except IntegrityError as i_err:
-                if getattr(args,'duplicates_ok', False):
+                logger.debug(i_err)
+                errnum, errmsg = i_err.args
+                logger.debug("errnum,={}".format(errnum))
+                logger.debug("errmsg,={}".format(errmsg))
+                DUPLICATE_ENTRY_ERRNO=1062
+                if (
+                    errnum==DUPLICATE_ENTRY_ERRNO and
+                    getattr(args,'duplicates_ok', False)
+                ):
                     logger.warn(
                         "IntegrityError: Duplicate entry for '{}'".format(
                             fpath
