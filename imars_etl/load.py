@@ -68,7 +68,6 @@ def _load_dir(args):
                 args.filepath = fpath
                 insert_statements.append(_load_file(args))
                 logger.debug("loading {}...".format(fpath))
-                args = copy.deepcopy(orig_args)  # reset args
                 loaded_count+=1
             except SyntaxError as s_err:
                 logger.debug("skipping {}...".format(fpath))
@@ -91,6 +90,8 @@ def _load_dir(args):
                     duplicate_count+=1
                 else:
                     raise
+            finally:
+                args = copy.deepcopy(orig_args)  # reset args
     logger.info("{} files loaded, {} skipped, {} duplicates.".format(
         loaded_count, skipped_count, duplicate_count
     ))
