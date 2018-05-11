@@ -119,6 +119,19 @@ data = {
             "product_id": -1
         },
     },
+    # short_names come from MODAPS:
+    #    https://modaps.modaps.eosdis.nasa.gov/services/about/products/c6/
+    "myd01": {
+        "//": "modis aqua l1. I *think* these files are the same as l1a_LAC,"
+              " but from LANCE. " +
+              "https://modaps.modaps.eosdis.nasa.gov/services/about/products/c6/MYD01.html",
+        "imars_object_format":{
+            "path": "/srv/imars-objects/modis_aqua_gom/myd01",
+            "basename": "A%Y%j.%H%M.hdf",
+            "product_id": 5
+        },
+        "ingest_formats": {}
+    },
     ### === others from the metadata db that in need of adding:
     # "png_chl_7d": {
     #     "name": "FGB_A1km_chlor_a_%Y%j_%Y%j_7D_MEAN.png"
@@ -127,11 +140,6 @@ data = {
     # "l1a_lac_hdf_bz2":{
     #     "//": "zipped l1a (myd01) files from OB.DAAC",
     #     "basename": "A%Y%j%H%M00.L1A_LAC.x.hdf.bz2"
-    # }
-    # "myd01": {
-    #     "//": "modis aqua l1. I *think* these files are the same as l1a_LAC," +
-    #         + " but from LANCE.",
-    #     "basename": "A%Y%j.%H%M.hdf"
     # }
     # "geo": {
     #     "basename": "A%Y%j%H%M00.GEO"
