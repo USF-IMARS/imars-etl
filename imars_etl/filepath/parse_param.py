@@ -87,7 +87,6 @@ def _parse_from_product_type_and_filename(args, pattern, pattern_name):
 
     # logger.debug('trying pattern "{}"'.format(pattern))
     logger.debug("\n{}\n\t=?=\n{}".format(filename,pattern))
-
     # logger.debug('args:\n{}'.format(args))
 
     path_fmt_str = _replace_strftime_dirs(pattern)
