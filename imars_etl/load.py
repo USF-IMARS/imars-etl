@@ -121,7 +121,7 @@ def _load_file(args):
             args,
             sql,
             check_result=False,
-            should_commit=(not args.dry_run),
+            should_commit=(not getattr(args, 'dry_run', False)),
         )
 
 def _make_sql_insert(args):
