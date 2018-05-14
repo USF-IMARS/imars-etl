@@ -90,10 +90,7 @@ def _parse_from_product_type_and_filename(args, pattern, pattern_name):
 
     # logger.debug('args:\n{}'.format(args))
 
-    path_fmt_str = get_ingest_format(
-        args.product_type_name, getattr(args, 'ingest_key', None)
-    )
-    path_fmt_str = _replace_strftime_dirs(path_fmt_str)
+    path_fmt_str = _replace_strftime_dirs(pattern)
     params_parsed = parse(path_fmt_str, filename)
     if params_parsed is None:
         raise SyntaxError(
