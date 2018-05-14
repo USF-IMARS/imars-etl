@@ -118,6 +118,9 @@ def parse_args(argvs):
     parser_load.add_argument("-j", "--json",
         help="string of json with given file's metadata."
     )
+    parser_load.add_argument("-l", "--load_format",
+        help="python strptime-enabled format string describing input basename."
+    )
     parser_load.add_argument("--dry_run",
         help="test run only, does not actually insert into database",
         action="store_true"

@@ -158,6 +158,12 @@ def parse_all_from_filename(args):
         __name__,
         sys._getframe().f_code.co_name)
     )
+    if ( getattr(args, 'load_format', None) is not None):
+        return _parse_from_product_type_and_filename(
+            args,
+            getattr(args, 'load_format'),
+            'manually set custom load_format'
+        )
     if ( getattr(args, 'product_type_name', None) is not None ):
         ing_key = getattr(args, 'ingest_key', None)
         if (ing_key is None):
