@@ -114,7 +114,7 @@ def _load_file(args):
 
     sql = _make_sql_insert(args)
     sql = sql.replace(args.filepath, new_filepath)
-    if args.dry_run:  # test mode returns the sql string
+    if getattr(args, 'dry_run', False):  # test mode returns the sql string
         return sql
     else:
         return get_sql_result(
