@@ -126,9 +126,13 @@ def _load_file(args):
 
 def _make_sql_insert(args):
     """creates SQL INSERT INTO statement with metadata from given args dict"""
+    logger = logging.getLogger("{}.{}".format(
+        __name__,
+        sys._getframe().f_code.co_name)
+    )
     try:
         json_dict = json.loads(args.json)
-    except TypeError as t_err:  # json str is empty
+    except (TypeError, AttributeError):  # json str is empty
         json_dict = dict()
     json_dict["filepath"] = '"'+args.filepath+'"'
     json_dict["date_time"] = '"'+args.time+'"'
@@ -143,7 +147,9 @@ def _make_sql_insert(args):
     vals=vals[:-1]
 
     # Create a new record
-    return "INSERT INTO file ("+keys+") VALUES ("+vals+")"
+    SQL = "INSERT INTO file ("+keys+") VALUES ("+vals+")"
+    logger.debug(SQL)
+    return SQL
 
 def _validate_args(args):
     """

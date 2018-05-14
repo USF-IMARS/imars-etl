@@ -229,7 +229,7 @@ class Test_load(TestCase):
         # + ' VALUES (1,"2018-02-26T13:00",1,-1,"/srv/imars-objects/test_test_test/simple_file_with_no_args.txt")'
         self.assertSQLInsertKeyValuesMatch(
             res,
-            ['status_id','date_time','area_id','product_id','filepath'],
+            ['date_time','product_id','filepath'],
             [
                 '"2018-02-26T13:00"',
                 '-1',
@@ -239,7 +239,7 @@ class Test_load(TestCase):
 
     def test_load_python_with_json(self):
         """
-        API basic imars_etl.load:
+        API imars_etl.load with --json option
             imars_etl.load({
                 "dry_run": True,
                 "filepath": "/fake/path/file_w_date_2018.txt",
@@ -505,11 +505,9 @@ class Test_load(TestCase):
         # + ' VALUES (1,"2018-02-26T13:00",1,-1,"/srv/imars-objects/test_test_test/simple_file_with_no_args.txt")'
         self.assertSQLInsertKeyValuesMatch(
             res,
-            ['status_id','date_time','area_id','product_id','filepath'],
+            ['date_time','product_id','filepath'],
             [
-                '1',
-                '"2018-06-21T00:00"',
-                '1',
+                '"2018-06-21T00:00:00"',
                 '-1',
                 '"/srv/imars-objects/test_test_test/simple_file_with_no_args.txt"'
             ]
