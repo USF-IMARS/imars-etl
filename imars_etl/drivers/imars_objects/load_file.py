@@ -15,7 +15,7 @@ def load_file(args):
     ul_target = satfilename.get_name(args)
     logger.debug(["mv", args['filepath'], ul_target])
 
-    if not args['dry_run']:  # don't actually move if test mode
+    if not getattr(args, 'dry_run', False):  # don't actually move if test mode
         try:
             shutil.move(args['filepath'], ul_target)
         except IOError as i_err:  # possible dir DNE
