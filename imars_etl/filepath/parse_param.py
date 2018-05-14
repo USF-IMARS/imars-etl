@@ -96,7 +96,12 @@ def _parse_from_product_type_and_filename(args, pattern, pattern_name):
     path_fmt_str = _replace_strftime_dirs(path_fmt_str)
     params_parsed = parse(path_fmt_str, filename)
     if params_parsed is None:
-        raise SyntaxError("filepath does not match pattern")
+        raise SyntaxError(
+            "filepath does not match pattern\n\tpath: {}\n\tpattern:{}".format(
+                filename,
+                path_fmt_str
+            )
+        )
     else:
         params_parsed = params_parsed.named
 
