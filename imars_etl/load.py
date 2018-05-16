@@ -7,7 +7,7 @@ import copy
 
 from pymysql.err import IntegrityError
 
-from imars_etl.filepath.parse_param import parse_all_from_filename
+from imars_etl.filepath.parse_param import parse_filepath
 from imars_etl.filepath.get_product_id import get_product_id
 
 from imars_etl.filepath.get_product_name import get_product_name
@@ -203,7 +203,7 @@ def _validate_args(args):
 
 
     logger.debug("pre-guess-args : " + str(args))
-    args = parse_all_from_filename(args)
+    args = parse_filepath(args)
     logger.debug("post-guess-args: " + str(args))
 
     ISO_8601_FMT="%Y-%m-%dT%H:%M:%S"

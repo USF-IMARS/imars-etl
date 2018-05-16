@@ -14,7 +14,7 @@ logging.getLogger("parse").setLevel(logging.WARN)
 from imars_etl.filepath.get_ingest_format import get_ingest_formats, get_ingest_format
 from imars_etl.filepath.get_product_id import get_product_id
 
-def parse_all_from_filename(args):
+def parse_filepath(args):
     """
     attempts to fill all arguments in args using args.filepath and information
     from `imars_etl.filepath.data`. Tries to match against all possible product
@@ -152,7 +152,6 @@ def _setattr_unless_exists(args, key, val):
         logger.debug("\t|-> {}".format(val))
         setattr(args, key, val)
     return args
-
 
 _STRFTIME_MAP = {
     "%a":  "{dt_a:3w}",  # Weekday as locale's abbreviated name.   |  Mon
