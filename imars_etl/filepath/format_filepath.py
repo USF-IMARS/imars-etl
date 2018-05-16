@@ -36,29 +36,39 @@ def get_imars_object_paths():
     return res
 
 def format_filepath(args, forced_basename=None):
-    """
-    args are used to set metadata info that may be used in the formation of
-    the path or basename.
+    logger = logging.getLogger("{}.{}".format(
+        __name__,
+        sys._getframe().f_code.co_name)
+    )
+    fullpath = _format_filepath_template(
+        product_type_name=args.get('product_type_name', None),
+        product_id=args.get('product_id',-999999),
+        forced_basename=forced_basename
+    )
+    logger.info("formatting imars-obj path \n>>'{}'".format(fullpath))
+    return args['datetime'].strftime(
+        (fullpath).format(**args)
+    )
 
-    Returns
-    ------------
-    str
-        path to file formed using given metadata in args
-    """
+def _format_filepath_template(
+        product_type_name,
+        product_id,
+        forced_basename=None
+    ):
     logger = logging.getLogger("{}.{}".format(
         __name__,
         sys._getframe().f_code.co_name)
     )
     logger.setLevel(logging.INFO)
     logger.info("placing {} (#{})...".format(
-        args.get('product_type_name','???'),
-        args.get('product_id',-999999))
+        product_type_name,
+        product_id)
     )
     for prod_name, prod_meta in get_imars_object_paths().items():
         logger.debug("is {} (#{})?".format(prod_name, prod_meta['product_id']))
         if (
-                   args.get('product_type_name','') == prod_name
-                or args.get('product_id',-999999) == prod_meta['product_id']
+                product_type_name == prod_name
+                or product_id == prod_meta['product_id']
             ):  # if file type or id is given and matches a known type
             logger.debug('y!')
 
@@ -68,16 +78,13 @@ def format_filepath(args, forced_basename=None):
                 _basename = prod_meta['basename']
 
             try:  # set product_type_name if not already set
-                test = args['product_type_name']
+                test = product_type_name  # NOTE: this made more sense before:
+                # test = args['product_type_name']
                 # TODO: check for match w/ prod_name & raise if not?
             except KeyError as k_err:
-                args['product_type_name'] = prod_name
+                product_type_name = prod_name
 
-            fullpath = prod_meta['path']+"/"+_basename
-            logger.info("formatting imars-obj path \n>>'{}'".format(fullpath))
-            return args['datetime'].strftime(
-                (fullpath).format(**args)
-            )
+            return prod_meta['path']+"/"+_basename
         else:
             logger.debug("no.")
     else:
