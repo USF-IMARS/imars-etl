@@ -137,6 +137,33 @@ data = {
             }
         }
     },
+    "zip_ntf_wv2_ftp_ingest": {
+        "//": "older format from digital globe with mostly ntf files at root",
+        "imars_object_format":{
+            "path": "/srv/imars-objects/NONE",  # <- TODO
+            "basename": "wv2_ntf_%Y-%m-%dT%H%M_{tag}.zip",
+            "product_id": 34
+        },
+        "ingest_formats": {
+            "imars_object_basename_fmt":{
+                "path_format": "wv2_ntf_%Y-%m-%dT%H%M_{tag}.zip",
+            }
+        }
+    },
+    "myd0_otis_l2": {
+        "//": "modis aqua l2 files using @dotis's gpt graph'",
+        "imars_object_format":{
+            "path": "/srv/imars-objects/{roi}/myd0_otis_l2",
+            "basename": "myd0_otis_l2_A%Y%j%H%M%S.hdf",
+            "product_id": 35
+        },
+        "ingest_formats": {
+            "dotis_cron_output":{
+                "path_format": "A%Y%j%H%M%S.L2",
+            }
+        }
+    },
+
     ### === others from the metadata db that in need of adding:
     # "png_chl_7d": {
     #     "name": "FGB_A1km_chlor_a_%Y%j_%Y%j_7D_MEAN.png"
@@ -157,9 +184,6 @@ data = {
     # }
     # "qkm": {
     #     "basename": "A%Y%j%H%M00.L1B_QKM"
-    # }
-    # "l2": {
-    #     "basename": "A%Y%j%H%M00.L2"
     # }
     # "l3": {
     #     "basename": ISO_8601_FMT+"_l3.nc"
