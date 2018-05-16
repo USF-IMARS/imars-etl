@@ -45,7 +45,7 @@ Filenames in `geo` and `geo_v2` are probably similar, but shoud not be identical
 import logging
 import sys
 
-from imars_etl.filepath.data import get_imars_object_paths
+from imars_etl.filepath.get_imars_object_paths import get_imars_object_paths
 
 def get_name(args, forced_basename=None):
     """
