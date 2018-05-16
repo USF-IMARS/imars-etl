@@ -3,7 +3,6 @@ dict which maps `imars_product_metadata.product.short_name` to expected
    filename patterns. Used to infer metadata from the filepath.
 """
 import logging
-import sys
 
 ISO_8601_FMT="%Y-%m-%dT%H:%M:%SZ"
 
@@ -200,30 +199,9 @@ data = {
     # }
 }
 
-def get_product_name(product_id):
-    """get product name from given id"""
-    logger = logging.getLogger("{}.{}".format(
-        __name__,
-        sys._getframe().f_code.co_name)
-    )
-    logger.setLevel(logging.INFO)
-    logger.debug("get_data_from_pid({})".format(product_id))
-    for product_short_name, product_data in data.items():
-        pid = product_data["imars_object_format"]["product_id"]
-        logger.debug("pid is {}?".format(pid))
-        if pid == product_id:
-            logger.debug("y!")
-            return product_short_name
-    else:
-        raise KeyError("product_id {} not found".format(product_id))
-
 def get_product_id(product_type_name):
     """get product id from given name"""
     return data[product_type_name]["imars_object_format"]["product_id"]
-
-def get_product_data_from_id(prod_id):
-    """used to index product data by id number instead of short_name"""
-    return data[get_product_name(prod_id)]
 
 def get_imars_object_paths():
     """

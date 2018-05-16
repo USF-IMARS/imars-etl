@@ -8,7 +8,10 @@ import copy
 from pymysql.err import IntegrityError
 
 from imars_etl.filepath.parse_param import parse_all_from_filename
-from imars_etl.filepath.data import get_product_data_from_id, get_product_id, get_product_name
+from imars_etl.filepath.data import get_product_id
+
+from imars_etl.filepath.get_product_name import get_product_name
+from imars_etl.filepath.get_product_data_from_id import get_product_data_from_id
 from imars_etl.util import dict_to_argparse_namespace, get_sql_result
 from imars_etl.drivers.imars_objects import load_file
 
