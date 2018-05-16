@@ -199,10 +199,6 @@ data = {
     # }
 }
 
-def get_product_id(product_type_name):
-    """get product id from given name"""
-    return data[product_type_name]["imars_object_format"]["product_id"]
-
 def get_ingest_formats():
     """
     returns a dict of all ingest formats.

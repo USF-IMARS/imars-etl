@@ -11,7 +11,8 @@ import os
 from parse import parse
 logging.getLogger("parse").setLevel(logging.WARN)
 
-from imars_etl.filepath.data import get_ingest_formats, get_product_id, get_ingest_format
+from imars_etl.filepath.data import get_ingest_formats, get_ingest_format
+from imars_etl.filepath.get_product_id import get_product_id
 
 STRFTIME_MAP = {
     "%a":  "{dt_a:3w}",  # Weekday as locale's abbreviated name.   |  Mon

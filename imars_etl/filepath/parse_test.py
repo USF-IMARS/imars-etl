@@ -13,7 +13,7 @@ from datetime import datetime
 
 # dependencies:
 from imars_etl.filepath.parse_param import parse_all_from_filename
-from imars_etl.filepath.data import get_product_id
+from imars_etl.filepath.get_product_id import get_product_id
 from imars_etl.cli import parse_args
 
 
