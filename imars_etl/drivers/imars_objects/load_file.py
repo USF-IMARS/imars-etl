@@ -4,7 +4,7 @@ import os
 import shutil
 import errno
 
-from imars_etl.drivers.imars_objects.satfilename import satfilename
+from imars_etl.filepath.format_filepath import format_filepath
 
 def load_file(args):
     logger = logging.getLogger("{}.{}".format(
@@ -12,7 +12,7 @@ def load_file(args):
         sys._getframe().f_code.co_name)
     )
     # logger.debug('_load(args)| args=\n\t{}'.format(args))
-    ul_target = satfilename.get_name(args)
+    ul_target = format_filepath(args)
     logger.debug(["mv", args['filepath'], ul_target])
 
     if not args.get('dry_run', False):  # don't actually move if test mode

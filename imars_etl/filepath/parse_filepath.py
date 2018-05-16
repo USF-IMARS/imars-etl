@@ -1,6 +1,5 @@
 """
-functions to parse metadata out of filepath based on known patterns in
-filepath.data
+parse metadata out of a filepath
 """
 from datetime import datetime
 import logging
