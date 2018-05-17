@@ -46,37 +46,37 @@ class Test_format_filepath_template(TestCase):
     def test_format_filename_template(self):
         """ create basic file format template with 100% knowledge"""
         result = _format_filepath_template(
-            "myd01",
-            5,
+            "test_fancy_format_test",
+            -2,
             forced_basename=None
         )
         self.assertEqual(
             result,
-            "/srv/imars-objects/modis_aqua_gom/myd01/A%Y%j.%H%M.hdf"
+            "/srv/imars-objects/_fancy_{test_arg}_/%Y-%j/arg_is_{test_arg}_time_is_%H%S.fancy_file"
         )
 
     def test_format_filename_w_product_id(self):
         """ can create file format template with only product_id"""
         result = _format_filepath_template(
             None,
-            5,
+            -2,
             forced_basename=None
         )
         self.assertEqual(
             result,
-            "/srv/imars-objects/modis_aqua_gom/myd01/A%Y%j.%H%M.hdf"
+            "/srv/imars-objects/_fancy_{test_arg}_/%Y-%j/arg_is_{test_arg}_time_is_%H%S.fancy_file"
         )
 
     def test_format_filename_w_prod_name(self):
         """ can create file format template with only product_type_name"""
         result = _format_filepath_template(
-            "myd01",
+            "test_fancy_format_test",
             None,
             forced_basename=None
         )
         self.assertEqual(
             result,
-            "/srv/imars-objects/modis_aqua_gom/myd01/A%Y%j.%H%M.hdf"
+            "/srv/imars-objects/_fancy_{test_arg}_/%Y-%j/arg_is_{test_arg}_time_is_%H%S.fancy_file"
         )
 
     def test_format_filename_w_nothing(self):

@@ -118,6 +118,21 @@ data = {
             "product_id": -1
         },
     },
+    "test_fancy_format_test":{
+        "//": "this is a fake type used for testing only",
+        "ingest_formats": {
+            "file_w_date":{
+                "//": "used to test auto date parsing from filename",
+                "path_format": "date_%Y%j.arg_{test_arg}.time_%H%S.woah",
+            }
+        },
+        "imars_object_format": {
+            "path"    : "/srv/imars-objects/_fancy_{test_arg}_/%Y-%j",
+            "basename": "arg_is_{test_arg}_time_is_%H%S.fancy_file",
+            "product_id": -2
+        },
+    },
+
     # short_names come from MODAPS:
     #    https://modaps.modaps.eosdis.nasa.gov/services/about/products/c6/
     "myd01": {
