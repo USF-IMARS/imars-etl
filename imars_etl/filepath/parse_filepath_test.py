@@ -75,3 +75,15 @@ class Test_parse_filepath(TestCase):
         )
         # this fails... but I don't think we really care.
         # self.assertEqual(res_args.ingest_key, "file_w_date")
+
+    def test_parse_args_and_date_from_filename(self):
+        """ parse fancy filepath reads args & date from path """
+        test_args = parse_args([
+            '-vvv',
+            'load',
+            '--dry_run',
+            '-f', 'date_2022123.arg_testyTestArg.time_0711.woah'
+        ])
+        res_args = parse_filepath(test_args)
+        self.assertEqual( res_args.datetime, datetime(2022,5,3,7,0,11))
+        self.assertEqual( res_args.test_arg, "testyTestArg")
