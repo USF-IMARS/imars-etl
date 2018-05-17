@@ -387,6 +387,34 @@ class Test_load(TestCase):
                 ]
             )
 
+    def test_custom_input_args_in_json(self):
+        """
+        imars_etl.load w/ args passed in --json
+        """
+        from imars_etl.load import load
+        from imars_etl.cli import parse_args
+        test_args = parse_args([
+            '-vvv',
+            'load',
+            '--dry_run',
+            '-f', "fake_filepath.bs",
+            '-n', "test_fancy_format_test",
+            '-i', "file_w_nothing",
+            '-t', "2018-01-01T08:08",
+            '--json', '{"test_arg":"tssst"}'
+        ])
+        res = load(test_args)
+        self.assertSQLInsertKeyValuesMatch(
+            res,
+            ['date_time','product_id','filepath'],
+            [
+                '"2018-08-08T08:08"',
+                '-2',
+                '"/srv/imars-objects/_fancy_tssst_/2018-001/arg_is_tsst_time_is_0800.fancy_file"'
+            ]
+        )
+
+
     def test_load_directory_only_loads_files_of_given_type(self):
         """
             CLI load dir loads only files that match the given type

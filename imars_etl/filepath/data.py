@@ -122,8 +122,11 @@ data = {
         "//": "this is a fake type used for testing only",
         "ingest_formats": {
             "file_w_date":{
-                "//": "used to test auto date parsing from filename",
+                "//": "used to parsing from filename",
                 "path_format": "date_%Y%j.arg_{test_arg}.time_%H%S.woah",
+            },
+            "file_w_nothing":{
+                "path_format": "fake_filepath.bs",
             }
         },
         "imars_object_format": {
@@ -167,7 +170,7 @@ data = {
     "myd0_otis_l2": {
         "//": "modis aqua l2 files using @dotis's gpt graph'",
         "imars_object_format":{
-            "path": "/srv/imars-objects/{roi}/myd0_otis_l2",
+            "path": "/srv/imars-objects/{area_short_name}/myd0_otis_l2",
             "basename": "myd0_otis_l2_A%Y%j%H%M%S.hdf",
             "product_id": 35
         },
