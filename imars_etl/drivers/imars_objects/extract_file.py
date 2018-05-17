@@ -12,7 +12,7 @@ def extract_file(src_path, tmp_dir="/srv/imars-objects/airflow_tmp", **kwargs):
     logger.debug("s_pth: {}".format(src_path))
 
     filename = os.path.basename(src_path)
-    target_path = tmp_dir + filename
+    target_path = os.path.join(tmp_dir, filename)
 
     logger.debug(["cp", src_path, target_path])
     shutil.copy(src_path, target_path)
