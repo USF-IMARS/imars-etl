@@ -42,7 +42,7 @@ def format_filepath(args, forced_basename=None):
     )
     fullpath = _format_filepath_template(
         product_type_name=args.get('product_type_name', None),
-        product_id=args.get('product_id',-999999),
+        product_id=args.get('product_id', None),
         forced_basename=forced_basename
     )
     logger.info("formatting imars-obj path \n>>'{}'".format(fullpath))
