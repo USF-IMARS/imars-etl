@@ -19,27 +19,27 @@ class Test_format_filepath(TestCase):
         """" create filepath w/ minimal args (product_name)"""
         args = {
             "datetime": datetime(2015,5,25,15,55),
-            "product_type_name": "myd01"
+            "product_type_name": "test_test_test"
         }
         result = format_filepath(
             args
         )
         self.assertEqual(
             result,
-            "/srv/imars-objects/modis_aqua_gom/myd01/A2015145.1555.hdf"
+            "/srv/imars-objects/test_test_test/simple_file_with_no_args.txt"
         )
     def test_format_filepath_pid(self):
         """" create filepath w/ minimal args (product_id)"""
         args = {
             "datetime": datetime(2015,5,25,15,55),
-            "product_id": 5
+            "product_id": -1
         }
         result = format_filepath(
             args
         )
         self.assertEqual(
             result,
-            "/srv/imars-objects/modis_aqua_gom/myd01/A2015145.1555.hdf"
+            "/srv/imars-objects/test_test_test/simple_file_with_no_args.txt"
         )
 
 class Test_format_filepath_template(TestCase):
