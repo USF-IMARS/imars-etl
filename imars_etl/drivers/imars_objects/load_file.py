@@ -13,7 +13,7 @@ def load_file(args):
     )
     # logger.debug('_load(args)| args=\n\t{}'.format(args))
     ul_target = format_filepath(args)
-    logger.debug(["mv", args['filepath'], ul_target])
+    logger.debug(["cp", args['filepath'], ul_target])
 
     if not args.get('dry_run', False):  # don't actually move if test mode
         try:
@@ -24,6 +24,6 @@ def load_file(args):
                 raise i_err
             else:
                 os.makedirs(os.path.dirname(ul_target))
-                shutil.move(args['filepath'], ul_target)
+                shutil.copy(args['filepath'], ul_target)
 
     return ul_target
