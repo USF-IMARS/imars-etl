@@ -31,7 +31,7 @@ def extract(args):
     # accessed on the local machine.
     fpath = STORAGE_DRIVERS[
         getattr(args,'storage_driver','imars_objects')
-    ](file, vars(**args))
+    ](result['filepath'], **vars(args))
 
     print(fpath)
     return fpath
