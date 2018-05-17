@@ -106,7 +106,8 @@ def _load_file(args):
         __name__,
         sys._getframe().f_code.co_name)
     )
-    args = _validate_args(args)
+    args_dict = _validate_args(args)
+    args = dict_to_argparse_namespace(args_dict)
 
     # load file into IMaRS data warehouse
     # NOTE: _load should support args.dry_run=True also
@@ -201,7 +202,6 @@ def _validate_args(args):
 
     product_data = get_product_data_from_id(args.product_id)
 
-
     logger.debug("pre-guess-args : " + str(args))
     args = parse_filepath(args)
     logger.debug("post-guess-args: " + str(args))
@@ -224,4 +224,4 @@ def _validate_args(args):
 
     setattr(args, "datetime", dt)
 
-    return args
+    return vars(args)
