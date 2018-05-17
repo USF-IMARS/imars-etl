@@ -4,6 +4,7 @@ import sys
 import json
 import os
 import copy
+import numbers
 
 from pymysql.err import IntegrityError
 
@@ -107,7 +108,7 @@ def _load_file(args):
         sys._getframe().f_code.co_name)
     )
     args_dict = _validate_args(args)
-    args = dict_to_argparse_namespace(args_dict)
+    args = dict_to_argparse_namespace(args_dict)  # TODO: rm need for this
 
     # load file into IMaRS data warehouse
     # NOTE: _load should support args.dry_run=True also
@@ -116,7 +117,7 @@ def _load_file(args):
     except TypeError:  # for some reason nosetests needs it like this:
         new_filepath = STORAGE_DRIVERS[args.storage_driver].load_file(vars(args))
 
-    sql = _make_sql_insert(args)
+    sql = _make_sql_insert(args_dict)
     sql = sql.replace(args.filepath, new_filepath)
     if getattr(args, 'dry_run', False):  # test mode returns the sql string
         return sql
@@ -130,23 +131,25 @@ def _load_file(args):
 
 def _make_sql_insert(args):
     """creates SQL INSERT INTO statement with metadata from given args dict"""
+    VALID_FILE_TABLE_COLNAMES=[  # TODO: get this from db
+        'filepath','date_time','product_id','is_day_pass','area_id','status_id'
+    ]
     logger = logging.getLogger("{}.{}".format(
         __name__,
         sys._getframe().f_code.co_name)
     )
-    try:
-        json_dict = json.loads(args.json)
-    except (TypeError, AttributeError):  # json str is empty
-        json_dict = dict()
-    json_dict["filepath"] = '"'+args.filepath+'"'
-    json_dict["date_time"] = '"'+args.time+'"'
-    json_dict["product_id"] = args.product_id
-
+    KEY_FMT_STR='{},'  # how we format sql keys
     keys=""
     vals=""
-    for key in json_dict:
-        keys += str(key)+","
-        vals += str(json_dict[key])+","
+    for key in args:
+        val = args[key]
+        if key in VALID_FILE_TABLE_COLNAMES:
+            if isinstance(val, numbers.Number):
+                val_fmt_str='{},'
+            else: # fmt as str
+                val_fmt_str='"{}",'
+            keys += KEY_FMT_STR.format(key)
+            vals += val_fmt_str.format(val)
     keys=keys[:-1] # trim last comma
     vals=vals[:-1]
 
@@ -243,4 +246,6 @@ def _validate_args(args):
     except KeyError:
         logger.warn("args['json'] is None?")
 
+    # create args['date_time'] from args['time']
+    arg_dict['date_time'] = arg_dict['time']
     return arg_dict

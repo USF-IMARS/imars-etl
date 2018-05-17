@@ -410,9 +410,9 @@ class Test_load(TestCase):
             res,
             ['date_time','product_id','filepath'],
             [
-                '"2018-08-08T08:08"',
+                '"2018-01-01T08:08"',
                 '-2',
-                '"/srv/imars-objects/_fancy_tssst_/2018-001/arg_is_tsst_time_is_0800.fancy_file"'
+                '"/srv/imars-objects/_fancy_tssst_/2018-001/arg_is_tssst_time_is_0800.fancy_file"'
             ]
         )
 
@@ -596,7 +596,7 @@ class Test_validate_args(TestCase):
                 "filepath": "/fake/path/file_w_date_2018.txt",
                 "product_id": -1,
                 "product_type_name": "test_test_test",
-                "time":  "2018-02-26T13:00",
+                "date_time":  "2018-02-26T13:00",
                 "datetime": datetime(2018,2,26,13),
                 "json": '{"status_id":1,"area_id":1}',
                 "status_id": 1,
