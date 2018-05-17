@@ -15,9 +15,9 @@ def load_file(args):
     ul_target = format_filepath(args)
     logger.debug(["cp", args['filepath'], ul_target])
 
-    if not args.get('dry_run', False):  # don't actually move if test mode
+    if not args.get('dry_run', False):  # don't actually load if test mode
         try:
-            shutil.move(args['filepath'], ul_target)
+            shutil.copy(args['filepath'], ul_target)
         except IOError as i_err:  # possible dir DNE
             # ENOENT(2): file does not exist or missing dest parent dir
             if i_err.errno != errno.ENOENT:
