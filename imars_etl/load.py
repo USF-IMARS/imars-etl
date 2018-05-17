@@ -13,8 +13,8 @@ from imars_etl.filepath.get_product_id import get_product_id
 from imars_etl.filepath.get_product_name import get_product_name
 from imars_etl.filepath.get_product_data_from_id import get_product_data_from_id
 from imars_etl.util import dict_to_argparse_namespace, get_sql_result
+from imars_etl.util.exceptions import InputValidationError
 from imars_etl.drivers.imars_objects import load_file
-
 STORAGE_DRIVERS = {  # map from input strings to load_file functions for each backend
     'imars_objects': load_file,
     'no_upload': lambda args: args['filepath'],
@@ -224,4 +224,23 @@ def _validate_args(args):
 
     setattr(args, "datetime", dt)
 
-    return vars(args)
+    # TODO: do all the stuff above to make this dict instead
+    arg_dict = vars(args)
+
+    try:  # add json args to arg_dict
+        json_dict = json.loads(arg_dict['json'])
+        for key in json_dict:
+            if key in arg_dict and arg_dict[key] != json_dict[key]:
+                raise InputValidationError(
+                    "CLI argument passed that contradicts json argument:\n"+
+                    "\t CLI arg : {}".format(arg_dict[key]) +
+                    "\tjson arg : {}".format(json_dict[key])
+                )
+            else:
+                arg_dict[key] = json_dict[key]
+    except TypeError:
+        logger.debug("json str is empty")
+    except KeyError:
+        logger.warn("args['json'] is None?")
+
+    return arg_dict
