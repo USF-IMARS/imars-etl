@@ -46,9 +46,16 @@ def format_filepath(args, forced_basename=None):
         forced_basename=forced_basename
     )
     logger.info("formatting imars-obj path \n>>'{}'".format(fullpath))
-    return args['datetime'].strftime(
-        (fullpath).format(**args)
-    )
+    try:
+        return args['datetime'].strftime(
+            (fullpath).format(**args)
+        )
+    except KeyError as k_err:
+        logger.error(
+            "cannot guess an argument required to make path. "
+            " pass this argument manually using --json "
+        )
+        raise k_err
 
 def _format_filepath_template(
         product_type_name,

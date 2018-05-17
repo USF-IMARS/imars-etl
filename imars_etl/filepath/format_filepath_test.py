@@ -15,6 +15,7 @@ from datetime import datetime
 from imars_etl.filepath.format_filepath import _format_filepath_template, format_filepath
 
 class Test_format_filepath(TestCase):
+    # TODO: test mismatched pid & product_name throws err?
     def test_format_filepath_p_name(self):
         """" create filepath w/ minimal args (product_name)"""
         args = {
@@ -28,6 +29,7 @@ class Test_format_filepath(TestCase):
             result,
             "/srv/imars-objects/test_test_test/simple_file_with_no_args.txt"
         )
+
     def test_format_filepath_pid(self):
         """" create filepath w/ minimal args (product_id)"""
         args = {
@@ -41,6 +43,17 @@ class Test_format_filepath(TestCase):
             result,
             "/srv/imars-objects/test_test_test/simple_file_with_no_args.txt"
         )
+
+    def test_format_filepath_fancy_raise(self):
+        """ raise on fancy filepath missing required arg in path """
+        with self.assertRaises(KeyError):
+            result = format_filepath(
+                {
+                    "datetime": datetime(2015,5,25,15,55),
+                    "product_id": -2
+                    # test_arg is required for this path, but is not here
+                }
+            )
 
 class Test_format_filepath_template(TestCase):
     def test_format_filename_template(self):
