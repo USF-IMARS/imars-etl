@@ -2,6 +2,11 @@ import logging
 import sys
 
 from imars_etl.util import dict_to_argparse_namespace, get_sql_result
+from imars_etl.drivers.imars_objects.extract_file import extract_file
+
+STORAGE_DRIVERS = {  # map from input strings to extract fn for each backend
+    'imars_objects': extract_file,
+}
 
 def extract(args):
     """
@@ -22,10 +27,11 @@ def extract(args):
         args,
         "SELECT filepath FROM file WHERE {}".format(args.sql)
     )
-    # TODO: download & then print a path to where the file can be
+    # use driver to download & then print a path to where the file can be
     # accessed on the local machine.
-    # NOTE: currently this just gives the path because we assume:
-    #   1. that the path is in /srv/imars-objects
-    #   2. that the system is set up to access /srv/imars-objects
-    print(result)
-    return result
+    fpath = STORAGE_DRIVERS[
+        getattr(args,'storage_driver','imars_objects')
+    ](file, vars(**args))
+
+    print(fpath)
+    return fpath
