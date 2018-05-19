@@ -21,7 +21,7 @@ def parse_keys_vals_from_sql_insert(sql_str):
     vals = vals.split(')')[0].split(',')
     return keys, vals
 
-class Test_load(TestCase):
+class TestCasePlusSQL(TestCase):
     def assertSQLInsertKeyValuesMatch(self, sql_str, keys, vals):
         """
         asserts that keys and values in SQL INSERT statement match the given.
@@ -51,7 +51,7 @@ class Test_load(TestCase):
                 vals_arry[i]
             )
 
-
+class Test_load_cli(TestCasePlusSQL):
     # tests:
     #########################
     # === bash CLI (passes ArgParse objects)
@@ -206,6 +206,7 @@ class Test_load(TestCase):
             ]
         )
 
+class Test_load_api(TestCasePlusSQL):
     # === python API (passes dicts)
     def test_load_python_basic_dict(self):
         """
