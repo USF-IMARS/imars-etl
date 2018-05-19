@@ -161,18 +161,22 @@ class Test_load_api(TestCasePlusSQL):
             res = load({
                 'product_type_name': 'test_fancy_format_test',
                 'verbose': 3,
+                'ingest_key': 'file_w_date',
                 'directory': FAKE_TEST_DIR,
+                'dry_run': True,
             })
 
-            #'INSERT INTO file'
-            # + ' (status_id,date_time,area_id,product_id,filepath)'
-            # + ' VALUES (1,"2018-02-26T13:00",1,-1,"/srv/imars-objects/test_test_test/simple_file_with_no_args.txt")'
-            self.assertSQLInsertKeyValuesMatch(
+
+            self.assertSQLsEquals(
                 res,
-                ['date_time','product_id','filepath'],
                 [
-                    '"2018-10-26T13:00:11"',
-                    '-2',
-                    '"/srv/imars-objects/_fancy_test_arg-here_/2018-333/arg_is_test_arg-here_time_is_1311.fancy_file'
+                    ['date_time','product_id','filepath'],
+                ],
+                [
+                    [
+                        '"2018-11-29T13:00:11"',
+                        '-2',
+                    '"/srv/imars-objects/_fancy_test_arg-here_/2018-333/arg_is_test_arg-here_time_is_1311.fancy_file"'
+                    ]
                 ]
             )

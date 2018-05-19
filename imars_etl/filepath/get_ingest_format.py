@@ -43,7 +43,7 @@ def get_ingest_format(short_name, ingest_name=None):
     else:
         # we don't know what ingest_format to use
         raise KeyError(
-            "--ingest_key must be given for product # {}".format(
-                args.product_id
+            "--ingest_key must be given for product '{}'".format(
+                short_name
             )
         )

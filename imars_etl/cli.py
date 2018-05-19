@@ -11,6 +11,16 @@ from imars_etl.extract import extract
 from imars_etl.id_lookup import id_lookup
 from imars_etl.get_metadata import get_metadata
 
+EXTRACT_DEFAULTS={
+    'func': 'extract',
+    'storage_driver': "imars_objects"
+}
+
+LOAD_DEFAULTS={
+    'func': 'load',
+    'storage_driver': "imars_objects"
+}
+
 def parse_args(argvs):
     # print(argvs)
     # =========================================================================
@@ -57,7 +67,7 @@ def parse_args(argvs):
         'extract',
         help='download file from data warehouse'
     )
-    parser_extract.set_defaults(func=extract)
+    parser_extract.set_defaults(**EXTRACT_DEFAULTS)
     parser_extract.add_argument("sql", **SQL)
     parser_extract.add_argument("--first", **FIRST)
 
@@ -89,7 +99,7 @@ def parse_args(argvs):
         'load',
         help='upload file to data warehouse'
     )
-    parser_load.set_defaults(func=load)
+    parser_load.set_defaults(**LOAD_DEFAULTS)
     # required args
     required_named_args = parser_load.add_mutually_exclusive_group(
         required=True
@@ -128,7 +138,6 @@ def parse_args(argvs):
     parser_load.add_argument("--storage_driver",
         help="driver to use for loading the file into object storage. "
             + "ie: which backend to use",
-        default="imars_objects",
         choices=STORAGE_DRIVERS.keys()
     )
     parser_load.add_argument("--duplicates_ok",

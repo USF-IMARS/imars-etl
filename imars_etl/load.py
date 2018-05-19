@@ -21,7 +21,7 @@ STORAGE_DRIVERS = {  # map from input strings to load_file functions for each ba
     'no_upload': lambda args: args['filepath'],
 }
 
-def load(args):
+def load(argvs):
     """
     args can be a dict or argparse.Namespace
 
@@ -35,17 +35,25 @@ def load(args):
             -d '2018-02-26T13:00'
             -j '{"status_id":0}'
     """
-    if isinstance(args, dict):  # args can be dict
-        args = dict_to_argparse_namespace(args)
+    if isinstance(argvs, dict):  # args can be dict
+        args_dict = argvs
+        args_ns = dict_to_argparse_namespace(argvs)
+    else:  # assume we have an argparse namespace
+        args_dict = vars(argvs)
+        args_ns = argvs
 
-    if args.filepath is not None:
-        return _load_file(args)
-    elif args.directory is not None:
-        return _load_dir(args)
+    return _load(args_ns=args_ns, **args_dict)
+
+def _load(args_ns, filepath=None, directory=None, **kwargs):
+    if filepath is not None:
+        return _load_file(args_ns)
+    elif directory is not None:
+        return _load_dir(args_ns)
     else:
         # NOTE: this should be thrown by the arparse arg group before getting
         #   here, but we throw here for the python API.
         raise ValueError("one of --filepath or --directory is required.")
+
 
 def _load_dir(args):
     """
