@@ -51,6 +51,7 @@ class TestCasePlusSQL(TestCase):
                 vals_arry[i]
             )
 
+
 class Test_load_cli(TestCasePlusSQL):
     # tests:
     #########################
@@ -206,102 +207,6 @@ class Test_load_cli(TestCasePlusSQL):
             ]
         )
 
-class Test_load_api(TestCasePlusSQL):
-    # === python API (passes dicts)
-    def test_load_python_basic_dict(self):
-        """
-        API basic imars_etl.load:
-            imars_etl.load({
-                "dry_run": True,
-                "filepath": "/fake/path/file_w_date_2018.txt",
-                "product_id": -1,
-                "time": "2018-02-26T13:00",
-                "verbose": 3
-            })
-        """
-        from imars_etl.load import load
-        res = load({
-            "dry_run": True,
-            "filepath": "/fake/path/file_w_date_2018.txt",
-            "product_id": -1,
-            "time": "2018-02-26T13:00",
-            "verbose": 3
-        })
-        #'INSERT INTO file'
-        # + ' (status_id,date_time,area_id,product_id,filepath)'
-        # + ' VALUES (1,"2018-02-26T13:00",1,-1,"/srv/imars-objects/test_test_test/simple_file_with_no_args.txt")'
-        self.assertSQLInsertKeyValuesMatch(
-            res,
-            ['date_time','product_id','filepath'],
-            [
-                '"2018-02-26T13:00"',
-                '-1',
-                '"/srv/imars-objects/test_test_test/simple_file_with_no_args.txt"'
-            ]
-        )
-
-    def test_load_python_with_json(self):
-        """
-        API imars_etl.load with --json option
-            imars_etl.load({
-                "dry_run": True,
-                "filepath": "/fake/path/file_w_date_2018.txt",
-                "product_id": -1,
-                "time": "2018-02-26T13:00",
-                "json": '{"status_id":1, "area_id":1}',
-                "verbose": 3
-            })
-        """
-        from imars_etl.load import load
-        res = load({
-            "dry_run": True,
-            "filepath": "/fake/path/file_w_date_2018.txt",
-            "product_id": -1,
-            "time": "2018-02-26T13:00",
-            "json": '{"status_id":1, "area_id":1}',
-            "verbose": 3
-        })
-        #'INSERT INTO file'
-        # + ' (status_id,date_time,area_id,product_id,filepath)'
-        # + ' VALUES (1,"2018-02-26T13:00",1,-1,"/srv/imars-objects/test_test_test/simple_file_with_no_args.txt")'
-        self.assertSQLInsertKeyValuesMatch(
-            res,
-            ['status_id','date_time','area_id','product_id','filepath'],
-            [
-                '1',
-                '"2018-02-26T13:00"',
-                '1',
-                '-1',
-                '"/srv/imars-objects/test_test_test/simple_file_with_no_args.txt"'
-            ]
-        )
-
-    def test_load_att_wv2_m1bs(self):
-        """
-        API load att_wv2_m1bs with inferred date from filepath
-        """
-        from imars_etl.load import load
-        test_args = {
-            "verbose":3,
-            "dry_run":True,
-            "filepath":"/tmp/airflow_output_2018-03-01T20:00:00/057522945010_01_003/057522945010_01/057522945010_01_P002_MUL/16FEB12162518-M1BS-057522945010_P002.ATT",
-            "product_id":7,
-            # "time":"2016-02-12T16:25:18",
-            # "datetime": datetime(2016,2,12,16,25,18),
-            "json":'{"status_id":3,"area_id":5}'
-        }
-        self.assertSQLInsertKeyValuesMatch(
-            load(test_args),
-            ['status_id','date_time','area_id','product_id','filepath'],
-            [
-                '3',
-                '"2016-02-12T16:25:18"',
-                '5',
-                '7',
-                '"/srv/imars-objects/extra_data/WV02/2016.02/WV02_20160212162518_0000000000000000_16Feb12162518-M1BS-057522945010_P002.att"'
-            ]
-        )
-
     def test_load_directory_by_product_id_number(self):
         """
             CLI load directory using product_id
@@ -417,7 +322,6 @@ class Test_load_api(TestCasePlusSQL):
             ]
         )
 
-
     def test_load_directory_only_loads_files_of_given_type(self):
         """
             CLI load dir loads only files that match the given type
@@ -508,6 +412,103 @@ class Test_load_api(TestCasePlusSQL):
         self.assertEqual(
             mock_driver_load.call_count,
             2
+        )
+
+
+class Test_load_api(TestCasePlusSQL):
+    # === python API (passes dicts)
+    def test_load_python_basic_dict(self):
+        """
+        API basic imars_etl.load:
+            imars_etl.load({
+                "dry_run": True,
+                "filepath": "/fake/path/file_w_date_2018.txt",
+                "product_id": -1,
+                "time": "2018-02-26T13:00",
+                "verbose": 3
+            })
+        """
+        from imars_etl.load import load
+        res = load({
+            "dry_run": True,
+            "filepath": "/fake/path/file_w_date_2018.txt",
+            "product_id": -1,
+            "time": "2018-02-26T13:00",
+            "verbose": 3
+        })
+        #'INSERT INTO file'
+        # + ' (status_id,date_time,area_id,product_id,filepath)'
+        # + ' VALUES (1,"2018-02-26T13:00",1,-1,"/srv/imars-objects/test_test_test/simple_file_with_no_args.txt")'
+        self.assertSQLInsertKeyValuesMatch(
+            res,
+            ['date_time','product_id','filepath'],
+            [
+                '"2018-02-26T13:00"',
+                '-1',
+                '"/srv/imars-objects/test_test_test/simple_file_with_no_args.txt"'
+            ]
+        )
+
+    def test_load_python_with_json(self):
+        """
+        API imars_etl.load with --json option
+            imars_etl.load({
+                "dry_run": True,
+                "filepath": "/fake/path/file_w_date_2018.txt",
+                "product_id": -1,
+                "time": "2018-02-26T13:00",
+                "json": '{"status_id":1, "area_id":1}',
+                "verbose": 3
+            })
+        """
+        from imars_etl.load import load
+        res = load({
+            "dry_run": True,
+            "filepath": "/fake/path/file_w_date_2018.txt",
+            "product_id": -1,
+            "time": "2018-02-26T13:00",
+            "json": '{"status_id":1, "area_id":1}',
+            "verbose": 3
+        })
+        #'INSERT INTO file'
+        # + ' (status_id,date_time,area_id,product_id,filepath)'
+        # + ' VALUES (1,"2018-02-26T13:00",1,-1,"/srv/imars-objects/test_test_test/simple_file_with_no_args.txt")'
+        self.assertSQLInsertKeyValuesMatch(
+            res,
+            ['status_id','date_time','area_id','product_id','filepath'],
+            [
+                '1',
+                '"2018-02-26T13:00"',
+                '1',
+                '-1',
+                '"/srv/imars-objects/test_test_test/simple_file_with_no_args.txt"'
+            ]
+        )
+
+    def test_load_att_wv2_m1bs(self):
+        """
+        API load att_wv2_m1bs with inferred date from filepath
+        """
+        from imars_etl.load import load
+        test_args = {
+            "verbose":3,
+            "dry_run":True,
+            "filepath":"/tmp/airflow_output_2018-03-01T20:00:00/057522945010_01_003/057522945010_01/057522945010_01_P002_MUL/16FEB12162518-M1BS-057522945010_P002.ATT",
+            "product_id":7,
+            # "time":"2016-02-12T16:25:18",
+            # "datetime": datetime(2016,2,12,16,25,18),
+            "json":'{"status_id":3,"area_id":5}'
+        }
+        self.assertSQLInsertKeyValuesMatch(
+            load(test_args),
+            ['status_id','date_time','area_id','product_id','filepath'],
+            [
+                '3',
+                '"2016-02-12T16:25:18"',
+                '5',
+                '7',
+                '"/srv/imars-objects/extra_data/WV02/2016.02/WV02_20160212162518_0000000000000000_16Feb12162518-M1BS-057522945010_P002.att"'
+            ]
         )
 
     def test_custom_input_load_format(self):
