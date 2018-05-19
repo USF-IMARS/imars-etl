@@ -142,3 +142,37 @@ class Test_load_api(TestCasePlusSQL):
                 '"/srv/imars-objects/test_test_test/simple_file_with_no_args.txt"'
             ]
         )
+
+    def test_load_dir(self):
+        """ load directory vi python API """
+        FAKE_TEST_DIR="/fake/dir/of/files/w/parseable/dates"
+        with patch('os.walk') as mockwalk:
+            from imars_etl.load import load
+            from imars_etl.cli import parse_args
+            mockwalk.return_value = [(
+                FAKE_TEST_DIR,  # root
+                (  # dirs
+                ),
+                (  # files
+                    "file_w_date_1999.txt",
+                    "date_2018333.arg_test_arg-here.time_1311.woah",
+                ),
+            )]
+            res = load({
+                'product_type_name': 'test_fancy_format_test',
+                'verbose': 3,
+                'directory': FAKE_TEST_DIR,
+            })
+
+            #'INSERT INTO file'
+            # + ' (status_id,date_time,area_id,product_id,filepath)'
+            # + ' VALUES (1,"2018-02-26T13:00",1,-1,"/srv/imars-objects/test_test_test/simple_file_with_no_args.txt")'
+            self.assertSQLInsertKeyValuesMatch(
+                res,
+                ['date_time','product_id','filepath'],
+                [
+                    '"2018-10-26T13:00:11"',
+                    '-2',
+                    '"/srv/imars-objects/_fancy_test_arg-here_/2018-333/arg_is_test_arg-here_time_is_1311.fancy_file'
+                ]
+            )
