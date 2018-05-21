@@ -12,12 +12,12 @@ from imars_etl.id_lookup import id_lookup
 from imars_etl.get_metadata import get_metadata
 
 EXTRACT_DEFAULTS={
-    'func': 'extract',
+    'func': extract,
     'storage_driver': "imars_objects"
 }
 
 LOAD_DEFAULTS={
-    'func': 'load',
+    'func': load,
     'storage_driver': "imars_objects"
 }
 
