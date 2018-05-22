@@ -1,5 +1,6 @@
 import logging
 import sys
+import os
 
 from imars_etl.util import dict_to_argparse_namespace, get_sql_result
 from imars_etl.drivers.imars_objects.extract_file import extract_file
@@ -21,21 +22,26 @@ def extract(args):
     )
 
     if isinstance(args, dict):  # args can be dict
-        args = dict_to_argparse_namespace(args)
+        args_dict = args
+        args_ns = dict_to_argparse_namespace(argvs)
+    else:  # assume we have an argparse namespace
+        args_dict = vars(args)
+        args_ns = args
 
     result = get_sql_result(
-        args,
+        args_ns,
         "SELECT filepath FROM file WHERE {}".format(args.sql)
     )
+    src_path = result['filepath']
+
+    if args_dict['output_path'] is None:
+        args_dict['output_path'] = "./" + os.path.basename(src_path)
+
     # use driver to download & then print a path to where the file can be
     # accessed on the local machine.
-    tmp_dir="/srv/imars-objects/airflow_tmp"
-    filename = os.path.basename(src_path)
-    target_path = os.path.join(tmp_dir, filename)
-
     fpath = STORAGE_DRIVERS[
-        getattr(args,'storage_driver','imars_objects')
-    ](result['filepath'], target_path, **vars(args))
+        args_dict['storage_driver']
+    ](src_path, args_dict['output_path'], **vars(args))
 
     print(fpath)
     return fpath

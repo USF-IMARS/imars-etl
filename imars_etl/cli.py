@@ -18,7 +18,8 @@ EXTRACT_DEFAULTS={
 
 LOAD_DEFAULTS={
     'func': load,
-    'storage_driver': "imars_objects"
+    'storage_driver': "imars_objects",
+    'output_path': None
 }
 
 def parse_args(argvs):
@@ -69,6 +70,10 @@ def parse_args(argvs):
     )
     parser_extract.set_defaults(**EXTRACT_DEFAULTS)
     parser_extract.add_argument("sql", **SQL)
+    parser_extract.add_argument(
+        "-o", "--output_path",
+        help="where to save the requested file. If excluded cwd and filename from db is used."
+    )
     parser_extract.add_argument("--first", **FIRST)
 
     # === get_metadata
