@@ -29,9 +29,13 @@ def extract(args):
     )
     # use driver to download & then print a path to where the file can be
     # accessed on the local machine.
+    tmp_dir="/srv/imars-objects/airflow_tmp"
+    filename = os.path.basename(src_path)
+    target_path = os.path.join(tmp_dir, filename)
+
     fpath = STORAGE_DRIVERS[
         getattr(args,'storage_driver','imars_objects')
-    ](result['filepath'], **vars(args))
+    ](result['filepath'], target_path, **vars(args))
 
     print(fpath)
     return fpath
