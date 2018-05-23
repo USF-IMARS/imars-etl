@@ -23,7 +23,7 @@ def extract(args):
 
     if isinstance(args, dict):  # args can be dict
         args_dict = args
-        args_ns = dict_to_argparse_namespace(argvs)
+        args_ns = dict_to_argparse_namespace(args)
     else:  # assume we have an argparse namespace
         args_dict = vars(args)
         args_ns = args
