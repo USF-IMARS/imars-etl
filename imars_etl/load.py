@@ -16,6 +16,12 @@ from imars_etl.filepath.get_product_data_from_id import get_product_data_from_id
 from imars_etl.util import dict_to_argparse_namespace, get_sql_result
 from imars_etl.util.exceptions import InputValidationError
 from imars_etl.drivers.imars_objects import load_file
+
+LOAD_DEFAULTS={
+    'storage_driver': "imars_objects",
+    'output_path': None
+}
+
 STORAGE_DRIVERS = {  # map from input strings to load_file functions for each backend
     'imars_objects': load_file,
     'no_upload': lambda args: args['filepath'],
@@ -120,10 +126,11 @@ def _load_file(args):
 
     # load file into IMaRS data warehouse
     # NOTE: _load should support args.dry_run=True also
+    selected_driver = args_dict.get('storage_driver', LOAD_DEFAULTS['storage_driver'])
     try:
-        new_filepath = STORAGE_DRIVERS[args.storage_driver](vars(args))
+        new_filepath = STORAGE_DRIVERS[selected_driver](args_dict)
     except TypeError:  # for some reason nosetests needs it like this:
-        new_filepath = STORAGE_DRIVERS[args.storage_driver].load_file(vars(args))
+        new_filepath = STORAGE_DRIVERS[selected_driver].load_file(args_dict)
 
     sql = _make_sql_insert(args_dict)
     sql = sql.replace(args.filepath, new_filepath)

@@ -6,21 +6,10 @@ import logging
 from logging.handlers import RotatingFileHandler
 import os
 
-from imars_etl.load import load, STORAGE_DRIVERS
-from imars_etl.extract import extract
+from imars_etl.load import load, STORAGE_DRIVERS, LOAD_DEFAULTS
+from imars_etl.extract import extract, EXTRACT_DEFAULTS
 from imars_etl.id_lookup import id_lookup
 from imars_etl.get_metadata import get_metadata
-
-EXTRACT_DEFAULTS={
-    'func': extract,
-    'storage_driver': "imars_objects"
-}
-
-LOAD_DEFAULTS={
-    'func': load,
-    'storage_driver': "imars_objects",
-    'output_path': None
-}
 
 def parse_args(argvs):
     # print(argvs)
@@ -68,7 +57,7 @@ def parse_args(argvs):
         'extract',
         help='download file from data warehouse'
     )
-    parser_extract.set_defaults(**EXTRACT_DEFAULTS)
+    parser_extract.set_defaults(func=extract, **EXTRACT_DEFAULTS)
     parser_extract.add_argument("sql", **SQL)
     parser_extract.add_argument(
         "-o", "--output_path",
@@ -104,7 +93,7 @@ def parse_args(argvs):
         'load',
         help='upload file to data warehouse'
     )
-    parser_load.set_defaults(**LOAD_DEFAULTS)
+    parser_load.set_defaults(func=load, **LOAD_DEFAULTS)
     # required args
     required_named_args = parser_load.add_mutually_exclusive_group(
         required=True
