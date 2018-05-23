@@ -30,7 +30,7 @@ def extract(args):
 
     result = get_sql_result(
         args_ns,
-        "SELECT filepath FROM file WHERE {}".format(args.sql)
+        "SELECT filepath FROM file WHERE {}".format(args_dict['sql'])
     )
     src_path = result['filepath']
 
