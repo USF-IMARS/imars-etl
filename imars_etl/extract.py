@@ -45,7 +45,7 @@ def extract(args):
     # accessed on the local machine.
     fpath = STORAGE_DRIVERS[
         args_dict.get('storage_driver', EXTRACT_DEFAULTS['storage_driver'])
-    ](src_path, args_dict['output_path'], **vars(args))
+    ](src_path, args_dict['output_path'], **args_dict)
 
     print(fpath)
     return fpath
