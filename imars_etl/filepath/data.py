@@ -143,7 +143,7 @@ data = {
               " but from LANCE. " +
               "https://modaps.modaps.eosdis.nasa.gov/services/about/products/c6/MYD01.html",
         "imars_object_format":{
-            "path": "/srv/imars-objects/modis_aqua_gom/myd01",
+            "path": "/srv/imars-objects/{area_short_name}/myd01",
             "basename": "A%Y%j.%H%M.hdf",
             "product_id": 5
         },
@@ -151,7 +151,11 @@ data = {
             "modis_std_ish":{
                 "//": "sorta like https://lpdaac.usgs.gov/dataset_discovery/modis",
                 "path_format": "A%Y%j.%H%M.hdf",
-            }
+            },
+           "old_imars_obj":{
+               "//": "imars-obj path pre 2018-05",
+              "path_format": "/srv/imars-objects/modis_aqua_{area_short_name}/myd01/A%Y%j.%H%M.hdf",
+           }
         }
     },
     "zip_ntf_wv2_ftp_ingest": {
