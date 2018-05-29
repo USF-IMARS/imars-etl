@@ -40,6 +40,7 @@ def wv2_ingest_prod(m1bs_or_p1bs, ext, pid, up_ext=True,
 
     fmt_rt  = "%y%b%d%H%M%S-" + m1bs_or_p1bs + "1BS-{idNumber}_P{passNumber}"
     base_rt = "WV02_%Y%m%d%H%M%S_0000000000000000_%y%b%d%H%M%S-" + m1bs_or_p1bs + "1BS-{idNumber}_P{passNumber}"
+    # base_rt = "WV02_%Y%m%d%H%M%S_{???:16c}_%y%b%d%H%M%S-" + m1bs_or_p1bs + "1BS-{idNumber:d}_{???:2d}_P{passNumber}"
 
     EXT = ext.upper()
 
@@ -47,14 +48,18 @@ def wv2_ingest_prod(m1bs_or_p1bs, ext, pid, up_ext=True,
         INGEST_FMTS: {
             ingest_id:{
                 F_FMT: fmt_rt  + EXT
-                # TODO: update this to work w/ #3 :
                 # "path_format": "%y%b%d%H%M%S-M1BS-{idNumber:12d}_{whatThis:2d}_P{passNumber:3d}.ATT"
+            },
+            "old_imars_obj":{
+                # F_FMT: "WV02_%Y%m%d%H%M%S_{unknownChars}_%y%b%d%H%M%S-" + m1bs_or_p1bs + "1BS-{idNumber:12d}_{otherNum:2d}_P{passNumber:3d}"+ext
+                # NOTE: {junk} below is not junk (see above) it just needs to
+                #       be ignored b/c https://bugs.python.org/issue4430
+                F_FMT: "WV02_%Y%m%d%H%M%S_{junk}-" + m1bs_or_p1bs + "1BS-{idNumber:12d}_{otherNum:2d}_P{passNumber:3d}"+ext
             }
         },
         I_OBJ_FMT: {
             PATH: WV2_OUT_PATH,
             BASE: base_rt + ext,
-            # TODO: update this to work w/ #3 :
             # "basename": "WV02_%Y%m%d%H%M%S_0000000000000000_%y%b%d%H%M%S-M1BS-{idNumber:12d}_{whatThis:2d}_P{passNumber:3d}.att",
             PID: pid  # TODO: use metadata db for product_id
         },
