@@ -70,6 +70,21 @@ class Test_format_filepath(TestCase):
             "/srv/imars-objects/_fancy_myTestArg_/2015-145/arg_is_myTestArg_time_is_1500.fancy_file"
         )
 
+    def test_format_fancy_filepath_w_args(self):
+        """" fancy filepath w/ all required args & product_name"""
+        args = {
+            "datetime": datetime(2015,5,25,15,55),
+            "product_type_name": "test_number_format_test",
+            "test_num": 3
+        }
+        result = format_filepath(
+            args
+        )
+        self.assertEqual(
+            result,
+            "/srv/imars-objects/_fancy_003_/2015/num_is_0003_time_is_15.fancy_file"
+        )
+
 class Test_format_filepath_template(TestCase):
     def test_format_filename_template(self):
         """ create basic file format template with 100% knowledge"""

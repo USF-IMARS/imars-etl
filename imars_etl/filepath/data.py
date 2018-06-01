@@ -50,12 +50,12 @@ def wv2_ingest_prod(m1bs_or_p1bs, ext, pid, up_ext=True,
                 F_FMT: fmt_rt  + EXT
                 # "path_format": "%y%b%d%H%M%S-M1BS-{idNumber:12d}_{whatThis:2d}_P{passNumber:3d}.ATT"
             },
-            "old_imars_obj":{
-                # F_FMT: "WV02_%Y%m%d%H%M%S_{unknownChars}_%y%b%d%H%M%S-" + m1bs_or_p1bs + "1BS-{idNumber:12d}_{otherNum:2d}_P{passNumber:3d}"+ext
-                # NOTE: {junk} below is not junk (see above) it just needs to
-                #       be ignored b/c https://bugs.python.org/issue4430
-                F_FMT: "WV02_%Y%m%d%H%M%S_{junk}-" + m1bs_or_p1bs + "1BS-{idNumber:12d}_{otherNum:2d}_P{passNumber:3d}"+ext
-            }
+            # "old_imars_obj":{
+            #     # F_FMT: "WV02_%Y%m%d%H%M%S_{unknownChars}_%y%b%d%H%M%S-" + m1bs_or_p1bs + "1BS-{idNumber:12d}_{otherNum:2d}_P{passNumber:3d}"+ext
+            #     # NOTE: {junk} below is not junk (see above) it just needs to
+            #     #       be ignored b/c https://bugs.python.org/issue4430
+            #     F_FMT: "WV02_%Y%m%d%H%M%S_{junk}-" + m1bs_or_p1bs + "1BS-{idNumber:12}_{otherNum:2}_P{passNumber:0>3d}"+ext
+            # }
         },
         I_OBJ_FMT: {
             PATH: WV2_OUT_PATH,
@@ -127,17 +127,31 @@ data = {
         "//": "this is a fake type used for testing only",
         "ingest_formats": {
             "file_w_date":{
-                "//": "used to parsing from filename",
+                "//": "tests parsing from filename w/ args & date in it",
                 "path_format": "date_%Y%j.arg_{test_arg}.time_%H%S.woah",
             },
             "file_w_nothing":{
                 "path_format": "fake_filepath.bs",
-            }
+            },
         },
         "imars_object_format": {
             "path"    : "/srv/imars-objects/_fancy_{test_arg}_/%Y-%j",
             "basename": "arg_is_{test_arg}_time_is_%H%S.fancy_file",
             "product_id": -2
+        },
+    },
+    "test_number_format_test":{
+        "//": "this is a fake type used for testing only",
+        "ingest_formats": {
+            "file_w_formatted_nums":{
+                "//": "file format with numbers & format-specifiers",
+                "path_format": "date_%Y.num_{test_num:3d}.time_%H.dude",
+            },
+        },
+        "imars_object_format": {
+            "path"    : "/srv/imars-objects/_fancy_{test_num:0>3d}_/%Y",
+            "basename": "num_is_{test_num:0>4d}_time_is_%H.fancy_file",
+            "product_id": -3
         },
     },
 
