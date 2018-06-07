@@ -203,6 +203,109 @@ data = {
             }
         }
     },
+    "s3a_ol_1_efr": {
+        "//": "s3 efr files",
+        "imars_object_format":{
+            "path": "/srv/imars-objects/{area_short_name}/s3a_ol_1_efr",
+            "basename": "S3A_OL_1_EFR____%Y%m%dT%H%M%S.SEN3",
+            "product_id": 36
+        },
+        "ingest_formats": {
+            "slstr":{
+                "//": [
+                    "https://sentinel.esa.int/web/sentinel/user-guides/sentinel-3-slstr/naming-convention",
+                    "--------------------------------------------------",
+                    "`path_format` below assumes the following : ",
+                    '  * "timeliness" is "NR", meaning Near-Real_Time (NRT)',
+                    '  * "platform" is "O" (operational)',
+                    '  * "generating centre" is "SVL" ("Svalbard Satellite Core Ground Station")',
+                    "--------------------------------------------------",
+                    'additionally, note that the instance ID for s3a EFR files',
+                    ' is formatted with "frames" metadata'
+                ],
+                "path_format": "S3A_OL_1_EFR____%Y%m%dT%H%M%S_{end_date:8d}T{end_t:6d}_{ing_date:8d}T{ing_t:6d}_{duration:4d}_{cycle:3d}_{orbit:3d}_{frame:4d}_SVL_O_NR_{base_collection:3d}.SEN3"
+            }
+        }
+    },
+    "tif_r_rs_wv2": {
+        "//": "wv2 classification R_rs output tif",
+        "imars_object_format":{
+            "path": "/srv/imars-objects/{area_short_name}/tif_r_rs_wv2",
+            "basename": "wv2_Rrs_%Y%m%dT%H%M%S.tif",
+            "product_id": 37
+        },
+        "ingest_formats": {
+            "airflow":{
+                "path_format": "proc_wv2_classification_na_%Y%m%dT%H%M%S_output/{run_id:1d}_{loc}_Rrs.tif"
+            }
+        }
+    },
+    "tif_rrs_wv2": {
+        "//": "wv2 classification rrs output tif",
+        "imars_object_format":{
+            "path": "/srv/imars-objects/{area_short_name}/tif_rrs_wv2",
+            "basename": "wv2_rrs_%Y%m%dT%H%M%S.tif",
+            "product_id": 38
+        },
+        "ingest_formats": {
+            "airflow":{
+                "path_format": "proc_wv2_classification_na_%Y%m%dT%H%M%S_output/{:1d}_{loc}_rrs.tif"
+            }
+        }
+    },
+    "tif_bathy_wv2": {
+        "//": "wv2 classification rrs output tif",
+        "imars_object_format":{
+            "path": "/srv/imars-objects/{area_short_name}/tif_bathy_wv2",
+            "basename": "wv2_bathy_%Y%m%dT%H%M%S.tif",
+            "product_id": 39
+        },
+        "ingest_formats": {
+            "airflow":{
+                "path_format": "proc_wv2_classification_na_%Y%m%dT%H%M%S_output/{:1d}_{loc}_Bathy.tif"
+            }
+        }
+    },
+    "tif_classification": {
+        "//": "wv2 classification rrs output tif",
+        "imars_object_format":{
+            "path": "/srv/imars-objects/{area_short_name}/tif_classification",
+            "basename": "wv2_classification_%Y%m%dT%H%M%S.tif",
+            "product_id": 40
+        },
+        "ingest_formats": {
+            "airflow-filt":{
+                "path_format": "proc_wv2_classification_na_%Y%m%dT%H%M%S_output/{:1d}_{loc}_DT_filt_{id_num}_{filter}_{stat}.tif"
+            },
+            "airflow-nofilt":{
+                "path_format": "proc_wv2_classification_na_%Y%m%dT%H%M%S_output/{:1d}_{loc}_DT_nofilt_{id_num}.tif"
+            }
+        }
+    },
+    "zip_s3a_ol_1_efr": {
+        "//": "s3 zip ingests",
+        "imars_object_format":{
+            "path": "/srv/imars-objects/{area_short_name}/zip_s3a_ol_1_efr",
+            "basename": "S3A_OL_1_EFR____%Y%m%dT%H%M%S.zip",
+            "product_id": 41
+        },
+        "ingest_formats": {
+            "slstr":{
+                "//": [
+                    "https://sentinel.esa.int/web/sentinel/user-guides/sentinel-3-slstr/naming-convention",
+                    "--------------------------------------------------",
+                    "`path_format` below assumes the following : ",
+                    '  * "timeliness" is "NR", meaning Near-Real_Time (NRT)',
+                    '  * "platform" is "O" (operational)',
+                    '  * "generating centre" is "SVL" ("Svalbard Satellite Core Ground Station")',
+                    "--------------------------------------------------",
+                    'additionally, note that the instance ID for s3a EFR files',
+                    ' is formatted with "frames" metadata'
+                ],
+                "path_format": "S3A_OL_1_EFR____%Y%m%dT%H%M%S_{end_date:8d}T{end_t:6d}_{ing_date:8d}T{ing_t:6d}_{duration:4d}_{cycle:3d}_{orbit:3d}_{frame:4d}_SVL_O_NR_{base_collection:3d}.zip"
+            }
+        }
+    },
 
     ### === others from the metadata db that in need of adding:
     # "png_chl_7d": {
