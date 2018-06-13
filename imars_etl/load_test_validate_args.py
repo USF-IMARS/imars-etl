@@ -2,14 +2,9 @@
 """
 
 # std modules:
-from unittest import TestCase
-try:
-    # py2
-    from mock import MagicMock, patch
-except ImportError:
-    # py3
-    from unittest.mock import MagicMock, patch
 from datetime import datetime
+from unittest import TestCase
+
 
 class Test_validate_args(TestCase):
 
@@ -34,8 +29,8 @@ class Test_validate_args(TestCase):
                 "filepath": "/fake/path/file_w_date_2018.txt",
                 "product_id": -1,
                 "product_type_name": "test_test_test",
-                "time":  "2018-02-26T13:00",
-                "datetime": datetime(2018,2,26,13),
+                "time": "2018-02-26T13:00",
+                "datetime": datetime(2018, 2, 26, 13),
             },
             result_arg_dict
         )
@@ -64,8 +59,8 @@ class Test_validate_args(TestCase):
                 "filepath": "/fake/path/file_w_date_2018.txt",
                 "product_id": -1,
                 "product_type_name": "test_test_test",
-                "date_time":  "2018-02-26T13:00",
-                "datetime": datetime(2018,2,26,13),
+                "date_time": "2018-02-26T13:00",
+                "datetime": datetime(2018, 2, 26, 13),
                 "json": '{"status_id":1,"area_id":1}',
                 "status_id": 1,
                 "area_id": 1

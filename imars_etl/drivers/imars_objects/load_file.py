@@ -6,6 +6,7 @@ import errno
 
 from imars_etl.filepath.format_filepath import format_filepath
 
+
 def load_file(args):
     logger = logging.getLogger("{}.{}".format(
         __name__,

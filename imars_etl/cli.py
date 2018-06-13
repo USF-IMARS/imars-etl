@@ -3,13 +3,15 @@ defines CLI interface using argparse
 """
 from argparse import ArgumentParser
 import logging
-from logging.handlers import RotatingFileHandler
-import os
 
-from imars_etl.load import load, STORAGE_DRIVERS, LOAD_DEFAULTS
-from imars_etl.extract import extract, EXTRACT_DEFAULTS
+from imars_etl.load import load
+from imars_etl.load import STORAGE_DRIVERS
+from imars_etl.load import LOAD_DEFAULTS
+from imars_etl.extract import EXTRACT_DEFAULTS
+from imars_etl.extract import extract
 from imars_etl.id_lookup import id_lookup
 from imars_etl.get_metadata import get_metadata
+
 
 def parse_args(argvs):
     # print(argvs)
@@ -19,9 +21,11 @@ def parse_args(argvs):
     parser = ArgumentParser(description='Interface for IMaRS ETL operations')
 
     # === arguments for the main command
-    parser.add_argument("-v", "--verbose", help="increase output verbosity",
-                        action="count",
-                        default=0
+    parser.add_argument(
+        "-v", "--verbose",
+        help="increase output verbosity",
+        action="count",
+        default=0
     )
     # other examples:
     # parser.add_argument("source", help="directory to copy from")
@@ -45,11 +49,11 @@ def parse_args(argvs):
 
     # === sub-cmd arguments shared between multiple subcommands:
     SQL = {  # "sql"
-        "help":"SQL `WHERE _____` style selector string.",
+        "help": "SQL `WHERE _____` style selector string.",
     }
     FIRST = {  # "--first"
         "help": "return first result if multiple rather than exiting w/ error",
-        "action":"store_true"
+        "action": "store_true"
     }
 
     # === extract
@@ -61,7 +65,8 @@ def parse_args(argvs):
     parser_extract.add_argument("sql", **SQL)
     parser_extract.add_argument(
         "-o", "--output_path",
-        help="where to save the requested file. If excluded cwd and filename from db is used."
+        help="where to save the requested file. " +
+        "If excluded cwd and filename from db is used."
     )
     parser_extract.add_argument("--first", **FIRST)
 
@@ -81,10 +86,12 @@ def parse_args(argvs):
     )
     parser_id_lookup.set_defaults(func=id_lookup)
 
-    parser_id_lookup.add_argument( "table",
+    parser_id_lookup.add_argument(
+        "table",
         help="name of the table we use (eg: area, product, status)"
     )
-    parser_id_lookup.add_argument( "value",
+    parser_id_lookup.add_argument(
+        "value",
         help="id # or short_name to translate."
     )
 
@@ -98,43 +105,56 @@ def parse_args(argvs):
     required_named_args = parser_load.add_mutually_exclusive_group(
         required=True
     )
-    required_named_args.add_argument("-f", "--filepath",
+    required_named_args.add_argument(
+        "-f", "--filepath",
         help="path to file to upload"
     )
-    required_named_args.add_argument("-d", "--directory",
+    required_named_args.add_argument(
+        "-d", "--directory",
         help="path to directory of files to be loaded"
     )
     # args required only with --directory
-    parser_load.add_argument("-n",
+    parser_load.add_argument(
+        "-n",
         "--product_type_name", "--name", "--short_name",
         help="product type id short_name"
     )
-    parser_load.add_argument("-p", "--product_id", "--pid",
+    parser_load.add_argument(
+        "-p", "--product_id", "--pid",
         help="product type id (pid)", type=int
     )
     # optional args
-    parser_load.add_argument("-t", "--time",
+    parser_load.add_argument(
+        "-t", "--time",
         help="ISO8601-formatted date-time string of product"
     )
-    parser_load.add_argument("-i", "--ingest_key",
+    parser_load.add_argument(
+        "-i", "--ingest_key",
         help="explicitly identifies what ingest format to expect"
     )
-    parser_load.add_argument("-j", "--json",
+    parser_load.add_argument(
+        "-j", "--json",
         help="string of json with given file's metadata."
     )
-    parser_load.add_argument("-l", "--load_format",
+    parser_load.add_argument(
+        "-l", "--load_format",
         help="python strptime-enabled format string describing input basename."
     )
-    parser_load.add_argument("--dry_run",
+    parser_load.add_argument(
+        "--dry_run",
         help="test run only, does not actually insert into database",
         action="store_true"
     )
-    parser_load.add_argument("--storage_driver",
-        help="driver to use for loading the file into object storage. "
-            + "ie: which backend to use",
+    parser_load.add_argument(
+        "--storage_driver",
+        help=(
+            "driver to use for loading the file into object storage. " +
+            "ie: which backend to use"
+        ),
         choices=STORAGE_DRIVERS.keys()
     )
-    parser_load.add_argument("--duplicates_ok",
+    parser_load.add_argument(
+        "--duplicates_ok",
         help="do not raise error if trying to load file already in database",
         action="store_true"
     )
@@ -143,7 +163,7 @@ def parse_args(argvs):
     try:
         args.func
     except AttributeError as a_err:
-        SEP="\n-------------------------------------------------------------\n"
+        SEP = "\n-----------------------------------------------------------\n"
         print(SEP)
         parser.print_help()
         print(SEP)
@@ -158,13 +178,13 @@ def parse_args(argvs):
         logging.basicConfig(level=logging.WARNING)
     elif (args.verbose == 1):
         logging.basicConfig(level=logging.INFO)
-    else: #} (args.verbose == 2){
+    else:  # } (args.verbose == 2){
         logging.basicConfig(level=logging.DEBUG)
 
     # === (optional) create custom logging format(s)
     # https://docs.python.org/3/library/logging.html#logrecord-attributes
     formatter = logging.Formatter(
-       '%(asctime)s|%(levelname)s\t|%(filename)s:%(lineno)s\t|%(message)s'
+        '%(asctime)s|%(levelname)s\t|%(filename)s:%(lineno)s\t|%(message)s'
     )
 
     # === (optional) create handlers
@@ -188,9 +208,10 @@ def parse_args(argvs):
         # file_handler
     ]
 
+    # basicConfig.level must be set to *lowest* of all levels used in handlers
     logging.basicConfig(
         handlers=_handlers,
-        level=logging.DEBUG  # this must be set to lowest of all levels used in handlers
+        level=logging.DEBUG
     )
     # =========================================================================
     return args

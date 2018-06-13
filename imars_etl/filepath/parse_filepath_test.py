@@ -3,12 +3,6 @@
 
 # std modules:
 from unittest import TestCase
-try:
-    # py2
-    from mock import MagicMock
-except ImportError:
-    # py3
-    from unittest.mock import MagicMock
 from datetime import datetime
 
 # dependencies:
@@ -23,7 +17,7 @@ class Test_parse_filepath(TestCase):
     #########################
     # === parse_filepath
     def test_parse_filename_browse_jpg(self):
-        """parse_filepath on jpg_wv2_m1bs *-BROWSE.jpg """
+        """Parse_filepath on jpg_wv2_m1bs *-BROWSE.jpg"""
         test_args = parse_args([
             '-vvv',
             'load',
@@ -31,17 +25,17 @@ class Test_parse_filepath(TestCase):
             '-f', "16FEB12162518-M1BS-057488585010_01_P003-BROWSE.JPG",
         ])
         res_args = parse_filepath(test_args)
-        self.assertEqual( res_args.datetime, datetime(2016,2,12,16,25,18) )
-        self.assertEqual( res_args.idNumber, "057488585010_01" )
-        self.assertEqual( res_args.passNumber, "003" )
-        self.assertEqual( res_args.product_type_name, "jpg_wv2_m1bs" )
+        self.assertEqual(res_args.datetime, datetime(2016, 2, 12, 16, 25, 18))
+        self.assertEqual(res_args.idNumber, "057488585010_01")
+        self.assertEqual(res_args.passNumber, "003")
+        self.assertEqual(res_args.product_type_name, "jpg_wv2_m1bs")
         self.assertEqual(
             res_args.product_id,
             get_product_id("jpg_wv2_m1bs")
         )
 
     def test_parse_filename_shx_wv2_p1bs(self):
-        """parse_filepath on shx_wv2_p1bs *_PIXEL_SHAPE.shx """
+        """parse_filepath on shx_wv2_p1bs *_PIXEL_SHAPE.shx"""
         test_args = parse_args([
             '-vvv',
             'load',
@@ -49,10 +43,10 @@ class Test_parse_filepath(TestCase):
             '-f', "16FEB12162518-P1BS-057488585010_01_P003_PIXEL_SHAPE.shx"
         ])
         res_args = parse_filepath(test_args)
-        self.assertEqual( res_args.datetime, datetime(2016,2,12,16,25,18) )
-        self.assertEqual( res_args.idNumber, "057488585010_01" )
-        self.assertEqual( res_args.passNumber, "003" )
-        self.assertEqual( res_args.product_type_name, "shx_wv2_p1bs" )
+        self.assertEqual(res_args.datetime, datetime(2016, 2, 12, 16, 25, 18))
+        self.assertEqual(res_args.idNumber, "057488585010_01")
+        self.assertEqual(res_args.passNumber, "003")
+        self.assertEqual(res_args.product_type_name, "shx_wv2_p1bs")
         self.assertEqual(
             res_args.product_id,
             get_product_id("shx_wv2_p1bs")
@@ -68,7 +62,7 @@ class Test_parse_filepath(TestCase):
             '-n', "test_test_test",
         ])
         res_args = parse_filepath(test_args)
-        self.assertEqual( res_args.datetime, datetime(1997,1,1) )
+        self.assertEqual(res_args.datetime, datetime(1997, 1, 1))
         self.assertEqual(
             res_args.product_id,
             get_product_id("test_test_test")
@@ -77,7 +71,7 @@ class Test_parse_filepath(TestCase):
         # self.assertEqual(res_args.ingest_key, "file_w_date")
 
     def test_parse_args_and_date_from_filename(self):
-        """ parse fancy filepath reads args & date from path """
+        """Parse fancy filepath reads args & date from path"""
         test_args = parse_args([
             '-vvv',
             'load',
@@ -85,5 +79,5 @@ class Test_parse_filepath(TestCase):
             '-f', 'date_2022123.arg_testyTestArg.time_0711.woah'
         ])
         res_args = parse_filepath(test_args)
-        self.assertEqual( res_args.datetime, datetime(2022,5,3,7,0,11))
-        self.assertEqual( res_args.test_arg, "testyTestArg")
+        self.assertEqual(res_args.datetime, datetime(2022, 5, 3, 7, 0, 11))
+        self.assertEqual(res_args.test_arg, "testyTestArg")

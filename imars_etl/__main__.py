@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-""" cmd line interface definition for imars-etl """
+"""cmd line interface definition for imars-etl"""
 import sys
 
 from imars_etl.cli import parse_args

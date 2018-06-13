@@ -1,13 +1,14 @@
 from imars_etl.filepath.data import data
 
+
 def get_ingest_formats():
     """
-    returns a dict of all ingest formats.
+    Returns a dict of all ingest formats.
 
     example:
     {
         "zip_wv2_ftp_ingest.matts_wv2_ftp_ingest": "wv2_%Y_%m_{tag}.zip",
-        "att_wv2_m1bs.att_from_zip_wv2_ftp_ingest": "%y%b%d%H%M%S-M1BS-{idNumber}_P{passNumber}.ATT",
+        "att_.from_zip_ingest": "%y%b%d%H%M%S-M1BS-{idNum}_P{passNumber}.ATT",
     }
     """
     res = {}
@@ -18,9 +19,10 @@ def get_ingest_formats():
             ] = get_ingest_format(product_id, ingest_id)
     return res
 
+
 def get_ingest_format(short_name, ingest_name=None):
     """
-    returns
+    Returns
     -------
     ingest_fmt_str : str
         ingest path format string for given product short_name and ingest_name.
@@ -30,7 +32,8 @@ def get_ingest_format(short_name, ingest_name=None):
     """
     if ingest_name is not None:
         try:  # use the one given fmt string
-            return data[short_name]["ingest_formats"][ingest_name]["path_format"]
+            ingests = data[short_name]["ingest_formats"]
+            return ingests[ingest_name]["path_format"]
         except KeyError as k_err:
             raise KeyError("no ingest_key '{}' in product {}".format(
                 ingest_name,

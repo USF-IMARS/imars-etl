@@ -1,12 +1,13 @@
 #!/usr/bin/env python
-""" imars-etl setup.py """
+"""imars-etl setup.py"""
 
 from setuptools import setup
 import io
 
-#import imars_etl
+# import imars_etl
 # NOTE: can't do that here before dependencies installed, silly.
-VERSION='0.2.3'  # should match __version__ in imars_etl.__init__.py
+VERSION = '0.2.3'  # should match __version__ in imars_etl.__init__.py
+
 
 def read(*filenames, **kwargs):
     encoding = kwargs.get('encoding', 'utf-8')
@@ -17,9 +18,10 @@ def read(*filenames, **kwargs):
             buf.append(f.read())
     return sep.join(buf)
 
-long_description = read('README.md') #, 'CHANGES.txt')
+long_description = read('README.md')  # , 'CHANGES.txt')
 
-setup(name='imars_etl',
+setup(
+    name='imars_etl',
     version=VERSION,
     description='Interface for IMaRS ETL operations',
     long_description=long_description,
@@ -33,7 +35,7 @@ setup(name='imars_etl',
     #         'imars-etl = imars-etl',
     #     ],
     # },
-    #cmdclass={'test': PyTest},  # custom build commands for test/lint/etc
+    # cmdclass={'test': PyTest},  # custom build commands for test/lint/etc
     packages=[  # modules that are added to python when this is installed
         'imars_etl'
     ]

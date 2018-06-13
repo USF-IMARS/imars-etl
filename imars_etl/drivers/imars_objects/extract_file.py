@@ -2,6 +2,7 @@ import logging
 import shutil
 import sys
 
+
 def extract_file(src_path, target_path, **kwargs):
     logger = logging.getLogger("{}.{}".format(
         __name__,

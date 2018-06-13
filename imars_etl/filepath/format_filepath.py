@@ -6,9 +6,10 @@ import sys
 
 from imars_etl.filepath.data import data
 
+
 def get_imars_object_paths():
     """
-    returns a dict of all imars_object paths keyed by product name.
+    Returns a dict of all imars_object paths keyed by product name.
 
     example:
     {
@@ -24,7 +25,7 @@ def get_imars_object_paths():
             "product_id": 6
         },
         "att_wv2_m1bs":{
-            "basename": "WV02_%Y%m%d%H%M%S_0000000000000000_%y%b%d%H%M%S-M1BS-{idNumber}_P{passNumber}.att",  # NOTE: how to %b in all caps?
+            "basename": "WV02_%Y%m%d%H%M%S-M1BS-{idNumber}_P{passNumber}.att",
             "path": "/srv/imars-objects/extra_data/WV02/%Y.%m",
             "product_id": 7
         }
@@ -34,6 +35,7 @@ def get_imars_object_paths():
     for product_id in data:
         res[product_id] = data[product_id]["imars_object_format"]
     return res
+
 
 def format_filepath(args, forced_basename=None):
     logger = logging.getLogger("{}.{}".format(
@@ -57,11 +59,12 @@ def format_filepath(args, forced_basename=None):
         )
         raise k_err
 
+
 def _format_filepath_template(
-        product_type_name,
-        product_id,
-        forced_basename=None
-    ):
+    product_type_name,
+    product_id,
+    forced_basename=None
+):
     logger = logging.getLogger("{}.{}".format(
         __name__,
         sys._getframe().f_code.co_name)
@@ -74,9 +77,9 @@ def _format_filepath_template(
     for prod_name, prod_meta in get_imars_object_paths().items():
         logger.debug("is {} (#{})?".format(prod_name, prod_meta['product_id']))
         if (
-                product_type_name == prod_name
-                or product_id == prod_meta['product_id']
-            ):  # if file type or id is given and matches a known type
+                product_type_name == prod_name or
+                product_id == prod_meta['product_id']
+        ):  # if file type or id is given and matches a known type
             logger.debug('y!')
 
             if forced_basename is not None:
@@ -85,9 +88,9 @@ def _format_filepath_template(
                 _basename = prod_meta['basename']
 
             try:  # set product_type_name if not already set
-                test = product_type_name  # NOTE: this made more sense before:
                 # test = args['product_type_name']
                 # TODO: check for match w/ prod_name & raise if not?
+                pass
             except KeyError as k_err:
                 product_type_name = prod_name
 

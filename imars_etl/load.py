@@ -12,24 +12,26 @@ from imars_etl.filepath.parse_filepath import parse_filepath
 from imars_etl.filepath.get_product_id import get_product_id
 
 from imars_etl.filepath.get_product_name import get_product_name
-from imars_etl.filepath.get_product_data_from_id import get_product_data_from_id
-from imars_etl.util import dict_to_argparse_namespace, get_sql_result
+from imars_etl.util import get_sql_result
+from imars_etl.util import dict_to_argparse_namespace
 from imars_etl.util.exceptions import InputValidationError
 from imars_etl.drivers.imars_objects import load_file
 
-LOAD_DEFAULTS={
+LOAD_DEFAULTS = {
     'storage_driver': "imars_objects",
     'output_path': None
 }
 
-STORAGE_DRIVERS = {  # map from input strings to load_file functions for each backend
+# map from input strings to load_file functions for each backend
+STORAGE_DRIVERS = {
     'imars_objects': load_file,
     'no_upload': lambda args: args['filepath'],
 }
 
+
 def load(argvs):
     """
-    args can be a dict or argparse.Namespace
+    Args can be a dict or argparse.Namespace
 
     Example Usages:
         ./imars-etl.py -vvv load /home/me/myfile.png '{"area_id":1}'
@@ -50,6 +52,7 @@ def load(argvs):
 
     return _load(args_ns=args_ns, **args_dict)
 
+
 def _load(args_ns, filepath=None, directory=None, **kwargs):
     if filepath is not None:
         return _load_file(args_ns)
@@ -63,11 +66,12 @@ def _load(args_ns, filepath=None, directory=None, **kwargs):
 
 def _load_dir(args):
     """
-    loads multiple files that match from a directory
+    Loads multiple files that match from a directory
 
     returns:
         insert_statements : str[]
             list of insert statements for all files found
+
     """
     logger = logging.getLogger("{}.{}".format(
         __name__,
@@ -76,36 +80,36 @@ def _load_dir(args):
     insert_statements = []  #
     # logger.debug("searching w/ '{}'...".format(fmt))
     orig_args = copy.deepcopy(args)
-    loaded_count=0
-    skipped_count=0
-    duplicate_count=0
+    loaded_count = 0
+    skipped_count = 0
+    duplicate_count = 0
     for root, dirs, files in os.walk(args.directory):
         for filename in files:
             try:
-                fpath = os.path.join(root,filename)
+                fpath = os.path.join(root, filename)
                 args.filepath = fpath
                 insert_statements.append(_load_file(args))
                 logger.debug("loading {}...".format(fpath))
-                loaded_count+=1
+                loaded_count += 1
             except SyntaxError as s_err:
                 logger.debug("skipping {}...".format(fpath))
-                skipped_count+=1
+                skipped_count += 1
             except IntegrityError as i_err:
                 logger.debug(i_err)
                 errnum, errmsg = i_err.args
                 logger.debug("errnum,={}".format(errnum))
                 logger.debug("errmsg,={}".format(errmsg))
-                DUPLICATE_ENTRY_ERRNO=1062
+                DUPLICATE_ENTRY_ERRNO = 1062
                 if (
-                    errnum==DUPLICATE_ENTRY_ERRNO and
-                    getattr(args,'duplicates_ok', False)
+                    errnum == DUPLICATE_ENTRY_ERRNO and
+                    getattr(args, 'duplicates_ok', False)
                 ):
                     logger.warn(
                         "IntegrityError: Duplicate entry for '{}'".format(
                             fpath
                         )
                     )
-                    duplicate_count+=1
+                    duplicate_count += 1
                 else:
                     raise
             finally:
@@ -115,18 +119,18 @@ def _load_dir(args):
     ))
     return insert_statements
 
+
 def _load_file(args):
-    """loads a single file"""
-    logger = logging.getLogger("{}.{}".format(
-        __name__,
-        sys._getframe().f_code.co_name)
-    )
+    """Loads a single file"""
     args_dict = _validate_args(args)
     args = dict_to_argparse_namespace(args_dict)  # TODO: rm need for this
 
     # load file into IMaRS data warehouse
     # NOTE: _load should support args.dry_run=True also
-    selected_driver = args_dict.get('storage_driver', LOAD_DEFAULTS['storage_driver'])
+    selected_driver = args_dict.get(
+        'storage_driver',
+        LOAD_DEFAULTS['storage_driver']
+    )
     try:
         new_filepath = STORAGE_DRIVERS[selected_driver](args_dict)
     except TypeError:  # for some reason nosetests needs it like this:
@@ -144,34 +148,37 @@ def _load_file(args):
             should_commit=(not getattr(args, 'dry_run', False)),
         )
 
+
 def _make_sql_insert(args):
-    """creates SQL INSERT INTO statement with metadata from given args dict"""
-    VALID_FILE_TABLE_COLNAMES=[  # TODO: get this from db
-        'filepath','date_time','product_id','is_day_pass','area_id','status_id'
+    """Creates SQL INSERT INTO statement with metadata from given args dict"""
+    VALID_FILE_TABLE_COLNAMES = [  # TODO: get this from db
+        'filepath', 'date_time', 'product_id', 'is_day_pass',
+        'area_id', 'status_id'
     ]
     logger = logging.getLogger("{}.{}".format(
         __name__,
         sys._getframe().f_code.co_name)
     )
-    KEY_FMT_STR='{},'  # how we format sql keys
-    keys=""
-    vals=""
+    KEY_FMT_STR = '{},'  # how we format sql keys
+    keys = ""
+    vals = ""
     for key in args:
         val = args[key]
         if key in VALID_FILE_TABLE_COLNAMES:
             if isinstance(val, numbers.Number):
-                val_fmt_str='{},'
-            else: # fmt as str
-                val_fmt_str='"{}",'
+                val_fmt_str = '{},'
+            else:  # fmt as str
+                val_fmt_str = '"{}",'
             keys += KEY_FMT_STR.format(key)
             vals += val_fmt_str.format(val)
-    keys=keys[:-1] # trim last comma
-    vals=vals[:-1]
+    keys = keys[:-1]  # trim last comma
+    vals = vals[:-1]
 
     # Create a new record
     SQL = "INSERT INTO file ("+keys+") VALUES ("+vals+")"
     logger.debug(SQL)
     return SQL
+
 
 def _validate_args(args):
     """
@@ -185,16 +192,16 @@ def _validate_args(args):
     logger.setLevel(logging.INFO)
 
     setattr(
-                args, 'storage_driver',
+        args, 'storage_driver',
         getattr(args, 'storage_driver', 'imars_objects')
     )
 
     # === validate product name and id
     if (  # require name or id for directory loading
-            getattr(args, 'directory', None) is not None and
-            getattr(args, 'product_id', None) is None and
-            getattr(args, 'product_type_name', None) is None
-        ):
+        getattr(args, 'directory', None) is not None and
+        getattr(args, 'product_id', None) is None and
+        getattr(args, 'product_type_name', None) is None
+    ):
         # NOTE: this is probably not a hard requirement
         #   but it seems like a good safety precaution.
         raise ValueError(
@@ -217,14 +224,16 @@ def _validate_args(args):
         # assert(
         #     args.product_id == args.get_product_id(args.product_type_name)
         # )
-
-    product_data = get_product_data_from_id(args.product_id)
+        # assert(
+        #   get_product_data_from_id(args.product_id),
+        #   ???
+        # )
 
     logger.debug("pre-guess-args : " + str(args))
     args = parse_filepath(args)
     logger.debug("post-guess-args: " + str(args))
 
-    ISO_8601_FMT="%Y-%m-%dT%H:%M:%S"
+    ISO_8601_FMT = "%Y-%m-%dT%H:%M:%S"
 
     try:
         dt = datetime.strptime(args.time, ISO_8601_FMT)
@@ -250,7 +259,7 @@ def _validate_args(args):
         for key in json_dict:
             if key in arg_dict and arg_dict[key] != json_dict[key]:
                 raise InputValidationError(
-                    "CLI argument passed that contradicts json argument:\n"+
+                    "CLI argument passed that contradicts json argument:\n" +
                     "\t CLI arg : {}".format(arg_dict[key]) +
                     "\tjson arg : {}".format(json_dict[key])
                 )

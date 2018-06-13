@@ -3,8 +3,9 @@ import sys
 
 from imars_etl.filepath.data import data
 
+
 def get_product_name(product_id):
-    """get product name from given id"""
+    """Get product name from given id"""
     logger = logging.getLogger("{}.{}".format(
         __name__,
         sys._getframe().f_code.co_name)
