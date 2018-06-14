@@ -1,6 +1,9 @@
 """
 """
-from unittest.mock import patch
+try:  # py2
+    from mock import patch
+except ImportError:  # py3
+    from unittest.mock import patch
 
 from imars_etl.util.TestCasePlusSQL import TestCasePlusSQL
 
