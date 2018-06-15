@@ -54,8 +54,9 @@ def load(argvs):
 
 
 def _load(args_ns, filepath=None, directory=None, **kwargs):
+    args_dict = vars(args_ns)
     if filepath is not None:
-        return _load_file(args_ns)
+        return _load_file(args_dict)
     elif directory is not None:
         return _load_dir(args_ns)
     else:
@@ -88,7 +89,8 @@ def _load_dir(args_ns):
             try:
                 fpath = os.path.join(root, filename)
                 args_ns.filepath = fpath
-                insert_statements.append(_load_file(args_ns))
+                args_dict = vars(args_ns)
+                insert_statements.append(_load_file(args_dict))
                 logger.debug("loading {}...".format(fpath))
                 loaded_count += 1
             except SyntaxError:
@@ -120,10 +122,13 @@ def _load_dir(args_ns):
     return insert_statements
 
 
-def _load_file(args_ns):
+def _load_file_ns(args_ns):
+    _load_file(vars(args_ns))
+
+
+def _load_file(args_dict):
     """Loads a single file"""
-    args_dict = _validate_args_ns(args_ns)
-    args_ns = dict_to_argparse_namespace(args_dict)  # TODO: rm need for this
+    args_dict = _validate_args(args_dict)
 
     # load file into IMaRS data warehouse
     # NOTE: _load should support args.dry_run=True also
@@ -137,15 +142,15 @@ def _load_file(args_ns):
         new_filepath = STORAGE_DRIVERS[selected_driver].load_file(args_dict)
 
     sql = _make_sql_insert(args_dict)
-    sql = sql.replace(args_ns.filepath, new_filepath)
-    if getattr(args_ns, 'dry_run', False):  # test mode returns the sql string
+    sql = sql.replace(args_dict['filepath'], new_filepath)
+    if args_dict.get('dry_run', False):  # test mode returns the sql string
         return sql
     else:
         return get_sql_result(
             sql,
             check_result=False,
-            should_commit=(not getattr(args_ns, 'dry_run', False)),
-            first=getattr(args_ns, "first", False),
+            should_commit=(not args_dict.get('dry_run', False)),
+            first=args_dict.get("first", False),
         )
 
 
