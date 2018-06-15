@@ -15,28 +15,17 @@ from imars_etl.filepath.get_product_id import get_product_id
 logging.getLogger("parse").setLevel(logging.WARN)
 
 
-def parse_filepath(args_ns):
+def parse_filepath(args_dict):
     """
     Attempts to fill all arguments in args using args.filepath and information
     from `imars_etl.filepath.data`. Tries to match against all possible product
     types if args.product_type_name is not given
     parse_filepath but for argparse namespaces
-    Parameters
-    ----------
-    args_ns : ArgParse arg obj
-        arguments we have to start with. these will be used to guess at others.
-
-    Returns
-    -------
-    args_ns : dict of arguments
-        modified version of input args with any missing args filled.
-
     """
     logger = logging.getLogger("{}.{}".format(
         __name__,
         sys._getframe().f_code.co_name)
     )
-    args_dict = vars(args_ns)
     if (args_dict.get('load_format') is not None):
         return _parse_from_product_type_and_filename(
             args_dict,
@@ -73,6 +62,21 @@ def parse_filepath(args_ns):
         else:
             logger.warn("could not match filepath to any known patterns.")
             return args_dict
+
+
+def parse_filepath_from_argparse(args_ns):
+    """
+    Parameters
+    ----------
+    args_ns : ArgParse arg obj
+        arguments we have to start with. these will be used to guess at others.
+
+    Returns
+    -------
+    args_ns : dict of arguments
+        modified version of input args with any missing args filled.
+    """
+    return parse_filepath(vars(args_ns))
 
 
 def _replace_strftime_dirs(in_string):

@@ -6,10 +6,10 @@ from datetime import datetime
 from unittest import TestCase
 
 
-class Test_validate_args(TestCase):
+class Test_validate_args_ns(TestCase):
 
     def test_validate_returns_dict(self):
-        from imars_etl.load import _validate_args
+        from imars_etl.load import _validate_args_ns
         from imars_etl.cli import parse_args
 
         test_args = parse_args([
@@ -21,7 +21,7 @@ class Test_validate_args(TestCase):
             '-t', "2018-02-26T13:00",
             '-j', '{"status_id":1,"area_id":1}',
         ])
-        result_arg_dict = _validate_args(test_args)
+        result_arg_dict = _validate_args_ns(test_args)
         self.assertDictContainsSubset(
             {
                 "verbose": 3,
@@ -39,7 +39,7 @@ class Test_validate_args(TestCase):
         """
         validate_args sticks stuff from --json into args
         """
-        from imars_etl.load import _validate_args
+        from imars_etl.load import _validate_args_ns
         from imars_etl.cli import parse_args
 
         test_args = parse_args([
@@ -51,7 +51,7 @@ class Test_validate_args(TestCase):
             '-t', "2018-02-26T13:00",
             '-j', '{"status_id":1,"area_id":1}',
         ])
-        result_arg_dict = _validate_args(test_args)
+        result_arg_dict = _validate_args_ns(test_args)
         self.assertDictContainsSubset(
             {
                 "verbose": 3,
