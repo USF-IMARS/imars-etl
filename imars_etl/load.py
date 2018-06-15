@@ -123,7 +123,7 @@ def _load_dir(args_ns):
 def _load_file(args_ns):
     """Loads a single file"""
     args_dict = _validate_args(args_ns)
-    args = dict_to_argparse_namespace(args_dict)  # TODO: rm need for this
+    args_ns = dict_to_argparse_namespace(args_dict)  # TODO: rm need for this
 
     # load file into IMaRS data warehouse
     # NOTE: _load should support args.dry_run=True also
@@ -180,7 +180,7 @@ def _make_sql_insert(args):
     return SQL
 
 
-def _validate_args(args):
+def _validate_args(args_ns):
     """
     Returns properly formatted & complete argument list.
     Makes attempts to guess at filling in missing args.
@@ -192,15 +192,15 @@ def _validate_args(args):
     logger.setLevel(logging.INFO)
 
     setattr(
-        args, 'storage_driver',
-        getattr(args, 'storage_driver', 'imars_objects')
+        args_ns, 'storage_driver',
+        getattr(args_ns, 'storage_driver', 'imars_objects')
     )
 
     # === validate product name and id
     if (  # require name or id for directory loading
-        getattr(args, 'directory', None) is not None and
-        getattr(args, 'product_id', None) is None and
-        getattr(args, 'product_type_name', None) is None
+        getattr(args_ns, 'directory', None) is not None and
+        getattr(args_ns, 'product_id', None) is None and
+        getattr(args_ns, 'product_type_name', None) is None
     ):
         # NOTE: this is probably not a hard requirement
         #   but it seems like a good safety precaution.
@@ -209,37 +209,37 @@ def _validate_args(args):
             " explicitly set if --directory is used."
         )
     elif (  # fill id from name
-        getattr(args, 'product_id', None) is None and
-        getattr(args, 'product_type_name', None) is not None
+        getattr(args_ns, 'product_id', None) is None and
+        getattr(args_ns, 'product_type_name', None) is not None
     ):
-        setattr(args, "product_id", get_product_id(args.product_type_name))
+        setattr(args_ns, "product_id", get_product_id(args_ns.product_type_name))
     elif (  # fill name from id
-        getattr(args, 'product_id', None) is not None and
-        getattr(args, 'product_type_name', None) is None
+        getattr(args_ns, 'product_id', None) is not None and
+        getattr(args_ns, 'product_type_name', None) is None
     ):
-        setattr(args, "product_type_name", get_product_name(args.product_id))
+        setattr(args_ns, "product_type_name", get_product_name(args_ns.product_id))
     else:
         pass
         # TODO: ensure that given id and name match
         # assert(
-        #     args.product_id == args.get_product_id(args.product_type_name)
+        #     args_ns.product_id == args_ns.get_product_id(args_ns.product_type_name)
         # )
         # assert(
-        #   get_product_data_from_id(args.product_id),
+        #   get_product_data_from_id(args_ns.product_id),
         #   ???
         # )
 
-    logger.debug("pre-guess-args : " + str(args))
-    args = parse_filepath(args)
-    logger.debug("post-guess-args: " + str(args))
+    logger.debug("pre-guess-args : " + str(args_ns))
+    args_ns = parse_filepath(args_ns)
+    logger.debug("post-guess-args: " + str(args_ns))
 
     ISO_8601_FMT = "%Y-%m-%dT%H:%M:%S"
 
     try:
-        dt = datetime.strptime(args.time, ISO_8601_FMT)
+        dt = datetime.strptime(args_ns.time, ISO_8601_FMT)
         logger.debug("full datetime parsed")
     except ValueError as v_err:
-        dt = datetime.strptime(args.time, ISO_8601_FMT[:-3])
+        dt = datetime.strptime(args_ns.time, ISO_8601_FMT[:-3])
         logger.debug("partial datetime parsed (no seconds)")
     except TypeError as t_err:
         logger.error("{}\n\n".format(t_err))
@@ -249,10 +249,10 @@ def _validate_args(args):
             " or try to debug using super-verbose mode -vvv."
         )
 
-    setattr(args, "datetime", dt)
+    setattr(args_ns, "datetime", dt)
 
     # TODO: do all the stuff above to make this dict instead
-    arg_dict = vars(args)
+    arg_dict = vars(args_ns)
 
     try:  # add json args to arg_dict
         json_dict = json.loads(arg_dict['json'])
@@ -268,7 +268,7 @@ def _validate_args(args):
     except TypeError:
         logger.debug("json str is empty")
     except KeyError:
-        logger.warn("args['json'] is None?")
+        logger.warn("arg_dict['json'] is None?")
 
     # create args['date_time'] from args['time']
     arg_dict['date_time'] = arg_dict['time']

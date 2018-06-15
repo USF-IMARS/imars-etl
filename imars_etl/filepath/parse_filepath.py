@@ -15,7 +15,8 @@ from imars_etl.filepath.get_product_id import get_product_id
 logging.getLogger("parse").setLevel(logging.WARN)
 
 
-def parse_filepath(args):
+# def parse_filepath_from_namespace(args_ns):
+def parse_filepath(args_ns):
     """
     Attempts to fill all arguments in args using args.filepath and information
     from `imars_etl.filepath.data`. Tries to match against all possible product
@@ -23,12 +24,12 @@ def parse_filepath(args):
 
     Parameters
     ----------
-    args : ArgParse arg obj
+    args_ns : ArgParse arg obj
         arguments we have to start with. these will be used to guess at others.
 
     Returns
     -------
-    args : ArgParse arg obj
+    args_ns : ArgParse arg obj
         modified version of input args with any missing args filled.
 
     """
@@ -36,42 +37,42 @@ def parse_filepath(args):
         __name__,
         sys._getframe().f_code.co_name)
     )
-    if (getattr(args, 'load_format', None) is not None):
+    if (getattr(args_ns, 'load_format', None) is not None):
         return _parse_from_product_type_and_filename(
-            args,
-            getattr(args, 'load_format'),
+            args_ns,
+            getattr(args_ns, 'load_format'),
             'manually set custom load_format'
         )
-    if (getattr(args, 'product_type_name', None) is not None):
-        ing_key = getattr(args, 'ingest_key', None)
+    if (getattr(args_ns, 'product_type_name', None) is not None):
+        ing_key = getattr(args_ns, 'ingest_key', None)
         if (ing_key is None):
-            ing_fmt = get_ingest_format(args.product_type_name)
+            ing_fmt = get_ingest_format(args_ns.product_type_name)
         else:
             ing_fmt = get_ingest_format(
-                args.product_type_name,
-                args.ingest_key
+                args_ns.product_type_name,
+                args_ns.ingest_key
             )
 
-        args = _parse_from_product_type_and_filename(
-            args,
+        args_ns = _parse_from_product_type_and_filename(
+            args_ns,
             ing_fmt,
-            '{}.{}'.format(args.product_type_name, ing_key)
+            '{}.{}'.format(args_ns.product_type_name, ing_key)
         )
-        return args
+        return args_ns
     else:  # try all patterns
         for pattern_name, pattern in get_ingest_formats().items():
             try:
-                setattr(args, 'product_type_name', pattern_name.split(".")[0])
-                args = _parse_from_product_type_and_filename(
-                    args, pattern, pattern_name
+                setattr(args_ns, 'product_type_name', pattern_name.split(".")[0])
+                args_ns = _parse_from_product_type_and_filename(
+                    args_ns, pattern, pattern_name
                 )
-                return args
+                return args_ns
             except SyntaxError as s_err:  # filepath does not match
                 logger.debug("nope. caught error: \n>>>{}".format(s_err))
-                setattr(args, 'product_type_name', None)
+                setattr(args_ns, 'product_type_name', None)
         else:
             logger.warn("could not match filepath to any known patterns.")
-            return args
+            return args_ns
 
 
 def _replace_strftime_dirs(in_string):
