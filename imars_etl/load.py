@@ -229,17 +229,18 @@ def _validate_args(args_ns):
         #   ???
         # )
 
+    # TODO: do all the stuff above to make this dict instead
     logger.debug("pre-guess-args : " + str(args_ns))
-    args_ns = parse_filepath(args_ns)
-    logger.debug("post-guess-args: " + str(args_ns))
+    args_dict = parse_filepath(args_ns)
+    logger.debug("post-guess-args: " + str(args_dict))
 
     ISO_8601_FMT = "%Y-%m-%dT%H:%M:%S"
 
     try:
-        dt = datetime.strptime(args_ns.time, ISO_8601_FMT)
+        dt = datetime.strptime(args_dict['time'], ISO_8601_FMT)
         logger.debug("full datetime parsed")
     except ValueError as v_err:
-        dt = datetime.strptime(args_ns.time, ISO_8601_FMT[:-3])
+        dt = datetime.strptime(args_dict['time'], ISO_8601_FMT[:-3])
         logger.debug("partial datetime parsed (no seconds)")
     except TypeError as t_err:
         logger.error("{}\n\n".format(t_err))
@@ -248,28 +249,24 @@ def _validate_args(args_ns):
             " Please input more information by using more arguments" +
             " or try to debug using super-verbose mode -vvv."
         )
+    args_dict['datetime'] = dt
 
-    setattr(args_ns, "datetime", dt)
-
-    # TODO: do all the stuff above to make this dict instead
-    arg_dict = vars(args_ns)
-
-    try:  # add json args to arg_dict
-        json_dict = json.loads(arg_dict['json'])
+    try:  # add json args to args_dict
+        json_dict = json.loads(args_dict['json'])
         for key in json_dict:
-            if key in arg_dict and arg_dict[key] != json_dict[key]:
+            if key in args_dict and args_dict[key] != json_dict[key]:
                 raise InputValidationError(
                     "CLI argument passed that contradicts json argument:\n" +
-                    "\t CLI arg : {}".format(arg_dict[key]) +
+                    "\t CLI arg : {}".format(args_dict[key]) +
                     "\tjson arg : {}".format(json_dict[key])
                 )
             else:
-                arg_dict[key] = json_dict[key]
+                args_dict[key] = json_dict[key]
     except TypeError:
         logger.debug("json str is empty")
     except KeyError:
-        logger.warn("arg_dict['json'] is None?")
+        logger.warn("args_dict['json'] is None?")
 
     # create args['date_time'] from args['time']
-    arg_dict['date_time'] = arg_dict['time']
-    return arg_dict
+    args_dict['date_time'] = args_dict['time']
+    return args_dict

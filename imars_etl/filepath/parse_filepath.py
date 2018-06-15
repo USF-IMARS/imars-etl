@@ -15,13 +15,12 @@ from imars_etl.filepath.get_product_id import get_product_id
 logging.getLogger("parse").setLevel(logging.WARN)
 
 
-# def parse_filepath_from_namespace(args_ns):
 def parse_filepath(args_ns):
     """
     Attempts to fill all arguments in args using args.filepath and information
     from `imars_etl.filepath.data`. Tries to match against all possible product
     types if args.product_type_name is not given
-
+    parse_filepath but for argparse namespaces
     Parameters
     ----------
     args_ns : ArgParse arg obj
@@ -29,7 +28,7 @@ def parse_filepath(args_ns):
 
     Returns
     -------
-    args_ns : ArgParse arg obj
+    args_ns : dict of arguments
         modified version of input args with any missing args filled.
 
     """
@@ -37,42 +36,43 @@ def parse_filepath(args_ns):
         __name__,
         sys._getframe().f_code.co_name)
     )
-    if (getattr(args_ns, 'load_format', None) is not None):
+    args_dict = vars(args_ns)
+    if (args_dict.get('load_format') is not None):
         return _parse_from_product_type_and_filename(
-            args_ns,
-            getattr(args_ns, 'load_format'),
+            args_dict,
+            args_dict['load_format'],
             'manually set custom load_format'
         )
-    if (getattr(args_ns, 'product_type_name', None) is not None):
-        ing_key = getattr(args_ns, 'ingest_key', None)
+    if (args_dict.get('product_type_name') is not None):
+        ing_key = args_dict.get('ingest_key', None)
         if (ing_key is None):
-            ing_fmt = get_ingest_format(args_ns.product_type_name)
+            ing_fmt = get_ingest_format(args_dict['product_type_name'])
         else:
             ing_fmt = get_ingest_format(
-                args_ns.product_type_name,
-                args_ns.ingest_key
+                args_dict['product_type_name'],
+                args_dict['ingest_key']
             )
 
-        args_ns = _parse_from_product_type_and_filename(
-            args_ns,
+        args_dict = _parse_from_product_type_and_filename(
+            args_dict,
             ing_fmt,
-            '{}.{}'.format(args_ns.product_type_name, ing_key)
+            '{}.{}'.format(args_dict['product_type_name'], ing_key)
         )
-        return args_ns
+        return args_dict
     else:  # try all patterns
         for pattern_name, pattern in get_ingest_formats().items():
             try:
-                setattr(args_ns, 'product_type_name', pattern_name.split(".")[0])
-                args_ns = _parse_from_product_type_and_filename(
-                    args_ns, pattern, pattern_name
+                args_dict['product_type_name'] = pattern_name.split(".")[0]
+                args_dict = _parse_from_product_type_and_filename(
+                    args_dict, pattern, pattern_name
                 )
-                return args_ns
+                return args_dict
             except SyntaxError as s_err:  # filepath does not match
                 logger.debug("nope. caught error: \n>>>{}".format(s_err))
-                setattr(args_ns, 'product_type_name', None)
+                args_dict['product_type_name'] = None
         else:
             logger.warn("could not match filepath to any known patterns.")
-            return args_ns
+            return args_dict
 
 
 def _replace_strftime_dirs(in_string):
@@ -98,7 +98,7 @@ def _strptime_parsed_pattern(input_str, format_str, params):
     return datetime.strptime(input_str, filled_fmt_str)
 
 
-def _parse_from_product_type_and_filename(args, pattern, pattern_name):
+def _parse_from_product_type_and_filename(arg_dict, pattern, pattern_name):
     """
     Uses given pattern to parse args.filepath and fill any other arguments
     that can be inferred.
@@ -110,8 +110,10 @@ def _parse_from_product_type_and_filename(args, pattern, pattern_name):
         sys._getframe().f_code.co_name)
     )
     logger.debug("parsing as {}".format(pattern_name))
-    filename = args.filepath
+    filename = arg_dict['filepath']
     # switch to basepath if path info not part of pattern
+    logger.debug('fname: \n\t{}'.format(filename))
+    logger.debug('pattern: \n\t{}'.format(pattern))
     if "/" in filename and "/" not in pattern:
         filename = os.path.basename(filename)
 
@@ -139,18 +141,27 @@ def _parse_from_product_type_and_filename(args, pattern, pattern_name):
     for param in params_parsed:
         if param[:3] != "dt_":  # ignore these
             val = params_parsed[param]
-            args = _setattr_unless_exists(args, param, val)
+            arg_dict = _set_unless_exists(arg_dict, param, val)
             # logger.debug('{} extracted :"{}"'.format(param, val))
 
-    args = _setattr_unless_exists(args, 'datetime', dt)
-    args = _setattr_unless_exists(args, 'time', args.datetime.isoformat())
-    logger.debug('date extracted: {}'.format(args.time))
+    arg_dict = _set_unless_exists(arg_dict, 'datetime', dt)
+    arg_dict = _set_unless_exists(
+        arg_dict, 'time', arg_dict['datetime'].isoformat()
+    )
+    logger.debug('date extracted: {}'.format(arg_dict['time']))
     # setattr(args, 'product_type_name', args.product_type_name)
-    args = _setattr_unless_exists(
-        args, 'product_id', get_product_id(args.product_type_name)
+    arg_dict = _set_unless_exists(
+        arg_dict, 'product_id', get_product_id(arg_dict['product_type_name'])
     )
 
-    return args
+    return arg_dict
+
+
+def _set_unless_exists(the_dict, key, val):
+    """Sets the_dict[key] with val unless the_dict[key] already exists"""
+    if the_dict.get(key) is None:
+        the_dict[key] = val
+    return the_dict
 
 
 def _setattr_unless_exists(args, key, val):

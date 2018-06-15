@@ -25,12 +25,15 @@ class Test_parse_filepath(TestCase):
             '-f', "16FEB12162518-M1BS-057488585010_01_P003-BROWSE.JPG",
         ])
         res_args = parse_filepath(test_args)
-        self.assertEqual(res_args.datetime, datetime(2016, 2, 12, 16, 25, 18))
-        self.assertEqual(res_args.idNumber, "057488585010_01")
-        self.assertEqual(res_args.passNumber, "003")
-        self.assertEqual(res_args.product_type_name, "jpg_wv2_m1bs")
         self.assertEqual(
-            res_args.product_id,
+            res_args['datetime'],
+            datetime(2016, 2, 12, 16, 25, 18)
+        )
+        self.assertEqual(res_args['idNumber'], "057488585010_01")
+        self.assertEqual(res_args['passNumber'], "003")
+        self.assertEqual(res_args['product_type_name'], "jpg_wv2_m1bs")
+        self.assertEqual(
+            res_args['product_id'],
             get_product_id("jpg_wv2_m1bs")
         )
 
@@ -43,12 +46,15 @@ class Test_parse_filepath(TestCase):
             '-f', "16FEB12162518-P1BS-057488585010_01_P003_PIXEL_SHAPE.shx"
         ])
         res_args = parse_filepath(test_args)
-        self.assertEqual(res_args.datetime, datetime(2016, 2, 12, 16, 25, 18))
-        self.assertEqual(res_args.idNumber, "057488585010_01")
-        self.assertEqual(res_args.passNumber, "003")
-        self.assertEqual(res_args.product_type_name, "shx_wv2_p1bs")
         self.assertEqual(
-            res_args.product_id,
+            res_args['datetime'],
+            datetime(2016, 2, 12, 16, 25, 18)
+        )
+        self.assertEqual(res_args['idNumber'], "057488585010_01")
+        self.assertEqual(res_args['passNumber'], "003")
+        self.assertEqual(res_args['product_type_name'], "shx_wv2_p1bs")
+        self.assertEqual(
+            res_args['product_id'],
             get_product_id("shx_wv2_p1bs")
         )
 
@@ -62,9 +68,9 @@ class Test_parse_filepath(TestCase):
             '-n', "test_test_test",
         ])
         res_args = parse_filepath(test_args)
-        self.assertEqual(res_args.datetime, datetime(1997, 1, 1))
+        self.assertEqual(res_args['datetime'], datetime(1997, 1, 1))
         self.assertEqual(
-            res_args.product_id,
+            res_args['product_id'],
             get_product_id("test_test_test")
         )
         # this fails... but I don't think we really care.
@@ -79,5 +85,5 @@ class Test_parse_filepath(TestCase):
             '-f', 'date_2022123.arg_testyTestArg.time_0711.woah'
         ])
         res_args = parse_filepath(test_args)
-        self.assertEqual(res_args.datetime, datetime(2022, 5, 3, 7, 0, 11))
-        self.assertEqual(res_args.test_arg, "testyTestArg")
+        self.assertEqual(res_args['datetime'], datetime(2022, 5, 3, 7, 0, 11))
+        self.assertEqual(res_args['test_arg'], "testyTestArg")
