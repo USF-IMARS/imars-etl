@@ -22,25 +22,32 @@ def extract(args):
     """
     if isinstance(args, dict):  # args can be dict
         args_dict = args
-        args_ns = dict_to_argparse_namespace(args)
     else:  # assume we have an argparse namespace
         args_dict = vars(args)
-        args_ns = args
 
+    return _extract(**args_dict)
+
+
+def _extract(
+    sql, output_path,
+    storage_driver=EXTRACT_DEFAULTS['storage_driver'],
+    first=False,
+    **kwargs
+):
     result = get_sql_result(
-        "SELECT filepath FROM file WHERE {}".format(args_dict['sql']),
-        first=getattr(args_ns, "first", False)
+        "SELECT filepath FROM file WHERE {}".format(sql),
+        first=first
     )
     src_path = result['filepath']
 
-    if args_dict['output_path'] is None:
-        args_dict['output_path'] = "./" + os.path.basename(src_path)
+    if output_path is None:
+        output_path = "./" + os.path.basename(src_path)
 
     # use driver to download & then print a path to where the file can be
     # accessed on the local machine.
     fpath = STORAGE_DRIVERS[
-        args_dict.get('storage_driver', EXTRACT_DEFAULTS['storage_driver'])
-    ](src_path, args_dict['output_path'], **args_dict)
+        storage_driver
+    ](src_path, **kwargs)
 
     print(fpath)
     return fpath
