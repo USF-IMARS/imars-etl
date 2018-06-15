@@ -64,7 +64,7 @@ def _load(args_ns, filepath=None, directory=None, **kwargs):
         raise ValueError("one of --filepath or --directory is required.")
 
 
-def _load_dir(args):
+def _load_dir(args_ns):
     """
     Loads multiple files that match from a directory
 
@@ -79,16 +79,16 @@ def _load_dir(args):
     )
     insert_statements = []  #
     # logger.debug("searching w/ '{}'...".format(fmt))
-    orig_args = copy.deepcopy(args)
+    orig_args = copy.deepcopy(args_ns)
     loaded_count = 0
     skipped_count = 0
     duplicate_count = 0
-    for root, dirs, files in os.walk(args.directory):
+    for root, dirs, files in os.walk(args_ns.directory):
         for filename in files:
             try:
                 fpath = os.path.join(root, filename)
-                args.filepath = fpath
-                insert_statements.append(_load_file(args))
+                args_ns.filepath = fpath
+                insert_statements.append(_load_file(args_ns))
                 logger.debug("loading {}...".format(fpath))
                 loaded_count += 1
             except SyntaxError as s_err:
@@ -102,7 +102,7 @@ def _load_dir(args):
                 DUPLICATE_ENTRY_ERRNO = 1062
                 if (
                     errnum == DUPLICATE_ENTRY_ERRNO and
-                    getattr(args, 'duplicates_ok', False)
+                    getattr(args_ns, 'duplicates_ok', False)
                 ):
                     logger.warn(
                         "IntegrityError: Duplicate entry for '{}'".format(
@@ -113,16 +113,16 @@ def _load_dir(args):
                 else:
                     raise
             finally:
-                args = copy.deepcopy(orig_args)  # reset args
+                args_ns = copy.deepcopy(orig_args)  # reset args
     logger.info("{} files loaded, {} skipped, {} duplicates.".format(
         loaded_count, skipped_count, duplicate_count
     ))
     return insert_statements
 
 
-def _load_file(args):
+def _load_file(args_ns):
     """Loads a single file"""
-    args_dict = _validate_args(args)
+    args_dict = _validate_args(args_ns)
     args = dict_to_argparse_namespace(args_dict)  # TODO: rm need for this
 
     # load file into IMaRS data warehouse
@@ -137,15 +137,15 @@ def _load_file(args):
         new_filepath = STORAGE_DRIVERS[selected_driver].load_file(args_dict)
 
     sql = _make_sql_insert(args_dict)
-    sql = sql.replace(args.filepath, new_filepath)
-    if getattr(args, 'dry_run', False):  # test mode returns the sql string
+    sql = sql.replace(args_ns.filepath, new_filepath)
+    if getattr(args_ns, 'dry_run', False):  # test mode returns the sql string
         return sql
     else:
         return get_sql_result(
-            args,
+            args_ns,
             sql,
             check_result=False,
-            should_commit=(not getattr(args, 'dry_run', False)),
+            should_commit=(not getattr(args_ns, 'dry_run', False)),
         )
 
 
