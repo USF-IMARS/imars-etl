@@ -142,10 +142,10 @@ def _load_file(args_ns):
         return sql
     else:
         return get_sql_result(
-            args_ns,
             sql,
             check_result=False,
             should_commit=(not getattr(args_ns, 'dry_run', False)),
+            first=getattr(args_ns, "first", False),
         )
 
 

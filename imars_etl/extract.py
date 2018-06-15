@@ -28,8 +28,8 @@ def extract(args):
         args_ns = args
 
     result = get_sql_result(
-        args_ns,
-        "SELECT filepath FROM file WHERE {}".format(args_dict['sql'])
+        "SELECT filepath FROM file WHERE {}".format(args_dict['sql']),
+        first=getattr(args_ns, "first", False)
     )
     src_path = result['filepath']
 
