@@ -58,14 +58,18 @@ def _load(args_ns, filepath=None, directory=None, **kwargs):
     if filepath is not None:
         return _load_file(args_dict)
     elif directory is not None:
-        return _load_dir(args_ns)
+        return _load_dir(args_dict)
     else:
         # NOTE: this should be thrown by the arparse arg group before getting
         #   here, but we throw here for the python API.
         raise ValueError("one of --filepath or --directory is required.")
 
 
-def _load_dir(args_ns):
+def _load_dir_ns(args_ns):
+    return _load_dir(vars(args_ns))
+
+
+def _load_dir(args_dict):
     """
     Loads multiple files that match from a directory
 
@@ -80,16 +84,15 @@ def _load_dir(args_ns):
     )
     insert_statements = []  #
     # logger.debug("searching w/ '{}'...".format(fmt))
-    orig_args = copy.deepcopy(args_ns)
+    orig_args = copy.deepcopy(args_dict)
     loaded_count = 0
     skipped_count = 0
     duplicate_count = 0
-    for root, dirs, files in os.walk(args_ns.directory):
+    for root, dirs, files in os.walk(args_dict['directory']):
         for filename in files:
             try:
                 fpath = os.path.join(root, filename)
-                args_ns.filepath = fpath
-                args_dict = vars(args_ns)
+                args_dict['filepath'] = fpath
                 insert_statements.append(_load_file(args_dict))
                 logger.debug("loading {}...".format(fpath))
                 loaded_count += 1
@@ -104,7 +107,7 @@ def _load_dir(args_ns):
                 DUPLICATE_ENTRY_ERRNO = 1062
                 if (
                     errnum == DUPLICATE_ENTRY_ERRNO and
-                    getattr(args_ns, 'duplicates_ok', False)
+                    args_dict.get('duplicates_ok', False)
                 ):
                     logger.warn(
                         "IntegrityError: Duplicate entry for '{}'".format(
@@ -115,7 +118,7 @@ def _load_dir(args_ns):
                 else:
                     raise
             finally:
-                args_ns = copy.deepcopy(orig_args)  # reset args
+                args_dict = copy.deepcopy(orig_args)  # reset args
     logger.info("{} files loaded, {} skipped, {} duplicates.".format(
         loaded_count, skipped_count, duplicate_count
     ))
