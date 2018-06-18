@@ -171,19 +171,6 @@ def _set_unless_exists(the_dict, key, val):
     return the_dict
 
 
-def _setattr_unless_exists(args, key, val):
-    """Sets args.key with val unless args.key already exists"""
-    logger = logging.getLogger("{}.{}".format(
-        __name__,
-        sys._getframe().f_code.co_name)
-    )
-    logger.debug("args.{}\t:{}".format(key, getattr(args, key, None)))
-    if getattr(args, key, None) is None:
-        logger.debug("\t|-> {}".format(val))
-        setattr(args, key, val)
-    return args
-
-
 _STRFTIME_MAP = {
     "%a": "{dt_a:3w}",  # Weekday as locale's abbreviated name.   |  Mon
     "%A": "{dt_A:w}day",  # Weekday as locale's full name.   |  Monday
