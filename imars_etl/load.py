@@ -55,6 +55,11 @@ def load(argvs):
 
 def _load(args_ns, filepath=None, directory=None, **kwargs):
     args_dict = vars(args_ns)
+    args_dict['filepath'] = filepath
+    args_dict['directory'] = directory
+    for key in kwargs.keys():
+        args_dict[key] = kwargs[key]
+
     if filepath is not None:
         return _load_file(args_dict)
     elif directory is not None:

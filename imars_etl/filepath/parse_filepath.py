@@ -27,12 +27,13 @@ def parse_filepath(args_dict):
         sys._getframe().f_code.co_name)
     )
     if (args_dict.get('load_format') is not None):
-        return _parse_from_product_type_and_filename(
-            args_dict,
+        args_parsed = _parse_from_product_type_and_filename(
+            args_dict['filepath'],
             args_dict['load_format'],
-            'manually set custom load_format'
+            'manually set custom load_format',
+            args_dict['product_type_name']
         )
-    if (args_dict.get('product_type_name') is not None):
+    elif (args_dict.get('product_type_name') is not None):
         ing_key = args_dict.get('ingest_key', None)
         if (ing_key is None):
             ing_fmt = get_ingest_format(args_dict['product_type_name'])
@@ -42,26 +43,34 @@ def parse_filepath(args_dict):
                 args_dict['ingest_key']
             )
 
-        args_dict = _parse_from_product_type_and_filename(
-            args_dict,
+        args_parsed = _parse_from_product_type_and_filename(
+            args_dict['filepath'],
             ing_fmt,
-            '{}.{}'.format(args_dict['product_type_name'], ing_key)
+            '{}.{}'.format(args_dict['product_type_name'], ing_key),
+            args_dict['product_type_name']
         )
-        return args_dict
     else:  # try all patterns
         for pattern_name, pattern in get_ingest_formats().items():
             try:
                 args_dict['product_type_name'] = pattern_name.split(".")[0]
-                args_dict = _parse_from_product_type_and_filename(
-                    args_dict, pattern, pattern_name
+                args_parsed = _parse_from_product_type_and_filename(
+                    args_dict['filepath'],
+                    pattern,
+                    pattern_name,
+                    args_dict['product_type_name']
                 )
-                return args_dict
+                break
             except SyntaxError as s_err:  # filepath does not match
                 logger.debug("nope. caught error: \n>>>{}".format(s_err))
                 args_dict['product_type_name'] = None
         else:
             logger.warn("could not match filepath to any known patterns.")
-            return args_dict
+            args_parsed = {}
+
+    for key in args_parsed.keys():
+        _set_unless_exists(args_dict, key, args_parsed[key])
+
+    return args_dict
 
 
 def parse_filepath_from_argparse(args_ns):
@@ -102,7 +111,9 @@ def _strptime_parsed_pattern(input_str, format_str, params):
     return datetime.strptime(input_str, filled_fmt_str)
 
 
-def _parse_from_product_type_and_filename(arg_dict, pattern, pattern_name):
+def _parse_from_product_type_and_filename(
+    filepath, pattern, pattern_name, product_type_name
+):
     """
     Uses given pattern to parse args.filepath and fill any other arguments
     that can be inferred.
@@ -111,10 +122,10 @@ def _parse_from_product_type_and_filename(arg_dict, pattern, pattern_name):
     """
     logger = logging.getLogger("{}.{}".format(
         __name__,
-        sys._getframe().f_code.co_name)
-    )
+        sys._getframe().f_code.co_name
+    ))
     logger.debug("parsing as {}".format(pattern_name))
-    filename = arg_dict['filepath']
+    filename = filepath
     # switch to basepath if path info not part of pattern
     logger.debug('fname: \n\t{}'.format(filename))
     logger.debug('pattern: \n\t{}'.format(pattern))
@@ -134,6 +145,7 @@ def _parse_from_product_type_and_filename(arg_dict, pattern, pattern_name):
                 path_fmt_str
             )
         )
+        params_parsed = {}
     else:
         params_parsed = params_parsed.named
 
@@ -142,27 +154,28 @@ def _parse_from_product_type_and_filename(arg_dict, pattern, pattern_name):
     logger.info("params parsed from fname: \n\t{}".format(params_parsed))
     # NOTE: setattr LAST here, else args will get set before we know
     #   that this filename matches the given pattern
+    parsed_vars = {}
     for param in params_parsed:
         if param[:3] != "dt_":  # ignore these
             val = params_parsed[param]
-            arg_dict = _set_unless_exists(arg_dict, param, val)
+            # arg_dict = _set_unless_exists(arg_dict, param, val)
+            parsed_vars[param] = val
             # logger.debug('{} extracted :"{}"'.format(param, val))
 
-    arg_dict = _set_unless_exists(arg_dict, 'datetime', dt)
-    arg_dict = _set_unless_exists(
-        arg_dict, 'time', arg_dict['datetime'].isoformat()
-    )
-    logger.debug('date extracted: {}'.format(arg_dict['time']))
+    parsed_vars['datetime'] = dt
+    parsed_vars['time'] = dt.isoformat()
+    logger.debug('date extracted: {}'.format(parsed_vars['time']))
     # setattr(args, 'product_type_name', args.product_type_name)
-    arg_dict = _set_unless_exists(
-        arg_dict, 'product_id', get_product_id(arg_dict['product_type_name'])
-    )
+    parsed_vars['product_id'] = get_product_id(product_type_name)
 
-    return arg_dict
+    return parsed_vars
 
 
 def _set_unless_exists(the_dict, key, val):
-    """Sets the_dict[key] with val unless the_dict[key] already exists"""
+    """
+    Sets the_dict[key] with val unless the_dict[key] already exists
+    Like `the_dict.setdefault(key, val)`, but will overwrite `None`.
+    """
     if the_dict.get(key) is None:
         the_dict[key] = val
     return the_dict
@@ -179,6 +192,7 @@ def _setattr_unless_exists(args, key, val):
         logger.debug("\t|-> {}".format(val))
         setattr(args, key, val)
     return args
+
 
 _STRFTIME_MAP = {
     "%a": "{dt_a:3w}",  # Weekday as locale's abbreviated name.   |  Mon
