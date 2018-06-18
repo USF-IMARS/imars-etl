@@ -9,6 +9,7 @@ import numbers
 from pymysql.err import IntegrityError
 
 from imars_etl.filepath.parse_filepath import parse_filepath
+from imars_etl.filepath.parse_filepath import _set_unless_exists
 from imars_etl.filepath.get_product_id import get_product_id
 
 from imars_etl.filepath.get_product_name import get_product_name
@@ -237,7 +238,11 @@ def _validate_args(args_dict):
         # )
 
     logger.debug("pre-guess-args : " + str(args_dict))
-    args_dict = parse_filepath(args_dict)
+
+    args_parsed = parse_filepath(**args_dict)
+    for key in args_parsed.keys():
+        _set_unless_exists(args_dict, key, args_parsed[key])
+
     logger.debug("post-guess-args: " + str(args_dict))
 
     ISO_8601_FMT = "%Y-%m-%dT%H:%M:%S"

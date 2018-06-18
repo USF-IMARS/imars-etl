@@ -15,7 +15,13 @@ from imars_etl.filepath.get_product_id import get_product_id
 logging.getLogger("parse").setLevel(logging.WARN)
 
 
-def parse_filepath(args_dict):
+def parse_filepath(
+    load_format=None,
+    filepath=None,
+    product_type_name=None,
+    ingest_key=None,
+    **kwargs
+):
     """
     Attempts to fill all arguments in args using args.filepath and information
     from `imars_etl.filepath.data`. Tries to match against all possible product
@@ -26,43 +32,44 @@ def parse_filepath(args_dict):
         __name__,
         sys._getframe().f_code.co_name)
     )
-    if (args_dict.get('load_format') is not None):
+    args_dict = {}
+    if (load_format is not None):
         args_parsed = _parse_from_product_type_and_filename(
-            args_dict['filepath'],
-            args_dict['load_format'],
+            filepath,
+            load_format,
             'manually set custom load_format',
-            args_dict['product_type_name']
+            product_type_name
         )
-    elif (args_dict.get('product_type_name') is not None):
-        ing_key = args_dict.get('ingest_key', None)
+    elif (product_type_name is not None):
+        ing_key = ingest_key
         if (ing_key is None):
-            ing_fmt = get_ingest_format(args_dict['product_type_name'])
+            ing_fmt = get_ingest_format(product_type_name)
         else:
             ing_fmt = get_ingest_format(
-                args_dict['product_type_name'],
-                args_dict['ingest_key']
+                product_type_name,
+                ingest_key
             )
 
         args_parsed = _parse_from_product_type_and_filename(
-            args_dict['filepath'],
+            filepath,
             ing_fmt,
-            '{}.{}'.format(args_dict['product_type_name'], ing_key),
-            args_dict['product_type_name']
+            '{}.{}'.format(product_type_name, ing_key),
+            product_type_name
         )
     else:  # try all patterns
         for pattern_name, pattern in get_ingest_formats().items():
             try:
-                args_dict['product_type_name'] = pattern_name.split(".")[0]
+                product_type_name = pattern_name.split(".")[0]
                 args_parsed = _parse_from_product_type_and_filename(
-                    args_dict['filepath'],
+                    filepath,
                     pattern,
                     pattern_name,
-                    args_dict['product_type_name']
+                    product_type_name
                 )
                 break
             except SyntaxError as s_err:  # filepath does not match
                 logger.debug("nope. caught error: \n>>>{}".format(s_err))
-                args_dict['product_type_name'] = None
+                product_type_name = None
         else:
             logger.warn("could not match filepath to any known patterns.")
             args_parsed = {}
@@ -155,7 +162,7 @@ def _parse_from_product_type_and_filename(
     parsed_vars['datetime'] = dt
     parsed_vars['time'] = dt.isoformat()
     logger.debug('date extracted: {}'.format(parsed_vars['time']))
-    # setattr(args, 'product_type_name', args.product_type_name)
+    parsed_vars['product_type_name'] = product_type_name
     parsed_vars['product_id'] = get_product_id(product_type_name)
 
     return parsed_vars
