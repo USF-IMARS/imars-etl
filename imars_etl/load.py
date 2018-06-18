@@ -65,10 +65,6 @@ def _load(args_ns, filepath=None, directory=None, **kwargs):
         raise ValueError("one of --filepath or --directory is required.")
 
 
-def _load_dir_ns(args_ns):
-    return _load_dir(vars(args_ns))
-
-
 def _load_dir(args_dict):
     """
     Loads multiple files that match from a directory
@@ -123,10 +119,6 @@ def _load_dir(args_dict):
         loaded_count, skipped_count, duplicate_count
     ))
     return insert_statements
-
-
-def _load_file_ns(args_ns):
-    _load_file(vars(args_ns))
 
 
 def _load_file(args_dict):
@@ -186,18 +178,6 @@ def _make_sql_insert(args):
     SQL = "INSERT INTO file ("+keys+") VALUES ("+vals+")"
     logger.debug(SQL)
     return SQL
-
-
-def _validate_args_ns(args_ns):
-    """
-    Parameters:
-    -----------
-    args_ns : argparse namespace
-
-    Returns:
-    args_dict : dict
-    """
-    return _validate_args(vars(args_ns))
 
 
 def _validate_args(args_dict):

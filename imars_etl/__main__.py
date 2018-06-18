@@ -8,3 +8,4 @@ assert __name__ == "__main__"
 
 args = parse_args(sys.argv[1:])
 args.func(args)
+# args.func(**vars(args))  # TODO: this instead
