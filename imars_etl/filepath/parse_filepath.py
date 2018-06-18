@@ -73,21 +73,6 @@ def parse_filepath(args_dict):
     return args_dict
 
 
-def parse_filepath_from_argparse(args_ns):
-    """
-    Parameters
-    ----------
-    args_ns : ArgParse arg obj
-        arguments we have to start with. these will be used to guess at others.
-
-    Returns
-    -------
-    args_ns : dict of arguments
-        modified version of input args with any missing args filled.
-    """
-    return parse_filepath(vars(args_ns))
-
-
 def _replace_strftime_dirs(in_string):
     """Replaces strftime directives with something usable by parse()"""
     for direc, fmt in _STRFTIME_MAP.items():
@@ -119,6 +104,11 @@ def _parse_from_product_type_and_filename(
     that can be inferred.
 
     args.product_type_name must be set before calling
+
+    Returns:
+    --------
+    parsed_vars : dict
+        dict of vars that were parsed from the given info
     """
     logger = logging.getLogger("{}.{}".format(
         __name__,
