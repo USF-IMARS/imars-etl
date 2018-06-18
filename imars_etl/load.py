@@ -136,7 +136,7 @@ def _load_file(args_dict):
     except TypeError:  # for some reason nosetests needs it like this:
         new_filepath = STORAGE_DRIVERS[selected_driver].load_file(args_dict)
 
-    sql = _make_sql_insert(args_dict)
+    sql = _make_sql_insert(**args_dict)
     sql = sql.replace(args_dict['filepath'], new_filepath)
     if args_dict.get('dry_run', False):  # test mode returns the sql string
         return sql
@@ -149,7 +149,7 @@ def _load_file(args_dict):
         )
 
 
-def _make_sql_insert(args):
+def _make_sql_insert(**kwargs):
     """Creates SQL INSERT INTO statement with metadata from given args dict"""
     VALID_FILE_TABLE_COLNAMES = [  # TODO: get this from db
         'filepath', 'date_time', 'product_id', 'is_day_pass',
@@ -162,8 +162,8 @@ def _make_sql_insert(args):
     KEY_FMT_STR = '{},'  # how we format sql keys
     keys = ""
     vals = ""
-    for key in args:
-        val = args[key]
+    for key in kwargs:
+        val = kwargs[key]
         if key in VALID_FILE_TABLE_COLNAMES:
             if isinstance(val, numbers.Number):
                 val_fmt_str = '{},'
