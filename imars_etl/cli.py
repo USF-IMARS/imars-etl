@@ -162,7 +162,7 @@ def parse_args(argvs):
     args = parser.parse_args(argvs)
     try:
         args.func
-    except AttributeError as a_err:
+    except AttributeError:
         SEP = "\n-----------------------------------------------------------\n"
         print(SEP)
         parser.print_help()
