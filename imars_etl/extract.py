@@ -1,6 +1,5 @@
 import os
 
-from imars_etl.util import dict_to_argparse_namespace
 from imars_etl.util import get_sql_result
 from imars_etl.drivers.imars_objects.extract_file import extract_file
 
@@ -13,27 +12,17 @@ STORAGE_DRIVERS = {  # map from input strings to extract fn for each backend
 }
 
 
-def extract(args):
-    """
-    Args can be dict or argparse.Namespace
-
-    Example usage:
-        ./imars-etl.py -vvv extract 'area_id=1'
-    """
-    if isinstance(args, dict):  # args can be dict
-        args_dict = args
-    else:  # assume we have an argparse namespace
-        args_dict = vars(args)
-
-    return _extract(**args_dict)
-
-
-def _extract(
-    sql, output_path,
+def extract(
+    sql,
+    output_path=None,
     storage_driver=EXTRACT_DEFAULTS['storage_driver'],
     first=False,
     **kwargs
 ):
+    """
+    Example usage:
+    ./imars-etl.py -vvv extract 'area_id=1'
+    """
     result = get_sql_result(
         "SELECT filepath FROM file WHERE {}".format(sql),
         first=first

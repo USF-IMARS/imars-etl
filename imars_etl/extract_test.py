@@ -4,8 +4,6 @@
 # std modules:
 from unittest import TestCase
 
-from imars_etl.cli import parse_args
-
 
 class Test_extract(TestCase):
 
@@ -19,14 +17,11 @@ class Test_extract(TestCase):
                 "sql": 'status_id=-1 AND area_id=-10 AND product_id=-99'
             })
         """
-        from imars_etl.extract import extract
+        from imars_etl.api import extract
         # result = extract()
 
         self.assertRaises(
             SystemExit,
             extract,
-            parse_args([
-                'extract',
-                'status_id=-1 AND area_id=-10 AND product_id=-99'
-            ])
+            'status_id=-1 AND area_id=-10 AND product_id=-99'
         )
