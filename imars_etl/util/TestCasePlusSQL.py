@@ -22,6 +22,11 @@ class TestCasePlusSQL(TestCase):
 
         'INSERT INTO file (status_id,date_time) VALUES (1,"2018-02-26T13:00")'
         """
+        if sql_str is None:
+            raise ValueError("sql string is None?")
+        elif len(sql_str) < 1:
+            raise ValueError("recieved empty sql string?")
+
         exp_keys, exp_vals = parse_keys_vals_from_sql_insert(sql_str)
         try:  # py3
             self.assertCountEqual(keys, exp_keys)

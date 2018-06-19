@@ -23,10 +23,9 @@ class Test_load_cli(TestCasePlusSQL):
                 -p '2018-02-26T13:00'
                 -j '{"status_id":1, "area_id":1}'
         """
-        from imars_etl.load import load
-        from imars_etl.cli import parse_args
+        from imars_etl.cli import main
 
-        test_args = parse_args([
+        test_args = [
             '-vvv',
             'load',
             '--dry_run',
@@ -34,9 +33,9 @@ class Test_load_cli(TestCasePlusSQL):
             '-p', '-1',
             '-t', "2018-02-26T13:00",
             '-j', '{"status_id":1,"area_id":1}',
-        ])
+        ]
         self.assertSQLInsertKeyValuesMatch(
-            load(test_args),
+            main(test_args),
             ['status_id', 'date_time', 'area_id', 'product_id', 'filepath'],
             [
                 '1',
@@ -59,12 +58,11 @@ class Test_load_cli(TestCasePlusSQL):
                 -p '2018-02-26T13:00'
                 -j '{"status_id":1, "area_id":1}'
         """
-        from imars_etl.load import load
-        from imars_etl.cli import parse_args
+        from imars_etl.cli import main
 
         FPATH = "/fake/path/file_w_date_2018.txt"
 
-        test_args = parse_args([
+        test_args = [
             '-vvv',
             'load',
             '--dry_run',
@@ -73,9 +71,9 @@ class Test_load_cli(TestCasePlusSQL):
             '-p', '-1',
             '-t', "2018-02-26T13:00",
             '-j', '{"status_id":1,"area_id":1}',
-        ])
+        ]
         self.assertSQLInsertKeyValuesMatch(
-            load(test_args),
+            main(test_args),
             ['status_id', 'date_time', 'area_id', 'product_id', 'filepath'],
             [
                 '1',
@@ -95,17 +93,16 @@ class Test_load_cli(TestCasePlusSQL):
                 -j '{"area_id":1}'
                 -f '/my/path/without/a/date/in.it'
         """
-        from imars_etl import load
-        from imars_etl.cli import parse_args
-        test_args = parse_args([
+        from imars_etl.cli import main
+        test_args = [
             '-vvv',
             'load',
             '--dry_run',
             '-f', "/my/path/without/a/date/in.it",
             '-j', '{"area_id":1}',
             '-p', '6'
-        ])
-        self.assertRaises(Exception, load, test_args)  # noqa H202
+        ]
+        self.assertRaises(Exception, main, test_args)  # noqa H202
 
     def test_load_missing_date_guessable(self):
         """
@@ -116,18 +113,17 @@ class Test_load_cli(TestCasePlusSQL):
                 -p 6
                 -f '/path/w/parseable/date/wv2_1989-06-07T1112_myTag.zip'
         """
-        from imars_etl.load import load
-        from imars_etl.cli import parse_args
-        test_args = parse_args([
+        from imars_etl.cli import main
+        test_args = [
             '-vvv',
             'load',
             '--dry_run',
             '-f', "/path/w/parseable/date/wv2_1989-06-07T1112_myTag.zip",
             '-j', '{"area_id":1}',
             '-p', '6',
-        ])
+        ]
         self.assertSQLInsertKeyValuesMatch(
-            load(test_args),
+            main(test_args),
             ['date_time', 'area_id', 'product_id', 'filepath'],
             [
                 '"1989-06-07T11:12:00"', '1', '6',
@@ -144,16 +140,15 @@ class Test_load_cli(TestCasePlusSQL):
                 -p 6
                 -f '/path/w/parseable/date/wv2_2000_06_myTag.zip'
         """
-        from imars_etl.load import load
-        from imars_etl.cli import parse_args
-        test_args = parse_args([
+        from imars_etl.cli import main
+        test_args = [
             '-vvv',
             'load',
             '--dry_run',
             '-f', "/path/w/parseable/date/wv2_2000-06-07T1122_myTag.zip",
             '-p', '6',
-        ])
-        res = load(test_args)
+        ]
+        res = main(test_args)
         # 'INSERT INTO file (
         # product_id,filepath,date_time) VALUES (
         # 6,"/srv/imars-objects/zip_wv2_ftp_ingest/wv2_2000-06-07T1122_m...")'
@@ -174,8 +169,7 @@ class Test_load_cli(TestCasePlusSQL):
         """
         FAKE_TEST_DIR = "/fake/dir/of/files/w/parseable/dates"
         with patch('os.walk') as mockwalk:
-            from imars_etl.load import load
-            from imars_etl.cli import parse_args
+            from imars_etl.cli import main
             mockwalk.return_value = [(
                 FAKE_TEST_DIR,  # root
                 (  # dirs
@@ -185,16 +179,16 @@ class Test_load_cli(TestCasePlusSQL):
                     "file_w_date_2018.txt",
                 ),
             )]
-            test_args = parse_args([
+            test_args = [
                 '-vvv',
                 'load',
                 '--dry_run',
                 '-d', FAKE_TEST_DIR,
                 '-p', '-1',
                 '-i', "file_w_date"
-            ])
+            ]
             self.assertSQLsEquals(
-                load(test_args),
+                main(test_args),
                 [
                     ['date_time', 'product_id', 'filepath'],
                     ['date_time', 'product_id', 'filepath']
@@ -221,8 +215,7 @@ class Test_load_cli(TestCasePlusSQL):
         """
         FAKE_TEST_DIR = "/fake/dir/of/files/w/parseable/dates"
         with patch('os.walk') as mockwalk:
-            from imars_etl.load import load
-            from imars_etl.cli import parse_args
+            from imars_etl.cli import main
             mockwalk.return_value = [(
                 FAKE_TEST_DIR,  # root
                 (  # dirs
@@ -232,15 +225,15 @@ class Test_load_cli(TestCasePlusSQL):
                     "file_w_date_2018.txt",
                 ),
             )]
-            test_args = parse_args([
+            test_args = [
                 '-vvv',
                 'load',
                 '--dry_run',
                 '-d', FAKE_TEST_DIR,
                 '-n', "test_test_test",
                 '-i', "file_w_date"
-            ])
-            sql_strs = load(test_args)
+            ]
+            sql_strs = main(test_args)
             self.assertEqual(len(sql_strs), 2)
             self.assertSQLsEquals(
                 sql_strs,
@@ -266,9 +259,8 @@ class Test_load_cli(TestCasePlusSQL):
         """
         imars_etl.load w/ args passed in --json
         """
-        from imars_etl.load import load
-        from imars_etl.cli import parse_args
-        test_args = parse_args([
+        from imars_etl.cli import main
+        test_args = [
             '-vvv',
             'load',
             '--dry_run',
@@ -277,8 +269,8 @@ class Test_load_cli(TestCasePlusSQL):
             '-i', "file_w_nothing",
             '-t', "2018-01-01T08:08",
             '--json', '{"test_arg":"tssst"}'
-        ])
-        res = load(test_args)
+        ]
+        res = main(test_args)
         self.assertSQLInsertKeyValuesMatch(
             res,
             ['date_time', 'product_id', 'filepath'],
@@ -296,8 +288,7 @@ class Test_load_cli(TestCasePlusSQL):
         """
         FAKE_TEST_DIR = "/fake/dir/of/files/w/parseable/dates"
         with patch('os.walk') as mockwalk:
-            from imars_etl.load import load
-            from imars_etl.cli import parse_args
+            from imars_etl.cli import main
             mockwalk.return_value = [(
                 FAKE_TEST_DIR,  # root
                 (  # dirs
@@ -311,16 +302,16 @@ class Test_load_cli(TestCasePlusSQL):
                     "my-fake_filename.THAT_does_not-match_anyKnownFormat.EXTEN"
                 ),
             )]
-            test_args = parse_args([
+            test_args = [
                 '-vvv',
                 'load',
                 '--dry_run',
                 '-d', FAKE_TEST_DIR,
                 '-n', "test_test_test",
                 '-i', "file_w_date"
-            ])
+            ]
             self.assertSQLsEquals(
-                load(test_args),
+                main(test_args),
                 [
                     ['date_time', 'product_id', 'filepath'],
                     ['date_time', 'product_id', 'filepath']
@@ -353,8 +344,7 @@ class Test_load_cli(TestCasePlusSQL):
         CLI load dir does not mess with files it cannot identify
         """
         FAKE_TEST_DIR = "/fake/dir/of/files/w/parseable/dates"
-        from imars_etl.load import load
-        from imars_etl.cli import parse_args
+        from imars_etl.cli import main
 
         mockwalk.return_value = [(
             FAKE_TEST_DIR,  # root
@@ -369,16 +359,16 @@ class Test_load_cli(TestCasePlusSQL):
                 "my-fake_file.name.THAT_does_not-match_anyKnownFormat.EXTEN"
             ),
         )]
-        test_args = parse_args([
+        test_args = [
             '-vvv',
             'load',
             '--dry_run',
             '-d', FAKE_TEST_DIR,
             '-n', "test_test_test",
             '-i', "file_w_date"
-        ])
+        ]
 
-        load(test_args)
+        main(test_args)
 
         # only two files match type "test_test_test", so expect 2 loads
         self.assertEqual(

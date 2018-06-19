@@ -30,7 +30,7 @@ STORAGE_DRIVERS = {
 }
 
 
-def load(argvs):
+def load(**kwargs):
     """
     Args can be a dict or argparse.Namespace
 
@@ -44,23 +44,15 @@ def load(argvs):
             -d '2018-02-26T13:00'
             -j '{"status_id":0}'
     """
-    if isinstance(argvs, dict):  # args can be dict
-        args_dict = argvs
-        args_ns = dict_to_argparse_namespace(argvs)
-    else:  # assume we have an argparse namespace
-        args_dict = vars(argvs)
-        args_ns = argvs
-
-    return _load(args_ns=args_ns, **args_dict)
+    return _load(**kwargs)
 
 
-def _load(args_ns, filepath=None, directory=None, **kwargs):
-    args_dict = vars(args_ns)
-    args_dict['filepath'] = filepath
-    args_dict['directory'] = directory
-    for key in kwargs.keys():
-        args_dict[key] = kwargs[key]
-
+def _load(filepath=None, directory=None, **kwargs):
+    args_dict = dict(
+        filepath=filepath,
+        directory=directory,
+        **kwargs
+    )
     if filepath is not None:
         return _load_file(args_dict)
     elif directory is not None:

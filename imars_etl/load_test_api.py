@@ -22,13 +22,13 @@ class Test_load_api(TestCasePlusSQL):
             })
         """
         from imars_etl.load import load
-        res = load({
-            "dry_run": True,
-            "filepath": "/fake/path/file_w_date_2018.txt",
-            "product_id": -1,
-            "time": "2018-02-26T13:00",
-            "verbose": 3
-        })
+        res = load(
+            dry_run=True,
+            filepath="/fake/path/file_w_date_2018.txt",
+            product_id=-1,
+            time="2018-02-26T13:00",
+            verbose=3
+        )
         # 'INSERT INTO file'
         # + ' (status_id,date_time,area_id,product_id,filepath)'
         # + ' VALUES (1,"2018-02-26T13:00",1,-1,'+
@@ -57,14 +57,14 @@ class Test_load_api(TestCasePlusSQL):
             })
         """
         from imars_etl.load import load
-        res = load({
-            "dry_run": True,
-            "filepath": "/fake/path/file_w_date_2018.txt",
-            "product_id": -1,
-            "time": "2018-02-26T13:00",
-            "json": '{"status_id":1, "area_id":1}',
-            "verbose": 3
-        })
+        res = load(
+            dry_run=True,
+            filepath="/fake/path/file_w_date_2018.txt",
+            product_id=-1,
+            time="2018-02-26T13:00",
+            json='{"status_id":1, "area_id":1}',
+            verbose=3
+        )
         self.assertSQLInsertKeyValuesMatch(
             res,
             ['status_id', 'date_time', 'area_id', 'product_id', 'filepath'],
@@ -97,7 +97,7 @@ class Test_load_api(TestCasePlusSQL):
             "json": '{"status_id":3,"area_id":5}'
         }
         self.assertSQLInsertKeyValuesMatch(
-            load(test_args),
+            load(**test_args),
             ['status_id', 'date_time', 'area_id', 'product_id', 'filepath'],
             [
                 '3',
@@ -123,14 +123,14 @@ class Test_load_api(TestCasePlusSQL):
             })
         """
         from imars_etl.load import load
-        res = load({
-            "dry_run": True,
-            "filepath": "/fake/path/2018_blahblah_21_06.what",
-            "product_id": -1,
+        res = load(
+            dry_run=True,
+            filepath="/fake/path/2018_blahblah_21_06.what",
+            product_id=-1,
             # "time": "2018-02-26T13:00",
-            "verbose": 3,
-            "load_format": "%Y_blahblah_%d_%m.what"
-        })
+            verbose=3,
+            load_format="%Y_blahblah_%d_%m.what"
+        )
         self.assertSQLInsertKeyValuesMatch(
             res,
             ['date_time', 'product_id', 'filepath'],
@@ -156,13 +156,13 @@ class Test_load_api(TestCasePlusSQL):
                     "date_2018333.arg_test_arg-here.time_1311.woah",
                 ),
             )]
-            res = load({
-                'product_type_name': 'test_fancy_format_test',
-                'verbose': 3,
-                'ingest_key': 'file_w_date',
-                'directory': FAKE_TEST_DIR,
-                'dry_run': True,
-            })
+            res = load(
+                product_type_name='test_fancy_format_test',
+                verbose=3,
+                ingest_key='file_w_date',
+                directory=FAKE_TEST_DIR,
+                dry_run=True,
+            )
 
             self.assertSQLsEquals(
                 res,
