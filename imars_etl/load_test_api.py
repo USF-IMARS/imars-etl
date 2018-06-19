@@ -21,7 +21,7 @@ class Test_load_api(TestCasePlusSQL):
                 "verbose": 3
             })
         """
-        from imars_etl.load import load
+        from imars_etl.api import load
         res = load(
             dry_run=True,
             filepath="/fake/path/file_w_date_2018.txt",
@@ -56,7 +56,7 @@ class Test_load_api(TestCasePlusSQL):
                 "verbose": 3
             })
         """
-        from imars_etl.load import load
+        from imars_etl.api import load
         res = load(
             dry_run=True,
             filepath="/fake/path/file_w_date_2018.txt",
@@ -82,7 +82,7 @@ class Test_load_api(TestCasePlusSQL):
         """
         API load att_wv2_m1bs with inferred date from filepath
         """
-        from imars_etl.load import load
+        from imars_etl.api import load
         test_args = {
             "verbose": 3,
             "dry_run": True,
@@ -122,7 +122,7 @@ class Test_load_api(TestCasePlusSQL):
                 "load_format": ""
             })
         """
-        from imars_etl.load import load
+        from imars_etl.api import load
         res = load(
             dry_run=True,
             filepath="/fake/path/2018_blahblah_21_06.what",
@@ -146,7 +146,7 @@ class Test_load_api(TestCasePlusSQL):
         """Load directory vi python API"""
         FAKE_TEST_DIR = "/fake/dir/of/files/w/parseable/dates"
         with patch('os.walk') as mockwalk:
-            from imars_etl.load import load
+            from imars_etl.api import load
             mockwalk.return_value = [(
                 FAKE_TEST_DIR,  # root
                 (  # dirs

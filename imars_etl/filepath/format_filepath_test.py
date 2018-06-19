@@ -19,7 +19,7 @@ class Test_format_filepath(TestCase):
             "product_type_name": "test_test_test"
         }
         result = format_filepath(
-            args
+            **args
         )
         self.assertEqual(
             result,
@@ -33,7 +33,7 @@ class Test_format_filepath(TestCase):
             "product_id": -1
         }
         result = format_filepath(
-            args
+            **args
         )
         self.assertEqual(
             result,
@@ -44,7 +44,7 @@ class Test_format_filepath(TestCase):
         """Raise on fancy filepath missing required arg in path"""
         with self.assertRaises(KeyError):
             format_filepath(
-                {
+                **{
                     "datetime": datetime(2015, 5, 25, 15, 55),
                     "product_id": -2
                     # test_arg is required for this path, but is not here
@@ -59,7 +59,7 @@ class Test_format_filepath(TestCase):
             "test_arg": "myTestArg"
         }
         result = format_filepath(
-            args
+            **args
         )
         self.assertEqual(
             result,
@@ -75,7 +75,7 @@ class Test_format_filepath(TestCase):
             "test_num": 3
         }
         result = format_filepath(
-            args
+            **args
         )
         self.assertEqual(
             result,

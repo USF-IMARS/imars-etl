@@ -5,13 +5,15 @@ Define CLI interface using argparse.
 from argparse import ArgumentParser
 import logging
 
+from imars_etl.util.ConstMapAction import ConstMapAction
+from imars_etl.drivers import DRIVER_MAP_DICT
+
 from imars_etl.api import load
 from imars_etl.api import extract
 from imars_etl.api import id_lookup
 from imars_etl.api import get_metadata
 
-from imars_etl.load import STORAGE_DRIVERS
-from imars_etl.load import LOAD_DEFAULTS
+from imars_etl.Load import LOAD_DEFAULTS
 
 from imars_etl.extract import EXTRACT_DEFAULTS
 
@@ -164,7 +166,8 @@ def parse_args(argvs):
             "driver to use for loading the file into object storage. " +
             "ie: which backend to use"
         ),
-        choices=STORAGE_DRIVERS.keys()
+        action=ConstMapAction,
+        options_map_dict=DRIVER_MAP_DICT
     )
     parser_load.add_argument(
         "--duplicates_ok",

@@ -334,7 +334,7 @@ class Test_load_cli(TestCasePlusSQL):
 
     @patch('os.walk')
     @patch(
-        'imars_etl.drivers.imars_objects.load_file.load_file',
+        'imars_etl.Load._actual_load_file_with_driver',
         return_value="/fake/imars-obj/path"
     )
     def test_load_directory_leaves_unmatched_files_alone(

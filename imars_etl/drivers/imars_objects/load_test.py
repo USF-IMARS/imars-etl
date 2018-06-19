@@ -36,6 +36,6 @@ class Test_imars_obj_load(TestCase):
             "tag": "RB2"
         }
         self.assertEqual(
-            load_file(test_args),
+            load_file(**test_args),
             '/srv/imars-objects/zip_wv2_ftp_ingest/wv2_2017-03-01T2233_RB2.zip'
         )

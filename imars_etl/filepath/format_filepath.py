@@ -37,20 +37,33 @@ def get_imars_object_paths():
     return res
 
 
-def format_filepath(args, forced_basename=None):
+def format_filepath(
+    product_type_name=None,
+    product_id=None,
+    forced_basename=None,
+    datetime=None,
+    **kwargs
+):
     logger = logging.getLogger("{}.{}".format(
         __name__,
         sys._getframe().f_code.co_name)
     )
     fullpath = _format_filepath_template(
-        product_type_name=args.get('product_type_name', None),
-        product_id=args.get('product_id', None),
+        product_type_name=product_type_name,
+        product_id=product_id,
         forced_basename=forced_basename
     )
     logger.info("formatting imars-obj path \n>>'{}'".format(fullpath))
+    args_dict = dict(
+        product_type_name=product_type_name,
+        product_id=product_id,
+        forced_basename=forced_basename,
+        datetime=datetime,
+        **kwargs
+    )
     try:
-        return args['datetime'].strftime(
-            (fullpath).format(**args)
+        return datetime.strftime(
+            (fullpath).format(**args_dict)
         )
     except KeyError as k_err:
         logger.error(
@@ -61,8 +74,8 @@ def format_filepath(args, forced_basename=None):
 
 
 def _format_filepath_template(
-    product_type_name,
-    product_id,
+    product_type_name=None,
+    product_id=None,
     forced_basename=None
 ):
     logger = logging.getLogger("{}.{}".format(
@@ -91,7 +104,7 @@ def _format_filepath_template(
                 # test = args['product_type_name']
                 # TODO: check for match w/ prod_name & raise if not?
                 pass
-            except KeyError as k_err:
+            except KeyError:
                 product_type_name = prod_name
 
             return prod_meta['path']+"/"+_basename

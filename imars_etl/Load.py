@@ -15,17 +15,11 @@ from imars_etl.filepath.get_product_id import get_product_id
 from imars_etl.filepath.get_product_name import get_product_name
 from imars_etl.util import get_sql_result
 from imars_etl.util.exceptions import InputValidationError
-from imars_etl.drivers.imars_objects import load_file
+from imars_etl.drivers import DRIVER_MAP_DICT
 
 LOAD_DEFAULTS = {
-    'storage_driver': "imars_objects",
+    'storage_driver': DRIVER_MAP_DICT["imars_objects"],
     'output_path': None
-}
-
-# map from input strings to load_file functions for each backend
-STORAGE_DRIVERS = {
-    'imars_objects': load_file,
-    'no_upload': lambda args: args['filepath'],
 }
 
 
@@ -118,16 +112,7 @@ def _load_file(args_dict):
     """Loads a single file"""
     args_dict = _validate_args(args_dict)
 
-    # load file into IMaRS data warehouse
-    # NOTE: _load should support args.dry_run=True also
-    selected_driver = args_dict.get(
-        'storage_driver',
-        LOAD_DEFAULTS['storage_driver']
-    )
-    try:
-        new_filepath = STORAGE_DRIVERS[selected_driver](args_dict)
-    except TypeError:  # for some reason nosetests needs it like this:
-        new_filepath = STORAGE_DRIVERS[selected_driver].load_file(args_dict)
+    new_filepath = _actual_load_file_with_driver(**args_dict)
 
     sql = _make_sql_insert(**args_dict)
     sql = sql.replace(args_dict['filepath'], new_filepath)
@@ -140,6 +125,17 @@ def _load_file(args_dict):
             should_commit=(not args_dict.get('dry_run', False)),
             first=args_dict.get("first", False),
         )
+
+
+def _actual_load_file_with_driver(**kwargs):
+    # load file into IMaRS data warehouse
+    # NOTE: _load should support args.dry_run=True also
+    selected_driver = kwargs.get(
+        'storage_driver',
+        LOAD_DEFAULTS['storage_driver']
+    )
+    print("\n\n\t{}\n\n".format(kwargs))
+    return selected_driver(**kwargs)
 
 
 def _make_sql_insert(**kwargs):
@@ -184,7 +180,7 @@ def _validate_args(args_dict):
     )
     logger.setLevel(logging.INFO)
     args_dict['storage_driver'] = args_dict.get(
-        'storage_driver', 'imars_objects'
+        'storage_driver', LOAD_DEFAULTS['storage_driver']
     )
     # === validate product name and id
     if (  # require name or id for directory loading
