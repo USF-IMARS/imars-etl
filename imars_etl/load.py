@@ -14,7 +14,6 @@ from imars_etl.filepath.get_product_id import get_product_id
 
 from imars_etl.filepath.get_product_name import get_product_name
 from imars_etl.util import get_sql_result
-from imars_etl.util import dict_to_argparse_namespace
 from imars_etl.util.exceptions import InputValidationError
 from imars_etl.drivers.imars_objects import load_file
 
@@ -30,7 +29,7 @@ STORAGE_DRIVERS = {
 }
 
 
-def load(**kwargs):
+def load(filepath=None, directory=None, **kwargs):
     """
     Args can be a dict or argparse.Namespace
 
@@ -44,10 +43,6 @@ def load(**kwargs):
             -d '2018-02-26T13:00'
             -j '{"status_id":0}'
     """
-    return _load(**kwargs)
-
-
-def _load(filepath=None, directory=None, **kwargs):
     args_dict = dict(
         filepath=filepath,
         directory=directory,
