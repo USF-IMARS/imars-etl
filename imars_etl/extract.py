@@ -36,7 +36,13 @@ def extract(
     # accessed on the local machine.
     fpath = STORAGE_DRIVERS[
         storage_driver
-    ](src_path, **kwargs)
+    ](
+        src_path,
+        target_path=output_path,
+        storage_driver=storage_driver,
+        first=False,
+        **kwargs
+    )
 
     print(fpath)
     return fpath

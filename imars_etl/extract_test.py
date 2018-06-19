@@ -5,7 +5,7 @@
 from unittest import TestCase
 
 
-class Test_extract(TestCase):
+class Test_extract_api(TestCase):
 
     # tests:
     #########################
