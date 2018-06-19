@@ -1,16 +1,29 @@
 """
-defines CLI interface using argparse
+Define CLI interface using argparse.
+
 """
 from argparse import ArgumentParser
 import logging
 
-from imars_etl.load import load
+from imars_etl.api import load
+from imars_etl.api import extract
+from imars_etl.api import id_lookup
+from imars_etl.api import get_metadata
+
 from imars_etl.load import STORAGE_DRIVERS
 from imars_etl.load import LOAD_DEFAULTS
+
 from imars_etl.extract import EXTRACT_DEFAULTS
-from imars_etl.extract import extract
-from imars_etl.id_lookup import id_lookup
-from imars_etl.get_metadata import get_metadata
+
+
+def main(argvs):
+    args = parse_args(argvs)
+    # TODO: finish restructuring these for #10
+    NOT_YET_RESTRUCTURED = [load, extract, id_lookup, get_metadata]
+    if args.func in NOT_YET_RESTRUCTURED:  # TODO: then rm this if/else
+        args.func(args)
+    else:
+        args.func(**vars(args))
 
 
 def parse_args(argvs):
