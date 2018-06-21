@@ -26,7 +26,11 @@ LOAD_DEFAULTS = {
 }
 
 
-def load(filepath=None, directory=None, **kwargs):
+def load(
+    filepath=None, directory=None,
+    metadata_file_driver=LOAD_DEFAULTS['metadata_file_driver'],
+    **kwargs
+):
     """
     Args can be a dict or argparse.Namespace
 
@@ -43,6 +47,7 @@ def load(filepath=None, directory=None, **kwargs):
     args_dict = dict(
         filepath=filepath,
         directory=directory,
+        metadata_file_driver=metadata_file_driver,
         **kwargs
     )
     if filepath is not None:
