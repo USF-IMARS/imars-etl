@@ -3,6 +3,8 @@ import sys
 
 from imars_etl import metadatabase
 from imars_etl.util.exit_status import EXIT_STATUS
+from imars_etl.exceptions.NoMetadataMatchException \
+    import NoMetadataMatchException
 
 
 def get_sql_result(
@@ -24,8 +26,10 @@ def get_sql_result(
                 result = cursor.fetchmany(2)
 
             if (check_result and not result):
-                logger.error("No files found matching given metadata")
-                exit(EXIT_STATUS.NO_MATCHING_FILES)
+                raise NoMetadataMatchException(
+                    "Zero files found matching given metadata."
+                )
+                # exit(EXIT_STATUS.NO_MATCHING_FILES)
             elif (check_result and len(result) > 1):
                 # TODO: request more info from user?
                 logger.error("Too many results!")
