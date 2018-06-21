@@ -5,7 +5,7 @@ Methods for parsing json responses from ESA DHUS.
 import json
 
 
-class Reader(object):
+class Parser(object):
     def __init__(self, json_metadata_filepath):
         self.json_metadata_filepath = json_metadata_filepath
 

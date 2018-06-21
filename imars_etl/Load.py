@@ -22,7 +22,7 @@ LOAD_DEFAULTS = {
     'storage_driver': DRIVER_MAP_DICT["imars_objects"],
     'output_path': None,
     'metadata_file': None,
-    'metadata_file_driver': dhus_json.Reader,
+    'metadata_file_driver': dhus_json.Parser,
 }
 
 
