@@ -156,6 +156,14 @@ def parse_args(argvs):
         help="python strptime-enabled format string describing input basename."
     )
     parser_load.add_argument(
+        "-m", "--metadata_file",
+        help="file containing metadata for the file being loaded."
+    )
+    parser_load.add_argument(
+        "--metadata_file_driver",
+        help="driver to use to parse the file given by `metadata_file`"
+    )
+    parser_load.add_argument(
         "--dry_run",
         help="test run only, does not actually insert into database",
         action="store_true"

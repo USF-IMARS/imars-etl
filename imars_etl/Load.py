@@ -16,10 +16,13 @@ from imars_etl.filepath.get_product_name import get_product_name
 from imars_etl.util import get_sql_result
 from imars_etl.util.exceptions import InputValidationError
 from imars_etl.drivers import DRIVER_MAP_DICT
+from imars_etl.drivers_metadata import dhus_json
 
 LOAD_DEFAULTS = {
     'storage_driver': DRIVER_MAP_DICT["imars_objects"],
-    'output_path': None
+    'output_path': None,
+    'metadata_file': None,
+    'metadata_file_driver': dhus_json.Reader,
 }
 
 
@@ -108,10 +111,23 @@ def _load_dir(args_dict):
     return insert_statements
 
 
+def _read_metadata(driver, filepath):
+    """reads metadata using driver on given filepath"""
+    return driver(filepath).get_uuid()
+    # TODO: more...
+
+
 def _load_file(args_dict):
     """Loads a single file"""
-    args_dict = _validate_args(args_dict)
 
+    if args_dict.get('metadata_file') is not None:
+        uuid = _read_metadata(
+            args_dict['metadata_file_driver'],
+            args_dict['metadata_file']
+        )
+        args_dict['uuid'] = uuid
+
+    args_dict = _validate_args(args_dict)
     new_filepath = _actual_load_file_with_driver(**args_dict)
 
     sql = _make_sql_insert(**args_dict)
@@ -142,7 +158,7 @@ def _make_sql_insert(**kwargs):
     """Creates SQL INSERT INTO statement with metadata from given args dict"""
     VALID_FILE_TABLE_COLNAMES = [  # TODO: get this from db
         'filepath', 'date_time', 'product_id', 'is_day_pass',
-        'area_id', 'status_id'
+        'area_id', 'status_id', 'uuid'
     ]
     logger = logging.getLogger("{}.{}".format(
         __name__,
