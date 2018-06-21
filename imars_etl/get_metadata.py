@@ -1,9 +1,8 @@
 
-from imars_etl.util import dict_to_argparse_namespace
 from imars_etl.util import get_sql_result
 
 
-def get_metadata(args_ns):
+def get_metadata(sql, first=False, **kwargs):
     """
     Prints json-formatted metadata for first entry in given args.sql
 
@@ -18,14 +17,11 @@ def get_metadata(args_ns):
         metadata from db
 
     """
-    if isinstance(args_ns, dict):  # args can be dict
-        args_ns = dict_to_argparse_namespace(args_ns)
-
-    sql_query = "SELECT * FROM file WHERE {};".format(args_ns.sql)
+    sql_query = "SELECT * FROM file WHERE {};".format(sql)
     print(sql_query)
     result = get_sql_result(
         sql_query,
-        first=getattr(args_ns, "first", False),
+        first=first,
     )
     print(result)
     return result
