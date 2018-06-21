@@ -1,8 +1,10 @@
 """
 """
 try:  # py2
+    import mock
     from mock import patch
 except ImportError:  # py3
+    from unittest import mock
     from unittest.mock import patch
 
 
@@ -375,3 +377,47 @@ class Test_load_cli(TestCasePlusSQL):
             mock_driver_load.call_count,
             2
         )
+
+    def test_load_file_and_metadata_file(
+        self
+    ):
+        """
+        CLI load file w/ metadata file & json using default (DHUS) parser
+        """
+        FAKE_UUID = '68ebc577-178e-4d9c-b16a-3bf8f1394939'
+        DATETIME = "2018-01-01T08:08"
+        mocked_open = mock.mock_open(
+            read_data='[{"uuid":"' + FAKE_UUID + '"}]'
+        )
+        with patch(
+            'imars_etl.drivers_metadata.dhus_json.open',
+            mocked_open, create=True
+        ):
+
+            from imars_etl.cli import main
+
+            test_args = [
+                '-vvv',
+                'load',
+                '--dry_run',
+                '-m', "/fake/metadata/filepath.json",
+                '-f', "/fake/file/path/fake_filepath.bs",
+                '-n', "test_fancy_format_test",
+                '-i', "file_w_nothing",
+                '-t', DATETIME,
+                '--json', '{"test_arg":"tssst"}'
+
+            ]
+
+            res = main(test_args)
+            self.assertSQLInsertKeyValuesMatch(
+                res,
+                ['date_time', 'product_id', 'uuid', 'filepath'],
+                [
+                    '"{}"'.format(DATETIME),
+                    '-2',
+                    '"{}"'.format(FAKE_UUID),
+                    '"/srv/imars-objects/_fancy_tssst_/2018-001' +
+                    '/arg_is_tssst_time_is_0800.fancy_file"'
+                ]
+            )
