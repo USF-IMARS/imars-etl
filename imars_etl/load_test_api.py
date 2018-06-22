@@ -1,8 +1,10 @@
 """
 """
 try:  # py2
+    import mock
     from mock import patch
 except ImportError:  # py3
+    from unittest import mock
     from unittest.mock import patch
 
 from imars_etl.util.TestCasePlusSQL import TestCasePlusSQL
@@ -176,5 +178,54 @@ class Test_load_api(TestCasePlusSQL):
                         '"/srv/imars-objects/_fancy_test_arg-here_/2018-333' +
                         '/arg_is_test_arg-here_time_is_1311.fancy_file"'
                     ]
+                ]
+            )
+
+    def test_load_file_w_metadata_file_date(
+        self
+    ):
+        """
+        API load file w/ metadata file containing date
+        """
+        FAKE_UUID = '68ebc577-178e-4d9c-b16a-3bf8f1394939'
+        DATETIME = "2018-06-20T15:36:48.227873Z"
+        mocked_open = mock.mock_open(
+            read_data=(
+                '[{'
+                    '"uuid":"' + FAKE_UUID + '",'  # noqa E131
+                    '"indexes":[{'
+                        '"name":"product",'  # noqa E131
+                        '"children":[{'
+                            '"name":"Sensing start",'  # noqa E131
+                            '"value":"' + DATETIME + '"'
+                        '}]'
+                    '}]'
+                '}]'
+            )
+        )
+        with patch(
+            'imars_etl.drivers_metadata.dhus_json.open',
+            mocked_open, create=True
+        ):
+
+            import imars_etl
+            res = imars_etl.load(
+                verbose=3,
+                dry_run=True,
+                metadata_file="/fake/metadata/filepath.json",
+                filepath="/fake/file/path/fake_filepath.bs",
+                product_type_name="test_fancy_format_test",
+                ingest_key="file_w_nothing",
+                json='{"test_arg":"tssst"}',
+            )
+            self.assertSQLInsertKeyValuesMatch(
+                res,
+                ['date_time', 'product_id', 'uuid', 'filepath'],
+                [
+                    '"{}"'.format(DATETIME),
+                    '-2',
+                    '"{}"'.format(FAKE_UUID),
+                    '"/srv/imars-objects/_fancy_tssst_/2018-001' +
+                    '/arg_is_tssst_time_is_0800.fancy_file"'
                 ]
             )

@@ -46,11 +46,15 @@ $ imars-etl load --area 1 --time "2017-01-02T13:45" --product_id 4 --filepath /p
 # auto-parse info (date) from filename using info from `imars_etl.filepath.data`
 $ imars-etl load --area 1 --product_id 4 --filepath /path/to/file/wv2_2012_02_myChunk.zip
 
-# Not yet implemented : short_name values (see issue #1)
-# you@computer:~/$ imars-etl load --satellite aqua --time 2017-01-02T13:45 --instrument modis /path/to/file.hdf
+# use product short_name instead of id:
+you@computer:~/$ imars-etl load --satellite aqua --time 2017-01-02T13:45 --instrument modis /path/to/file.hdf
 
-# Not yet implemented : load all matching files from a dir (see #5)
-# you@comp:~/$ imars-etl load --ingest_name matts_wv2_ftp_ingest -p 6 --directory /tmp/myDir
+# load all matching files from a dir
+you@comp:~/$ imars-etl load --ingest_name matts_wv2_ftp_ingest -p 6 --directory /tmp/myDir
+
+# load with metadata read from ESA DHUS json file:
+you@comp:~/$ imars-etl load --filepath myfilepath.SEN3 \
+    --metadata_file myfile_meta.json
 ```
 
 ## python API
