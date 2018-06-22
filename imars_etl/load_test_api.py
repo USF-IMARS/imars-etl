@@ -222,10 +222,10 @@ class Test_load_api(TestCasePlusSQL):
                 res,
                 ['date_time', 'product_id', 'uuid', 'filepath'],
                 [
-                    '"{}"'.format(DATETIME),
+                    '"{}"'.format(DATETIME[:19]),
                     '-2',
                     '"{}"'.format(FAKE_UUID),
-                    '"/srv/imars-objects/_fancy_tssst_/2018-001' +
-                    '/arg_is_tssst_time_is_0800.fancy_file"'
+                    '"/srv/imars-objects/_fancy_tssst_/2018-171' +
+                    '/arg_is_tssst_time_is_1548.fancy_file"'
                 ]
             )

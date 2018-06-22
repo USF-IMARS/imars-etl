@@ -3,6 +3,7 @@ Methods for parsing json responses from ESA DHUS.
 """
 
 import json
+from datetime import datetime
 
 
 class Parser(object):
@@ -23,3 +24,18 @@ class Parser(object):
         return url_fmt_str.format(
             uuid=self.get_uuid()
         )
+
+    def get_datetime(self):
+        try:
+            with open(self.json_metadata_filepath) as m_file:
+                data = json.load(m_file)[0]
+                for ind in data['indexes']:
+                    if ind['name'] == "product":
+                        for chil in ind['children']:
+                            if chil['name'] == 'Sensing start':
+                                return datetime.strptime(
+                                    chil['value'],
+                                    "%Y-%m-%dT%H:%M:%S.%fZ"
+                                )
+        except KeyError:
+            return None
