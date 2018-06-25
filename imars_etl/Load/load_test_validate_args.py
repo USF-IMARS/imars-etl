@@ -9,7 +9,7 @@ from unittest import TestCase
 class Test_validate_args(TestCase):
 
     def test_validate_returns_dict(self):
-        from imars_etl.Load import _validate_args
+        from imars_etl.Load.Load import _validate_args
         from imars_etl.cli import parse_args
 
         test_args = parse_args([

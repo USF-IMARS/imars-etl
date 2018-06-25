@@ -13,7 +13,7 @@ from imars_etl.api import extract
 from imars_etl.api import id_lookup
 from imars_etl.api import get_metadata
 
-from imars_etl.Load import LOAD_DEFAULTS
+from imars_etl.Load.Load import LOAD_DEFAULTS
 
 from imars_etl.extract import EXTRACT_DEFAULTS
 

@@ -7,7 +7,7 @@ class Test_unify_metadata(TestCase):
         """
         unify_metadata sticks stuff from --json into args
         """
-        from imars_etl.Load import _unify_metadata
+        from imars_etl.Load.Load import _unify_metadata
         from imars_etl.cli import parse_args
 
         test_args = parse_args([
