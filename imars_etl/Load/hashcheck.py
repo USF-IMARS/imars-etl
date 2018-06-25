@@ -1,4 +1,3 @@
-import subprocess
 import logging
 import sys
 
@@ -9,6 +8,7 @@ from imars_etl.exceptions.TooManyMetadataMatchesException \
     import TooManyMetadataMatchesException
 from imars_etl.exceptions.DuplicateFileException \
     import DuplicateFileException
+from imars_etl.Load.get_hash import get_hash
 
 HASH_COL_NAME = 'multihash'
 
@@ -25,7 +25,7 @@ def hashcheck(filepath, **kwargs):
     )
     logger.info('computing hash of file...')
     # get hash of file we are loading
-    file_hash = _gethash_ipfs(filepath)
+    file_hash = get_hash(filepath)
     # check for hash in metadatadb
     try:
         get_metadata(
@@ -43,16 +43,3 @@ def hashcheck(filepath, **kwargs):
     raise DuplicateFileException(
         "file found in metadata db with identical content"
     )
-
-
-def _gethash_ipfs(filepath):
-    """
-    Get hash using IPFS system call.
-    IPFS must be installed for this to work.
-    """
-    return subprocess.check_output([
-        'ipfs', 'add',
-        '-Q',  # --quieter    bool - Write only final hash
-        '-n',  # --only-hash  bool - Only chunk and hash; do not write to disk
-        filepath
-    ]).strip().decode('utf-8')
