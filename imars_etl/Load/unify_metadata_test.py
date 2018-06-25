@@ -7,7 +7,7 @@ class Test_unify_metadata(TestCase):
         """
         unify_metadata sticks stuff from --json into args
         """
-        from imars_etl.Load.Load import _unify_metadata
+        from imars_etl.Load.Load import unify_metadata
         from imars_etl.cli import parse_args
 
         test_args = parse_args([
@@ -19,8 +19,8 @@ class Test_unify_metadata(TestCase):
             '-t', "2018-02-26T13:00",
             '-j', '{"status_id":1,"area_id":1}',
         ])
-        result_arg_dict = _unify_metadata(vars(test_args))
-        result_arg_dict = _unify_metadata(vars(test_args))
+        result_arg_dict = unify_metadata(vars(test_args))
+        result_arg_dict = unify_metadata(vars(test_args))
         self.assertDictContainsSubset(
             {
                 "verbose": 3,
