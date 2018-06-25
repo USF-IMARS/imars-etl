@@ -3,7 +3,7 @@ import logging
 import sys
 
 from imars_etl.util.consts import ISO_8601_FMT
-from imars_etl.util.exceptions import InputValidationError
+from imars_etl.exceptions.InputValidationError import InputValidationError
 
 
 def unify_metadata(args_dict):
