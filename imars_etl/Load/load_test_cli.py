@@ -35,6 +35,7 @@ class Test_load_cli(TestCasePlusSQL):
             '-p', '-1',
             '-t', "2018-02-26T13:00",
             '-j', '{"status_id":1,"area_id":1}',
+            '--nohash',
         ]
         self.assertSQLInsertKeyValuesMatch(
             main(test_args),
@@ -73,6 +74,7 @@ class Test_load_cli(TestCasePlusSQL):
             '-p', '-1',
             '-t', "2018-02-26T13:00",
             '-j', '{"status_id":1,"area_id":1}',
+            '--nohash',
         ]
         self.assertSQLInsertKeyValuesMatch(
             main(test_args),
@@ -102,7 +104,8 @@ class Test_load_cli(TestCasePlusSQL):
             '--dry_run',
             '-f', "/my/path/without/a/date/in.it",
             '-j', '{"area_id":1}',
-            '-p', '6'
+            '-p', '6',
+            '--nohash',
         ]
         self.assertRaises(Exception, main, test_args)  # noqa H202
 
@@ -123,6 +126,7 @@ class Test_load_cli(TestCasePlusSQL):
             '-f', "/path/w/parseable/date/wv2_1989-06-07T1112_myTag.zip",
             '-j', '{"area_id":1}',
             '-p', '6',
+            '--nohash',
         ]
         self.assertSQLInsertKeyValuesMatch(
             main(test_args),
@@ -149,6 +153,7 @@ class Test_load_cli(TestCasePlusSQL):
             '--dry_run',
             '-f', "/path/w/parseable/date/wv2_2000-06-07T1122_myTag.zip",
             '-p', '6',
+            '--nohash',
         ]
         res = main(test_args)
         # 'INSERT INTO file (
@@ -187,7 +192,8 @@ class Test_load_cli(TestCasePlusSQL):
                 '--dry_run',
                 '-d', FAKE_TEST_DIR,
                 '-p', '-1',
-                '-i', "file_w_date"
+                '-i', "file_w_date",
+                '--nohash',
             ]
             self.assertSQLsEquals(
                 main(test_args),
@@ -233,7 +239,8 @@ class Test_load_cli(TestCasePlusSQL):
                 '--dry_run',
                 '-d', FAKE_TEST_DIR,
                 '-n', "test_test_test",
-                '-i', "file_w_date"
+                '-i', "file_w_date",
+                '--nohash',
             ]
             sql_strs = main(test_args)
             self.assertEqual(len(sql_strs), 2)
@@ -270,7 +277,8 @@ class Test_load_cli(TestCasePlusSQL):
             '-n', "test_fancy_format_test",
             '-i', "file_w_nothing",
             '-t', "2018-01-01T08:08",
-            '--json', '{"test_arg":"tssst"}'
+            '--json', '{"test_arg":"tssst"}',
+            '--nohash',
         ]
         res = main(test_args)
         self.assertSQLInsertKeyValuesMatch(
@@ -310,7 +318,8 @@ class Test_load_cli(TestCasePlusSQL):
                 '--dry_run',
                 '-d', FAKE_TEST_DIR,
                 '-n', "test_test_test",
-                '-i', "file_w_date"
+                '-i', "file_w_date",
+                '--nohash',
             ]
             self.assertSQLsEquals(
                 main(test_args),
@@ -367,7 +376,8 @@ class Test_load_cli(TestCasePlusSQL):
             '--dry_run',
             '-d', FAKE_TEST_DIR,
             '-n', "test_test_test",
-            '-i', "file_w_date"
+            '-i', "file_w_date",
+            '--nohash',
         ]
 
         main(test_args)
@@ -405,8 +415,8 @@ class Test_load_cli(TestCasePlusSQL):
                 '-n', "test_fancy_format_test",
                 '-i', "file_w_nothing",
                 '-t', DATETIME,
-                '--json', '{"test_arg":"tssst"}'
-
+                '--json', '{"test_arg":"tssst"}',
+                '--nohash',
             ]
 
             res = main(test_args)

@@ -6,7 +6,7 @@ import io
 
 # import imars_etl
 # NOTE: can't do that here before dependencies installed, silly.
-VERSION = '0.3.3'  # should match __version__ in imars_etl.__init__.py
+VERSION = '0.4.0'  # should match __version__ in imars_etl.__init__.py
 
 
 def read(*filenames, **kwargs):
@@ -30,6 +30,7 @@ setup(
     url='https://github.com/usf-imars/imars-etl',
     tests_require=['nose'],
     install_requires=['pymysql', 'parse'],
+    # NOTE: IPFS command line tool is also required...
     # entry_points={  # sets up CLI (eg bash) commands
     #     'console_scripts': [
     #         'imars-etl = imars-etl',

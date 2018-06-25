@@ -185,7 +185,7 @@ def parse_args(argvs):
     parser_load.add_argument(
         "--nohash",
         help="do not compute hash of the file. WARN: may disable features",
-        action="store_false"
+        action="store_true"
     )
     # ===
     args = parser.parse_args(argvs)

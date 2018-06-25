@@ -20,6 +20,7 @@ class Test_validate_args(TestCase):
             '-p', '-1',
             '-t', "2018-02-26T13:00",
             '-j', '{"status_id":1,"area_id":1}',
+            '--nohash'
         ])
         result_arg_dict = validate_args(vars(test_args))
         self.assertDictContainsSubset(

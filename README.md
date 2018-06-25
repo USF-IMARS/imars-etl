@@ -78,3 +78,6 @@ load({
     "status_id": 3
 })
 ```
+
+# Installation
+See INSTALL.md

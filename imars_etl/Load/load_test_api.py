@@ -29,7 +29,8 @@ class Test_load_api(TestCasePlusSQL):
             filepath="/fake/path/file_w_date_2018.txt",
             product_id=-1,
             time="2018-02-26T13:00",
-            verbose=3
+            verbose=3,
+            nohash=True,
         )
         # 'INSERT INTO file'
         # + ' (status_id,date_time,area_id,product_id,filepath)'
@@ -65,7 +66,8 @@ class Test_load_api(TestCasePlusSQL):
             product_id=-1,
             time="2018-02-26T13:00",
             json='{"status_id":1, "area_id":1}',
-            verbose=3
+            verbose=3,
+            nohash=True,
         )
         self.assertSQLInsertKeyValuesMatch(
             res,
@@ -96,7 +98,8 @@ class Test_load_api(TestCasePlusSQL):
             "product_id": 7,
             # "time":"2016-02-12T16:25:18",
             # "datetime": datetime(2016,2,12,16,25,18),
-            "json": '{"status_id":3,"area_id":5}'
+            "json": '{"status_id":3,"area_id":5}',
+            "nohash": True,
         }
         self.assertSQLInsertKeyValuesMatch(
             load(**test_args),
@@ -131,7 +134,8 @@ class Test_load_api(TestCasePlusSQL):
             product_id=-1,
             # "time": "2018-02-26T13:00",
             verbose=3,
-            load_format="%Y_blahblah_%d_%m.what"
+            load_format="%Y_blahblah_%d_%m.what",
+            nohash=True,
         )
         self.assertSQLInsertKeyValuesMatch(
             res,
@@ -164,6 +168,7 @@ class Test_load_api(TestCasePlusSQL):
                 ingest_key='file_w_date',
                 directory=FAKE_TEST_DIR,
                 dry_run=True,
+                nohash=True,
             )
 
             self.assertSQLsEquals(
@@ -217,6 +222,7 @@ class Test_load_api(TestCasePlusSQL):
                 product_type_name="test_fancy_format_test",
                 ingest_key="file_w_nothing",
                 json='{"test_arg":"tssst"}',
+                nohash=True,
             )
             self.assertSQLInsertKeyValuesMatch(
                 res,
