@@ -18,12 +18,14 @@ from imars_etl.util import get_sql_result
 from imars_etl.util.consts import ISO_8601_FMT
 
 from imars_etl.Load.unify_metadata import unify_metadata
+from imars_etl.Load.hashcheck import hashcheck
 
 LOAD_DEFAULTS = {
     'storage_driver': DRIVER_MAP_DICT["imars_objects"],
     'output_path': None,
     'metadata_file': None,
     'metadata_file_driver': dhus_json.Parser,
+    'nohash': True,
 }
 
 
@@ -121,6 +123,9 @@ def _load_file(args_dict):
     """Loads a single file"""
     args_dict = unify_metadata(args_dict)
     args_dict = _validate_args(args_dict)
+
+    if args_dict.get('nohash', LOAD_DEFAULTS['nohash']) is False:
+        hashcheck(**args_dict)
 
     new_filepath = _actual_load_file_with_driver(**args_dict)
 

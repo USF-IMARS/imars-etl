@@ -182,6 +182,11 @@ def parse_args(argvs):
         help="do not raise error if trying to load file already in database",
         action="store_true"
     )
+    parser_load.add_argument(
+        "--nohash",
+        help="do not compute hash of the file. WARN: may disable features",
+        action="store_false"
+    )
     # ===
     args = parser.parse_args(argvs)
     try:
