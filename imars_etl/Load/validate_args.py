@@ -9,6 +9,8 @@ from imars_etl.filepath.get_product_name import get_product_name
 
 from imars_etl.util.consts import ISO_8601_FMT
 
+from imars_etl.Load.get_hash import get_hash
+
 
 def validate_args(args_dict):
     """
@@ -83,4 +85,11 @@ def validate_args(args_dict):
 
     # create args['date_time'] from args['time']
     args_dict['date_time'] = args_dict['time']
+
+    if args_dict.get('nohash') is False:
+        # should this use: `args_dict.setdefault('multihash', get_hash(...))` ?
+        args_dict['multihash'] = args_dict.get(
+            'multihash',
+            get_hash(args_dict['filepath'])
+        )
     return args_dict

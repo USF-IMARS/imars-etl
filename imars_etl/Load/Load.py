@@ -154,7 +154,7 @@ def _make_sql_insert(**kwargs):
     """Creates SQL INSERT INTO statement with metadata from given args dict"""
     VALID_FILE_TABLE_COLNAMES = [  # TODO: get this from db
         'filepath', 'date_time', 'product_id', 'is_day_pass',
-        'area_id', 'status_id', 'uuid'
+        'area_id', 'status_id', 'uuid', 'multihash'
     ]
     logger = logging.getLogger("{}.{}".format(
         __name__,
