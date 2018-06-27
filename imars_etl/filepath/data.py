@@ -78,6 +78,9 @@ def wv2_ingest_prod(
     }
 
 data = {
+    # NOTE: yes, these *could* be lumped together, but sometimes a processing
+    #       method doesn't require the full file bundle, so we save some
+    #       network cost by keeping them separate.
     "att_wv2_m1bs": wv2_ingest_prod(
         'M', '.att', 7, ingest_id="att_from_zip_wv2_ftp_ingest"
     ),
@@ -112,12 +115,12 @@ data = {
     "zip_wv2_ftp_ingest": {
         "ingest_formats": {
             "matts_wv2_ftp_ingest": {
-                "path_format": "wv2_%Y-%m-%dT%H%M_{tag}.zip",
+                "path_format": "wv2_%Y-%m-%dT%H%M_{area_short_name}.zip",
             }
         },
         "imars_object_format": {
             "path": "/srv/imars-objects/zip_wv2_ftp_ingest",
-            "basename": "wv2_%Y-%m-%dT%H%M_{tag}.zip",
+            "basename": "wv2_%Y-%m-%dT%H%M_{area_short_name}.zip",
             "product_id": 6
         },
     },
