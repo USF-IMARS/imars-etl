@@ -187,6 +187,11 @@ def parse_args(argvs):
         help="do not compute hash of the file. WARN: may disable features",
         action="store_true"
     )
+    parser_load.add_argument(
+        "--noparse",
+        help="do not parse filename for metadata. WARN: may disable features",
+        action="store_true"
+    )
     # ===
     args = parser.parse_args(argvs)
     try:

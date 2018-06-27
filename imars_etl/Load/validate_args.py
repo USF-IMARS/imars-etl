@@ -60,13 +60,15 @@ def validate_args(args_dict):
         #   ???
         # )
 
-    logger.debug("pre-guess-args : " + str(args_dict))
+    # TODO: should be `args_dict.get('noparse', LOAD_DEFAULTS['noparse'])`
+    if args_dict.get('noparse', False) is False:
+        logger.debug("pre-guess-args : " + str(args_dict))
 
-    args_parsed = parse_filepath(**args_dict)
-    for key in args_parsed.keys():
-        _set_unless_exists(args_dict, key, args_parsed[key])
+        args_parsed = parse_filepath(**args_dict)
+        for key in args_parsed.keys():
+            _set_unless_exists(args_dict, key, args_parsed[key])
 
-    logger.debug("post-guess-args: " + str(args_dict))
+        logger.debug("post-guess-args: " + str(args_dict))
 
     try:
         dt = datetime.strptime(args_dict['time'], ISO_8601_FMT)

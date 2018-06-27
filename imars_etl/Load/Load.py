@@ -20,6 +20,7 @@ LOAD_DEFAULTS = {
     'metadata_file': None,
     'metadata_file_driver': dhus_json.Parser,
     'nohash': False,
+    'noparse': False,
 }
 
 

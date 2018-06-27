@@ -56,13 +56,14 @@ class Test_validate_args(TestCase):
             '-p', '-1',
             '-t', "2018-02-26T13:00",
             '-j', '{"status_id":1,"area_id":1}',
+            '--noparse',
         ])
         result_arg_dict = validate_args(vars(test_args))
         self.assertDictContainsSubset(
             {
                 "verbose": 3,
                 "dry_run": True,
-                "filepath": "/fake/path/file_w_date_2018.txt",
+                "filepath": "/usr/local/bin/ipfs",
                 "product_id": -1,
                 "product_type_name": "test_test_test",
                 "time": "2018-02-26T13:00",
