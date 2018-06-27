@@ -75,6 +75,7 @@ def parse_filepath(
             args_parsed = {}
 
     for key in args_parsed.keys():
+        # TODO: args_dict = ...
         _set_unless_exists(args_dict, key, args_parsed[key])
 
     return args_dict
@@ -171,7 +172,7 @@ def _parse_from_product_type_and_filename(
 def _set_unless_exists(the_dict, key, val):
     """
     Sets the_dict[key] with val unless the_dict[key] already exists
-    Like `the_dict.setdefault(key, val)`, but will overwrite `None`.
+    Like `the_dict.setdefault(key, val)`, but this *will* overwrite `None`.
     """
     if the_dict.get(key) is None:
         the_dict[key] = val

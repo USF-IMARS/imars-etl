@@ -87,11 +87,14 @@ def validate_args(args_dict):
 
     # create args['date_time'] from args['time']
     args_dict['date_time'] = args_dict['time']
-
-    if args_dict.get('nohash') is False:
-        # should this use: `args_dict.setdefault('multihash', get_hash(...))` ?
-        args_dict['multihash'] = args_dict.get(
+    # TODO: should use LOAD_DEFAULTS['nohash']
+    if args_dict.get('nohash', False) is False:
+        logger.debug('ensuring hash in metadata...')
+        args_dict = _set_unless_exists(
+            args_dict,
             'multihash',
             get_hash(args_dict['filepath'])
         )
+    else:
+        logger.debug('skipping file hashing.')
     return args_dict
