@@ -11,7 +11,7 @@ from imars_etl.drivers import DRIVER_MAP_DICT
 from imars_etl.api import load
 from imars_etl.api import extract
 from imars_etl.api import id_lookup
-from imars_etl.api import get_metadata
+from imars_etl.api import select
 
 from imars_etl.Load.Load import LOAD_DEFAULTS
 
@@ -85,14 +85,22 @@ def parse_args(argvs):
     )
     parser_extract.add_argument("--first", **FIRST)
 
-    # === get_metadata
-    parser_get_metadata = subparsers.add_parser(
-        'get_metadata',
+    # === select
+    parser_select = subparsers.add_parser(
+        'select',
         help="prints json-formatted metadata for first entry in given args.sql"
     )
-    parser_get_metadata.set_defaults(func=get_metadata)
-    parser_get_metadata.add_argument("sql", **SQL)
-    parser_get_metadata.add_argument("--first", **FIRST)
+    parser_select.set_defaults(func=select)
+    parser_select.add_argument("sql", **SQL)
+    parser_select.add_argument(
+        "-c", "--cols",
+        help=(
+            "comma-separated list of columns to select from metadatabase."
+            "eg: 'filepath,date_time'"
+        ),
+        default="*"
+    )
+    parser_select.add_argument("--first", **FIRST)
 
     # === id_lookup
     parser_id_lookup = subparsers.add_parser(

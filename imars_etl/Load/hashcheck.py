@@ -8,7 +8,7 @@ from imars_etl.exceptions.TooManyMetadataMatchesException \
 from imars_etl.exceptions.DuplicateFileException \
     import DuplicateFileException
 
-from imars_etl.get_metadata import get_metadata
+from imars_etl.select import select
 from imars_etl.Load.get_hash import get_hash
 
 HASH_COL_NAME = 'multihash'
@@ -37,7 +37,7 @@ def hashcheck(filepath=None, multihash=None, **kwargs):
         )
     # check for hash in metadatadb
     try:
-        get_metadata(
+        select(
             sql="{}='{}'".format(
                 HASH_COL_NAME, file_hash
             )
