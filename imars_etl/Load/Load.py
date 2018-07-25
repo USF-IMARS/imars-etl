@@ -118,7 +118,7 @@ def _load_dir(args_dict):
 
 def _load_file(args_dict):
     """Loads a single file"""
-    args_dict = unify_metadata(args_dict)
+    args_dict = unify_metadata(**args_dict)
     args_dict['storage_driver'] = args_dict.get(
         'storage_driver', LOAD_DEFAULTS['storage_driver']
     )

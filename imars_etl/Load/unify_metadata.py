@@ -6,9 +6,9 @@ from imars_etl.util.consts import ISO_8601_FMT
 from imars_etl.exceptions.InputValidationError import InputValidationError
 
 
-def unify_metadata(args_dict):
+def unify_metadata(**kwargs):
     """
-    Combines metadata from file & json dicts into args_dict.
+    Combines metadata from file & json dicts into kwargs.
     Raises error if data is mismatched.
     """
     logger = logging.getLogger("{}.{}".format(
@@ -16,44 +16,44 @@ def unify_metadata(args_dict):
         sys._getframe().f_code.co_name)
     )
     # === file metadata
-    if args_dict.get('metadata_file') is not None:
+    if kwargs.get('metadata_file') is not None:
         file_metadata = _read_metadata_file(
-            args_dict['metadata_file_driver'],
-            args_dict['metadata_file']
+            kwargs['metadata_file_driver'],
+            kwargs['metadata_file']
         )
     else:
         file_metadata = {}
 
     # === json metadata
-    try:  # add json args to args_dict
-        json_metadata = json.loads(args_dict['json'])
-        _dict_union_raise_on_conflict(args_dict, json_metadata)
+    try:  # add json args to kwargs
+        json_metadata = json.loads(kwargs['json'])
+        _dict_union_raise_on_conflict(kwargs, json_metadata)
     except TypeError:
         logger.debug("json str is empty")
         json_metadata = {}
     except KeyError:
-        logger.info("args_dict['json'] is None")
+        logger.info("kwargs['json'] is None")
         json_metadata = {}
 
     # === sql metadata
-    try:  # add sql args to args_dict
-        sql_metadata = sql_str_to_dict(args_dict['sql'])
-        _dict_union_raise_on_conflict(args_dict, sql_metadata)
+    try:  # add sql args to kwargs
+        sql_metadata = sql_str_to_dict(kwargs['sql'])
+        _dict_union_raise_on_conflict(kwargs, sql_metadata)
     except TypeError:
         logger.debug("sql str is empty")
         sql_metadata = {}
     except KeyError:
-        logger.info("args_dict['sql'] is None")
+        logger.info("kwargs['sql'] is None")
         sql_metadata = {}
 
-    args_dict = _union_dicts_raise_on_conflict(
-        args_dict,
+    kwargs = _union_dicts_raise_on_conflict(
+        kwargs,
         file_metadata,
         json_metadata,
         sql_metadata
     )
-    print('input metadata summary:\n{}\n'.format(args_dict))
-    return args_dict
+    print('input metadata summary:\n{}\n'.format(kwargs))
+    return kwargs
 
 
 def sql_str_to_dict(sql_str):
@@ -103,10 +103,12 @@ def _dict_union_raise_on_conflict(dict_a, dict_b):
     """Union of a & b, but raises error if two keys w/ different vals"""
     for key in dict_b:
         if key in dict_a and dict_a[key] != dict_b[key]:
+            val_a = dict_a[key]
+            val_b = dict_b[key]
             raise InputValidationError(
                 "Conflicting file metadata for key '{}':".format(key) +
-                "\n\tval a : {}".format(dict_a[key]) +
-                "\n\tval b : {}".format(dict_b[key])
+                "\n\tval a : {} ({})".format(val_a, type(val_a)) +
+                "\n\tval b : {} ({})".format(val_b, type(val_b))
             )
         else:
             dict_a[key] = dict_b[key]
