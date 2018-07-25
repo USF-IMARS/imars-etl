@@ -20,12 +20,7 @@ from imars_etl.extract import EXTRACT_DEFAULTS
 
 def main(argvs):
     args = parse_args(argvs)
-    # TODO: finish restructuring these for #10
-    NOT_YET_RESTRUCTURED = [id_lookup]
-    if args.func in NOT_YET_RESTRUCTURED:  # TODO: then rm this if/else
-        return args.func(args)
-    else:
-        return args.func(**vars(args))
+    return args.func(**vars(args))
 
 
 def parse_args(argvs):

@@ -1,5 +1,7 @@
 """
-unittest.TestCase with added methods to assert with SQL statements
+unittest.TestCase with added methods to assert with SQL statements.
+
+NOTE: this could be a mixin instead?
 """
 from unittest import TestCase
 
