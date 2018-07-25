@@ -19,8 +19,7 @@ class Test_unify_metadata(TestCase):
             '-t', "2018-02-26T13:00",
             '-j', '{"status_id":1,"area_id":1}',
         ])
-        result_arg_dict = unify_metadata(vars(test_args))
-        result_arg_dict = unify_metadata(vars(test_args))
+        result_arg_dict = unify_metadata(**vars(test_args))
         self.assertDictContainsSubset(
             {
                 "verbose": 3,
@@ -30,6 +29,26 @@ class Test_unify_metadata(TestCase):
                 "json": '{"status_id":1,"area_id":1}',
                 "status_id": 1,
                 "area_id": 1
+            },
+            result_arg_dict
+        )
+
+    def Test_unify_metadata_similar_keys_of_different_types(self):
+        """
+        unify_metadata passes with matching metadata in kwargs & sql
+        """
+        from imars_etl.Load.Load import unify_metadata
+        result_arg_dict = unify_metadata(
+            verbose=3,
+            dry_run=True,
+            product_id=-1,
+            sql="product_id=-1"
+        )
+        self.assertDictContainsSubset(
+            {
+                "verbose": 3,
+                "dry_run": True,
+                "product_id": -1,
             },
             result_arg_dict
         )
