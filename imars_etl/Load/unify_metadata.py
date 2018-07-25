@@ -71,6 +71,10 @@ def sql_str_to_dict(sql_str):
         pairs = sql_str.split(" AND ")
         for pair in pairs:
             key, val = pair.split('=')
+            try:
+                val = int(val)
+            except ValueError:
+                pass  # failure to convert to int just means it isn't an int.
             result[key] = val
         return result
 
@@ -100,9 +104,14 @@ def _union_dicts_raise_on_conflict(*args):
 
 
 def _dict_union_raise_on_conflict(dict_a, dict_b):
-    """Union of a & b, but raises error if two keys w/ different vals"""
+    """
+    Union of a & b, but raises error if two keys w/ different vals.
+    NOTE: value comparison is done after converting values to strings.
+        This is _probably_ ok for simple types (int & str), but could cause
+        weird things if you use this to union dicts with fancy val types.
+    """
     for key in dict_b:
-        if key in dict_a and dict_a[key] != dict_b[key]:
+        if key in dict_a and str(dict_a[key]) != str(dict_b[key]):
             val_a = dict_a[key]
             val_b = dict_b[key]
             raise InputValidationError(
