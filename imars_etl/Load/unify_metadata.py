@@ -59,14 +59,16 @@ def unify_metadata(args_dict):
 def sql_str_to_dict(sql_str):
     """
     Transforms sql selector string into key-val dict.
-    Expects sql string in the a form like `a=1,col="val"`, which will transform
-    into `{'a': 1, 'col': 'val'}`
+    Expects sql string in the a form like `a=1 AND col="val"`, which transforms
+    into `{'a': 1, 'col': 'val'}`.
+
+    NOTE: 'AND' *is* case-sensitive here.
     """
     result = {}
     if sql_str is None or len(sql_str) < 1:
         return result
     else:
-        pairs = sql_str.split(",")
+        pairs = sql_str.split(" AND ")
         for pair in pairs:
             key, val = pair.split('=')
             result[key] = val

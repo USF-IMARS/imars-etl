@@ -60,9 +60,10 @@ def parse_args(argvs):
     # === sub-cmd arguments shared between multiple subcommands:
     SQL = {  # "sql"
         "help": (
-            "Comma-separated list of metadata key-value pairs using "
+            "' AND'-separated list of metadata key-value pairs using "
             "SQL `WHERE _____` style syntax."
-            "Example: \"product_id=3,area_id=7,date_time='2018-01-02T03:45'\""
+            "\nExample: \n\t"
+            "\"product_id=3 AND area_id=7 AND date_time='2018-01-02T03:45'\""
         )
     }
     FIRST = {  # "--first"
