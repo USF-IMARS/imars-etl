@@ -91,29 +91,34 @@ def _load_dir(args_dict):
                 logger.debug("skipping {}...".format(fpath))
                 skipped_count += 1
             except IntegrityError as i_err:
-                logger.debug(i_err)
-                errnum, errmsg = i_err.args
-                logger.debug("errnum,={}".format(errnum))
-                logger.debug("errmsg,={}".format(errmsg))
-                DUPLICATE_ENTRY_ERRNO = 1062
-                if (
-                    errnum == DUPLICATE_ENTRY_ERRNO and
-                    args_dict.get('duplicates_ok', False)
-                ):
-                    logger.warn(
-                        "IntegrityError: Duplicate entry for '{}'".format(
-                            fpath
-                        )
-                    )
-                    duplicate_count += 1
-                else:
-                    raise
+                _handle_integrity_error(i_err, fpath, **args_dict)
+                duplicate_count += 1
             finally:
                 args_dict = copy.deepcopy(orig_args)  # reset args
     logger.info("{} files loaded, {} skipped, {} duplicates.".format(
         loaded_count, skipped_count, duplicate_count
     ))
     return insert_statements
+
+
+def _handle_integrity_error(i_err, fpath, duplicates_ok=False):
+    logger = logging.getLogger("{}.{}".format(
+        __name__,
+        sys._getframe().f_code.co_name)
+    )
+    logger.debug(i_err)
+    errnum, errmsg = i_err.args
+    logger.debug("errnum,={}".format(errnum))
+    logger.debug("errmsg,={}".format(errmsg))
+    DUPLICATE_ENTRY_ERRNO = 1062
+    if (errnum == DUPLICATE_ENTRY_ERRNO and duplicates_ok):
+        logger.warn(
+            "IntegrityError: Duplicate entry for '{}'".format(
+                fpath
+            )
+        )
+    else:
+        raise
 
 
 def _load_file(args_dict):
@@ -134,12 +139,15 @@ def _load_file(args_dict):
     if args_dict.get('dry_run', False):  # test mode returns the sql string
         return sql
     else:
-        return get_sql_result(
-            sql,
-            check_result=False,
-            should_commit=(not args_dict.get('dry_run', False)),
-            first=args_dict.get("first", False),
-        )
+        try:
+            return get_sql_result(
+                sql,
+                check_result=False,
+                should_commit=(not args_dict.get('dry_run', False)),
+                first=args_dict.get("first", False),
+            )
+        except IntegrityError as i_err:
+            _handle_integrity_error(i_err, new_filepath, **args_dict)
 
 
 def _actual_load_file_with_driver(**kwargs):
