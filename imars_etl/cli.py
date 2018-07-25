@@ -59,7 +59,11 @@ def parse_args(argvs):
 
     # === sub-cmd arguments shared between multiple subcommands:
     SQL = {  # "sql"
-        "help": "SQL `WHERE _____` style selector string.",
+        "help": (
+            "Comma-separated list of metadata key-value pairs using "
+            "SQL `WHERE _____` style syntax."
+            "Example: \"product_id=3,area_id=7,date_time='2018-01-02T03:45'\""
+        )
     }
     FIRST = {  # "--first"
         "help": "return first result if multiple rather than exiting w/ error",
@@ -154,6 +158,7 @@ def parse_args(argvs):
         "-j", "--json",
         help="string of json with given file's metadata."
     )
+    parser_load.add_argument("-s", "--sql", **SQL)
     parser_load.add_argument(
         "-l", "--load_format",
         help="python strptime-enabled format string describing input basename."

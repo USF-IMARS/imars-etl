@@ -27,6 +27,7 @@ LOAD_DEFAULTS = {
 def load(
     filepath=None, directory=None,
     metadata_file_driver=LOAD_DEFAULTS['metadata_file_driver'],
+    sql="",
     **kwargs
 ):
     """
@@ -46,10 +47,11 @@ def load(
         filepath=filepath,
         directory=directory,
         metadata_file_driver=metadata_file_driver,
+        sql=sql,
         **kwargs
     )
     if filepath is not None:
-        return _load_file(args_dict)
+        return _load_file(args_dict)  # TODO: ideally we would splat these.
     elif directory is not None:
         return _load_dir(args_dict)
     else:
