@@ -357,6 +357,19 @@ data = {
             }
         }
     },
+    "chlor_a_l3_pass": {
+        "//": "modis aqua l3 from @dotis's airflow'",
+        "imars_object_format": {
+            "path": "/srv/imars-objects/{area_short_name}/chlor_a_l3_pass",
+            "basename": "chlor_a_l3_pass_A%Y%j%H%M%S.hdf",
+            "product_id": 42
+        },
+        "ingest_formats": {
+            "dotis_cron_output": {
+                "path_format": "A%Y%j%H%M%S.L3",  # ???
+            }
+        }
+    },
 
     ### === others from the metadata db that in need of adding:
     # "png_chl_7d": {
@@ -378,12 +391,6 @@ data = {
     # }
     # "qkm": {
     #     "basename": "A%Y%j%H%M00.L1B_QKM"
-    # }
-    # "l3": {
-    #     "basename": ISO_8601_FMT+"_l3.nc"
-    # }
-    # "l3_pass": {
-    #     "basename": ISO_8601_FMT+"_l3.nc"
     # }
     # "metadata-ini": {
     #     "basename": "metadata_"+ISO_8601_FMT+".ini"
