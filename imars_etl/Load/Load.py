@@ -101,7 +101,7 @@ def _load_dir(args_dict):
     return insert_statements
 
 
-def _handle_integrity_error(i_err, fpath, duplicates_ok=False):
+def _handle_integrity_error(i_err, fpath, duplicates_ok=False, **kwargs):
     logger = logging.getLogger("{}.{}".format(
         __name__,
         sys._getframe().f_code.co_name)
