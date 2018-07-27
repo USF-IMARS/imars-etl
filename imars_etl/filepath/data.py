@@ -370,12 +370,77 @@ data = {
             }
         }
     },
+    "a1km_chlor_a_7d_mean_png": {
+        "//": "modis aqua png from @dotis",
+        "imars_object_format": {
+            "path":
+                "/srv/imars-objects/modis_aqua_{area_short_name}/png_chl_7d",
+            "basename": "FGB_A1km_chlor_a_%Y%j_{date_2:6}_7D_MEAN.png",
+            "product_id": 43
+        },
+        "ingest_formats": {
+            "dotis_cron_output": {
+                "path_format":
+                    "FGB_A1km_chlor_a_%Y%j_{date_2:6d}_7D_MEAN.png",
+            }
+        }
+    },
+    "a1km_chlor_a_7d_anom_png": {
+        "//": "modis aqua png from @dotis",
+        "imars_object_format": {
+            "path":
+                "/srv/imars-objects/modis_aqua_{area_short_name}/png_chl_7d",
+            "basename": "FGB_A1km_chlor_a_%Y%j_{date_2:6}_7D_ANOM.png",
+            "product_id": 44
+        },
+        "ingest_formats": {
+            "dotis_cron_output": {
+                "path_format":
+                    "FGB_A1km_chlor_a_%Y%j_{date_2:6d}_7D_ANOM.png",
+            }
+        }
+    },
+    "a1km_sst_7d_mean_png": {
+        "//": "modis aqua png from @dotis",
+        "imars_object_format": {
+            "path": (
+                "/srv/imars-objects/modis_aqua_{area_short_name}/png_chl_7d"
+                "/PNG_AQUA/SST"
+            ),
+            "basename": "FGB_A1km_chlor_a_%Y%j_{date_2:6}_7D_MEAN.png",
+            "product_id": 45
+        },
+        "ingest_formats": {
+            "dotis_cron_output": {
+                "path_format":
+                    "FGB_A1km_sst_%Y%j_{date_2:6d}_7D_MEAN.png",
+            }
+        }
+    },
+    "a1km_sst_7d_anom_png": {
+        "//": "modis aqua png from @dotis",
+        "imars_object_format": {
+            "path": (
+                "/srv/imars-objects/modis_aqua_{area_short_name}/png_chl_7d/"
+                "PNG_AQUA/SST"
+            ),
+            "basename": "FGB_A1km_chlor_a_%Y%j_{date_2:6}_7D_ANOM.png",
+            "product_id": 46
+        },
+        "ingest_formats": {
+            "dotis_cron_output": {
+                "path_format":
+                    "FGB_A1km_sst_%Y%j_{date_2:6d}_7D_ANOM.png",
+            }
+        }
+    },
 
-    ### === others from the metadata db that in need of adding:
+
+    # === others from the metadata db that in need of adding:
     # "png_chl_7d": {
     #     "name": "FGB_A1km_chlor_a_%Y%j_%Y%j_7D_MEAN.png"
     # },
-    ### === legacy values from pre-metadata db times:
+    # === legacy values from pre-metadata db times:
     # "l1a_lac_hdf_bz2":{
     #     "//": "zipped l1a (myd01) files from OB.DAAC",
     #     "basename": "A%Y%j%H%M00.L1A_LAC.x.hdf.bz2"
