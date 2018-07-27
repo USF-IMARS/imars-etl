@@ -2,7 +2,7 @@
 from imars_etl.util import get_sql_result
 
 
-def select(criteria, cols='*', first=False, **kwargs):
+def select(sql='', cols='*', first=False, **kwargs):
     """
     Prints json-formatted metadata for first entry in given args.sql
 
@@ -17,7 +17,7 @@ def select(criteria, cols='*', first=False, **kwargs):
         metadata from db
 
     """
-    sql_query = "SELECT {} FROM file WHERE {};".format(cols, criteria)
+    sql_query = "SELECT {} FROM file WHERE {};".format(cols, sql)
     print(sql_query)
     result = get_sql_result(
         sql_query,
