@@ -404,7 +404,7 @@ data = {
         "//": "modis aqua png from @dotis",
         "imars_object_format": {
             "path": (
-                "/srv/imars-objects/modis_aqua_{area_short_name}/png_chl_7d"
+                "/srv/imars-objects/modis_aqua_{area_short_name}/PNG_AQUA/SST/"
                 "/PNG_AQUA/SST"
             ),
             "basename": "FGB_A1km_chlor_a_%Y%j_{date_2:6}_7D_MEAN.png",
@@ -421,7 +421,7 @@ data = {
         "//": "modis aqua png from @dotis",
         "imars_object_format": {
             "path": (
-                "/srv/imars-objects/modis_aqua_{area_short_name}/png_chl_7d/"
+                "/srv/imars-objects/modis_aqua_{area_short_name}/PNG_AQUA/SST/"
                 "PNG_AQUA/SST"
             ),
             "basename": "FGB_A1km_chlor_a_%Y%j_{date_2:6}_7D_ANOM.png",
