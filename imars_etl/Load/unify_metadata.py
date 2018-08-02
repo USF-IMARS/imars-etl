@@ -2,8 +2,9 @@ import json
 import logging
 import sys
 
-from imars_etl.util.consts import ISO_8601_FMT
 from imars_etl.exceptions.InputValidationError import InputValidationError
+from imars_etl.Load.metadata_constraints import ensure_constistent_metadata
+from imars_etl.filepath.parse_filepath import parse_filepath
 
 
 def unify_metadata(**kwargs):
@@ -15,6 +16,13 @@ def unify_metadata(**kwargs):
         __name__,
         sys._getframe().f_code.co_name)
     )
+    # === filepath metadata
+    # TODO: should be `kwargs.get('noparse', LOAD_DEFAULTS['noparse'])`
+    if kwargs.get('noparse', False) is False:
+        path_metadata = parse_filepath(**kwargs)
+    else:
+        path_metadata = {}
+
     # === file metadata
     if kwargs.get('metadata_file') is not None:
         file_metadata = _read_metadata_file(
@@ -48,6 +56,7 @@ def unify_metadata(**kwargs):
 
     kwargs = _union_dicts_raise_on_conflict(
         kwargs,
+        path_metadata,
         file_metadata,
         json_metadata,
         sql_metadata
@@ -82,15 +91,15 @@ def sql_str_to_dict(sql_str):
 def _read_metadata_file(driver, filepath):
     """reads metadata using driver on given filepath"""
     parser = driver(filepath)
+    # TODO: metad = parser.get_metadata()
+
     metad = {
         'uuid': parser.get_uuid(),
         'datetime': parser.get_datetime(),
     }
-
-    if metad.get('datetime') is not None:
-        metad['time'] = metad['datetime'].strftime(ISO_8601_FMT)
-
-    return metad
+    return ensure_constistent_metadata(
+        metad
+    )
 
 
 def _union_dicts_raise_on_conflict(*args):

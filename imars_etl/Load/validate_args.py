@@ -1,15 +1,9 @@
 import sys
 import logging
-from datetime import datetime
-
-from imars_etl.filepath.parse_filepath import parse_filepath
-from imars_etl.filepath.parse_filepath import _set_unless_exists
-from imars_etl.filepath.get_product_id import get_product_id
-from imars_etl.filepath.get_product_name import get_product_name
-
-from imars_etl.util.consts import ISO_8601_FMT
 
 from imars_etl.Load.get_hash import get_hash
+from imars_etl.Load.metadata_constraints import ensure_constistent_metadata
+from imars_etl.Load.unify_metadata import unify_metadata
 
 
 def validate_args(args_dict):
@@ -23,77 +17,36 @@ def validate_args(args_dict):
     )
     logger.setLevel(logging.INFO)
     # === validate product name and id
-    if (  # require name or id for directory loading
-        args_dict.get('directory') is not None and
-        args_dict.get('product_id') is None and
-        args_dict.get('product_type_name') is None
-    ):
+    if args_dict.get('directory') is not None:
         # NOTE: this is probably not a hard requirement
         #   but it seems like a good safety precaution.
-        raise ValueError(
-            "--product_id or --product_type_name must be" +
-            " explicitly set if --directory is used."
-        )
-    elif (  # fill id from name
-        args_dict.get('product_id') is None and
-        args_dict.get('product_type_name') is not None
-    ):
-        args_dict['product_id'] = get_product_id(
-            args_dict['product_type_name']
-        )
-    elif (  # fill name from id
-        args_dict.get('product_id') is not None and
-        args_dict.get('product_type_name') is None
-    ):
-        args_dict['product_type_name'] = get_product_name(
-            args_dict['product_id']
-        )
-    else:
-        pass
-        # TODO: ensure that given id and name match
-        # assert(
-        #     args_ns.product_id ==
-        #     args_ns.get_product_id(args_ns.product_type_name)
-        # )
-        # assert(
-        #   get_product_data_from_id(args_ns.product_id),
-        #   ???
-        # )
+        if(
+            args_dict.get('product_id') is None and
+            args_dict.get('product_type_name') is None
+        ):
+            raise ValueError(
+                "--product_id or --product_type_name must be" +
+                " explicitly set if --directory is used."
+            )
 
-    # TODO: should be `args_dict.get('noparse', LOAD_DEFAULTS['noparse'])`
-    if args_dict.get('noparse', False) is False:
-        logger.debug("pre-guess-args : " + str(args_dict))
+    args_dict = ensure_constistent_metadata(
+        args_dict,
+        raise_cannot_constrain=False
+    )
 
-        args_parsed = parse_filepath(**args_dict)
-        for key in args_parsed.keys():
-            _set_unless_exists(args_dict, key, args_parsed[key])
-
-        logger.debug("post-guess-args: " + str(args_dict))
-
-    try:
-        dt = datetime.strptime(args_dict['time'], ISO_8601_FMT)
-        logger.debug("full datetime parsed")
-    except ValueError:
-        dt = datetime.strptime(args_dict['time'], ISO_8601_FMT[:-3])
-        logger.debug("partial datetime parsed (no seconds)")
-    except TypeError as t_err:
-        logger.error("{}\n\n".format(t_err))
-        raise ValueError(
-            "Could not determine datetime for product(s)." +
-            " Please input more information by using more arguments" +
-            " or try to debug using super-verbose mode -vvv."
-        )
-    args_dict['datetime'] = dt
+    args_dict = unify_metadata(**args_dict)
 
     # create args['date_time'] from args['time']
     args_dict['date_time'] = args_dict['time']
     # TODO: should use LOAD_DEFAULTS['nohash']
     if args_dict.get('nohash', False) is False:
         logger.debug('ensuring hash in metadata...')
-        args_dict = _set_unless_exists(
+        args_dict = ensure_constistent_metadata(
             args_dict,
-            'multihash',
-            get_hash(args_dict['filepath'])
+            [
+                ('multihash', ['filepath'], get_hash),
+            ],
+            raise_cannot_constrain=True
         )
     else:
         logger.debug('skipping file hashing.')
