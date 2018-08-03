@@ -1,14 +1,13 @@
-from datetime import datetime
-
 from imars_etl.Load import constrain_dict
 from imars_etl.util.timestrings import ISO_8601_FMT
 from imars_etl.util.timestrings import standardize_time_str
+from imars_etl.util.timestrings import iso8601strptime
 from imars_etl.filepath.get_product_id import get_product_id
 from imars_etl.filepath.get_product_name import get_product_name
 
 
 BASIC_METADATA_RELATION_CONSTRAINTS = [
-    ('date_time', ['time'], lambda t: datetime.strptime(t, ISO_8601_FMT)),
+    ('date_time', ['time'], iso8601strptime),
     ('time', ['date_time'], lambda dt: dt.strftime(ISO_8601_FMT)),
     ('product_type_name', ['product_id'], get_product_name),
     ('product_id', ['product_type_name'], get_product_id),

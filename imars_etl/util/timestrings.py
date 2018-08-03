@@ -31,5 +31,5 @@ def standardize_time_str(timestr):
 
 def iso8601strptime(dtstr):
     dtstr = standardize_time_str(dtstr)
-    dtstr.replace(" ", "T")  # in case it is spacey
+    dtstr = dtstr.replace(" ", "T")  # in case it is spacey
     return datetime.strptime(dtstr, ISO_8601_FMT)
