@@ -135,13 +135,19 @@ def _rm_dict_none_values(dict_w_nones):
     return {k: v for k, v in dict_w_nones.items() if v is not None}
 
 
-def _dict_union_raise_on_conflict(dict_a, dict_b):
+def _dict_union_raise_on_conflict(dict_a, dict_b, auto_reconsile=True):
     """
     Union of a & b, but raises error if two keys w/ different vals.
     NOTE: value comparison is done after converting values to strings.
         This is _probably_ ok for simple types (int & str), but could cause
         weird things if you use this to union dicts with fancy val types.
     """
+    logger = logging.getLogger("{}.{}".format(
+        __name__,
+        sys._getframe().f_code.co_name)
+    )
+    logger.setLevel(logging.DEBUG)
+
     # TODO: maybe this should be done elsewhere?
     dict_a = _rm_dict_none_values(dict_a)
     dict_b = _rm_dict_none_values(dict_b)
@@ -150,11 +156,99 @@ def _dict_union_raise_on_conflict(dict_a, dict_b):
         if key in dict_a and str(dict_a[key]) != str(dict_b[key]):
             val_a = dict_a[key]
             val_b = dict_b[key]
-            raise InputValidationError(
-                "Conflicting file metadata for key '{}':".format(key) +
-                "\n\tval a : {} ({})".format(val_a, type(val_a)) +
-                "\n\tval b : {} ({})".format(val_b, type(val_b))
-            )
+            if auto_reconsile:
+                logger.debug(
+                    'conflict: \n\t{} != {}'.format(val_a, val_b) +
+                    '\n\ttrying to reconsile dict values for {}...'.format(key)
+                )
+                newval = _reconsile_conflicting_values(val_a, val_b)
+                logger.debug('...resolved to {}'.format(newval))
+                dict_a[key] = newval
+            else:
+                raise InputValidationError(
+                    "Conflicting file metadata for key '{}':".format(key) +
+                    "\n\tval a : {} ({})".format(val_a, type(val_a)) +
+                    "\n\tval b : {} ({})".format(val_b, type(val_b))
+                )
         else:
             dict_a[key] = dict_b[key]
     return dict_a
+
+
+def _reconsile_conflicting_values(vala, valb):
+    """attempts to resolve two conflicting values into one"""
+    logger = logging.getLogger("{}.{}".format(
+        __name__,
+        sys._getframe().f_code.co_name)
+    )
+    logger.setLevel(logging.DEBUG)
+    newval = None
+    try:
+        newval = _reconsile_conflicting_datetimes(vala, valb)
+    except Exception as dt_err:
+        # a & b must not be datetime-like
+        logger.debug(
+            "cannot reconsile as datetimes, err: \n\t{}".format(dt_err)
+        )
+
+    if newval is None:
+        raise InputValidationError("cannot reconsile values.")
+    else:
+        return newval
+
+
+def _reconsile_conflicting_datetimes(datea, dateb):
+    """
+    Attempts to pick between two conflicting datetimes by assuming that
+    datetimes ending like YYYY-01-01T00:00:00 represent imprecision.
+    """
+    len_a = _estimate_datetime_precision(datea)
+    len_b = _estimate_datetime_precision(dateb)
+    if len_a == len_b:
+        raise ValueError(
+            "cannot resolve conflicting dates of same precision "
+            "({}=={})".format(len_a, len_b)
+        )
+    elif len_a > len_b:
+        return datea
+    elif len_b > len_a:
+        return dateb
+
+
+def _estimate_datetime_precision(dt):
+    """
+    Returns an int that is larger if the datetime appears more precise.
+    Precision is determined by how precise values _seem_ by comparing with
+    placeholder values.
+    We start off assuming max precision, then we will whittle down from
+    smallest time increment up to year, which we do not check.
+    Example: month, day, hour, minute are not checked for placeholder values
+    if a non-placeholder second is found. 2018-01-01T00:00:00.02 is maximally
+    precise, even though the month, day, hour, minute, and second _seem_ like
+    they chould be placeholders.
+
+    Returns
+    --------
+    precision : int
+        min 1. max 7.
+        1 means only year _seems_ precise.
+        7 means precise to the milliseconds.
+        Each integer represents another step up in time increment precision.
+    """
+    imprecise_placeholders = [
+        # these must be smallest to largest
+        ('microsecond', 0),
+        ('second', 0),
+        ('minute', 0),
+        ('hour', 0),
+        ('day', 1),
+        ('month', 1),
+    ]
+    precision = len(imprecise_placeholders) + 1
+    for attribkey, placeholder in imprecise_placeholders:
+        if getattr(dt, attribkey) == placeholder:
+            precision -= 1
+        else:
+            return precision
+    else:
+        return precision  # should be 1 at this point
