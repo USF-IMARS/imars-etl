@@ -71,8 +71,8 @@ def validate_args(args_dict, DEFAULTS={}):
                 fpath = args_dict['filepath']
                 fname = fpath.split('/')[-1]
                 fbase = fname.split('.')[0]
-                args_dict.set_default('filename', fname)
-                args_dict.set_default('basename', fbase)
+                args_dict.setdefault('filename', fname)
+                args_dict.setdefault('basename', fbase)
             if args_dict.get('metadata_file') is not None:
                 args_dict['metadata_file'] = \
                     args_dict['metadata_file'].format(**args_dict)
