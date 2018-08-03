@@ -113,12 +113,7 @@ def sql_str_to_dict(sql_str):
 def _read_metadata_file(driver, filepath):
     """reads metadata using driver on given filepath"""
     parser = driver(filepath)
-    # TODO: metad = parser.get_metadata()
-
-    metad = {
-        'uuid': parser.get_uuid(),
-        'date_time': parser.get_datetime(),
-    }
+    metad = parser.get_metadata()
     return ensure_constistent_metadata(
         metad
     )

@@ -10,6 +10,12 @@ class Parser(object):
     def __init__(self, json_metadata_filepath):
         self.json_metadata_filepath = json_metadata_filepath
 
+    def get_metadata(self):
+        return {
+            'uuid': self.get_uuid(),
+            'date_time': self.get_datetime(),
+        }
+
     def get_uuid(self):
         with open(self.json_metadata_filepath) as m_file:
             return json.load(m_file)[0]['uuid']

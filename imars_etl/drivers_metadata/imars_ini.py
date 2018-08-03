@@ -9,6 +9,10 @@ class Parser(object):
     def __init__(self, json_metadata_filepath):
         self.json_metadata_filepath = json_metadata_filepath
 
+    def get_metadata(self):
+        return {
+        }
+
     def get_url(ini_filepath):
         """Returns url read from custom ini file"""
         cfg = configparser.ConfigParser()
