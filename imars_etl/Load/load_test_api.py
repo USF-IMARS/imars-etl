@@ -40,7 +40,7 @@ class Test_load_api(TestCasePlusSQL):
             res,
             ['date_time', 'product_id', 'filepath'],
             [
-                '"2018-02-26T13:00"',
+                '"2018-02-26 13:00:00"',
                 '-1',
                 '"/srv/imars-objects/test_test_test' +
                 '/simple_file_with_no_args.txt"'
@@ -64,7 +64,7 @@ class Test_load_api(TestCasePlusSQL):
             dry_run=True,
             filepath="/fake/path/file_w_date_2018.txt",
             product_id=-1,
-            time="2018-02-26T13:00",
+            time="2018-02-26 13:00:00",
             json='{"status_id":1, "area_id":1}',
             verbose=3,
             nohash=True,

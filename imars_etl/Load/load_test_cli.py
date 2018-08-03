@@ -33,7 +33,7 @@ class Test_load_cli(TestCasePlusSQL):
             '--dry_run',
             '-f', "/fake/path/file_w_date_2018.txt",
             '-p', '-1',
-            '-t', "2018-02-26T13:00",
+            '-t', "2018-02-26 13:00:00",
             '-j', '{"status_id":1,"area_id":1}',
             '--nohash',
         ]
@@ -81,7 +81,7 @@ class Test_load_cli(TestCasePlusSQL):
             ['status_id', 'date_time', 'area_id', 'product_id', 'filepath'],
             [
                 '1',
-                '"2018-02-26T13:00"',
+                '"2018-02-26 13:00:00"',
                 '1',
                 '-1',
                 '"{}"'.format(FPATH)
@@ -285,7 +285,7 @@ class Test_load_cli(TestCasePlusSQL):
             res,
             ['date_time', 'product_id', 'filepath'],
             [
-                '"2018-01-01T08:08"',
+                '"2018-01-01 08:08:00"',
                 '-2',
                 '"/srv/imars-objects/_fancy_tssst_/2018-001' +
                 '/arg_is_tssst_time_is_0800.fancy_file"'
@@ -395,7 +395,7 @@ class Test_load_cli(TestCasePlusSQL):
         CLI load file w/ metadata file & json using default (DHUS) parser
         """
         FAKE_UUID = '68ebc577-178e-4d9c-b16a-3bf8f1394939'
-        DATETIME = "2018-01-01T08:08"
+        DATETIME = "2018-01-01T08:08:00"
         mocked_open = mock.mock_open(
             read_data='[{"uuid":"' + FAKE_UUID + '"}]'
         )
@@ -424,7 +424,7 @@ class Test_load_cli(TestCasePlusSQL):
                 res,
                 ['date_time', 'product_id', 'uuid', 'filepath'],
                 [
-                    '"{}"'.format(DATETIME),
+                    '"{}"'.format(DATETIME.replace("T", " ")),
                     '-2',
                     '"{}"'.format(FAKE_UUID),
                     '"/srv/imars-objects/_fancy_tssst_/2018-001' +
