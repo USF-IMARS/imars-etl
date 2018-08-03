@@ -24,7 +24,10 @@ def unify_metadata(**kwargs):
     kwargs = ensure_constistent_metadata(kwargs)
     # === filepath metadata
     # TODO: should be `kwargs.get('noparse', LOAD_DEFAULTS['noparse'])`
-    if kwargs.get('noparse', False) is False:
+    if (
+        kwargs.get('noparse', False) is False and
+        kwargs.get('filepath') is not None
+    ):
         path_metadata = parse_filepath(**kwargs)
     else:
         path_metadata = {}
