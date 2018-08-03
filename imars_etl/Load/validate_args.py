@@ -4,6 +4,7 @@ import logging
 from imars_etl.Load.get_hash import get_hash
 from imars_etl.Load.hashcheck import hashcheck
 from imars_etl.Load.metadata_constraints import ensure_constistent_metadata
+from imars_etl.Load.metadata_constraints import _ensure_constistent_metadata
 from imars_etl.Load.unify_metadata import unify_metadata
 from imars_etl.Load.unify_metadata import _rm_dict_none_values
 
@@ -32,7 +33,7 @@ def validate_args(args_dict, DEFAULTS={}):
 
     if args_dict.get('nohash', False) is False:
         logger.debug('ensuring hash in metadata...')
-        args_dict = ensure_constistent_metadata(
+        args_dict = _ensure_constistent_metadata(
             args_dict,
             [
                 ('multihash', ['filepath'], get_hash),
