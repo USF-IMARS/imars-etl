@@ -1,7 +1,7 @@
 from datetime import datetime
 
 from imars_etl.Load import constrain_dict
-from imars_etl.util.consts import ISO_8601_FMT
+from imars_etl.util.timestrings import ISO_8601_FMT
 from imars_etl.util.timestrings import standardize_time_str
 from imars_etl.filepath.get_product_id import get_product_id
 from imars_etl.filepath.get_product_name import get_product_name

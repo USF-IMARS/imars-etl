@@ -5,6 +5,7 @@ import sys
 from imars_etl.exceptions.InputValidationError import InputValidationError
 from imars_etl.Load.metadata_constraints import ensure_constistent_metadata
 from imars_etl.filepath.parse_filepath import parse_filepath
+from imars_etl.util.timestrings import iso8601strptime
 
 
 def unify_metadata(**kwargs):
@@ -183,18 +184,43 @@ def _reconsile_conflicting_values(vala, valb):
     )
     logger.setLevel(logging.DEBUG)
     newval = None
-    try:
-        newval = _reconsile_conflicting_datetimes(vala, valb)
-    except Exception as dt_err:
-        # a & b must not be datetime-like
-        logger.debug(
-            "cannot reconsile as datetimes, err: \n\t{}".format(dt_err)
-        )
+
+    reconsilers = [
+        _reconsile_conflicting_datetimes,
+        _reconsile_conflicting_ISO8601_strs
+    ]
+
+    for reconsile_fn in reconsilers:
+        try:
+            newval = reconsile_fn(vala, valb)
+            break
+        except Exception as err:
+            logger.debug(
+                "cannot reconsile using {}, err: \n\t{}".format(
+                    reconsile_fn, err
+                )
+            )
 
     if newval is None:
         raise InputValidationError("cannot reconsile values.")
     else:
         return newval
+
+
+def _reconsile_conflicting_ISO8601_strs(str_a, str_b):
+    datea = iso8601strptime(str_a)
+    dateb = iso8601strptime(str_b)
+
+    chosen_date = _reconsile_conflicting_datetimes(datea, dateb)
+
+    if chosen_date == datea:
+        return str_a
+    elif chosen_date == dateb:
+        return str_b
+    else:
+        raise AssertionError(
+            "date comparison returned date that doesn't match str_a or str_b!"
+        )
 
 
 def _reconsile_conflicting_datetimes(datea, dateb):

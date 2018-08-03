@@ -1,5 +1,9 @@
+from datetime import datetime
 import logging
 import sys
+
+ISO_8601_FMT = "%Y-%m-%dT%H:%M:%S"
+ISO_8601_SPACEY_FMT = ISO_8601_FMT.replace("T", " ")
 
 
 def standardize_time_str(timestr):
@@ -23,3 +27,9 @@ def standardize_time_str(timestr):
     else:  # lengths ==
         logger.debug("time str is just right.")
         return timestr
+
+
+def iso8601strptime(dtstr):
+    dtstr = standardize_time_str(dtstr)
+    dtstr.replace(" ", "T")  # in case it is spacey
+    return datetime.strptime(dtstr, ISO_8601_FMT)
