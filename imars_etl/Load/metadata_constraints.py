@@ -1,9 +1,8 @@
 from datetime import datetime
-import logging
-import sys
 
 from imars_etl.Load import constrain_dict
 from imars_etl.util.consts import ISO_8601_FMT
+from imars_etl.util.timestrings import standardize_time_str
 from imars_etl.filepath.get_product_id import get_product_id
 from imars_etl.filepath.get_product_name import get_product_name
 
@@ -14,29 +13,6 @@ BASIC_METADATA_RELATION_CONSTRAINTS = [
     ('product_type_name', ['product_id'], get_product_name),
     ('product_id', ['product_type_name'], get_product_id),
 ]
-
-
-def standardize_time_str(timestr):
-    """
-        pads timestr if it is a shortened version of ISO_8601_FMT.
-        This means that leaving off hours, minutes, seconds, ms assumes that
-        they are zero.
-    """
-    logger = logging.getLogger("{}.{}".format(
-        __name__,
-        sys._getframe().f_code.co_name)
-    )
-    logger.setLevel(logging.INFO)
-    BASEDATE = 'YYYY-MM-DDT00:00:00'
-    if len(timestr) < len(BASEDATE):
-        logger.debug("partial datetime found")
-        return timestr + BASEDATE[len(timestr):]
-    elif len(timestr) > len(BASEDATE):
-        logger.debug("too long datetime trimmed")
-        return timestr[:len(BASEDATE)]
-    else:  # lengths ==
-        logger.debug("time str is just right.")
-        return timestr
 
 
 def ensure_constistent_metadata(
