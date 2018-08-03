@@ -7,7 +7,7 @@ class Test_unify_metadata(TestCase):
         """
         unify_metadata sticks stuff from --json into args
         """
-        from imars_etl.Load.Load import unify_metadata
+        from imars_etl.Load.unify_metadata import unify_metadata
         from imars_etl.cli import parse_args
 
         test_args = parse_args([
@@ -37,7 +37,7 @@ class Test_unify_metadata(TestCase):
         """
         unify_metadata passes with matching metadata in kwargs & sql
         """
-        from imars_etl.Load.Load import unify_metadata
+        from imars_etl.Load.unify_metadata import unify_metadata
         result_arg_dict = unify_metadata(
             verbose=3,
             dry_run=True,
