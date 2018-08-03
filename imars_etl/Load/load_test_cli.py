@@ -42,7 +42,7 @@ class Test_load_cli(TestCasePlusSQL):
             ['status_id', 'date_time', 'area_id', 'product_id', 'filepath'],
             [
                 '1',
-                '"2018-02-26T13:00"',
+                '"2018-02-26 13:00:00"',
                 '1',
                 '-1',
                 '"/srv/imars-objects/test_test_test' +

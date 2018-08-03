@@ -7,6 +7,7 @@ from imars_etl.Load.metadata_constraints import ensure_constistent_metadata
 from imars_etl.Load.metadata_constraints import _ensure_constistent_metadata
 from imars_etl.Load.unify_metadata import unify_metadata
 from imars_etl.Load.unify_metadata import _rm_dict_none_values
+from imars_etl.util.timestrings import standardize_time_str
 
 
 def validate_args(args_dict, DEFAULTS={}):
@@ -56,6 +57,9 @@ def validate_args(args_dict, DEFAULTS={}):
                 "--product_id or --product_type_name must be" +
                 " explicitly set if --directory is used."
             )
+
+    if args_dict.get('time') is not None:
+        args_dict['time'] = standardize_time_str(args_dict['time'])
 
     args_dict = ensure_constistent_metadata(
         args_dict,

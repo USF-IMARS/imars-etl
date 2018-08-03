@@ -2,7 +2,7 @@ from datetime import datetime
 import logging
 import sys
 
-ISO_8601_FMT = "%Y-%m-%dT%H:%M:%S"
+ISO_8601_FMT = "%Y-%m-%dT%H:%M:%S.%f"
 ISO_8601_SPACEY_FMT = ISO_8601_FMT.replace("T", " ")
 
 
@@ -17,7 +17,8 @@ def standardize_time_str(timestr):
         sys._getframe().f_code.co_name)
     )
     logger.setLevel(logging.INFO)
-    BASEDATE = 'YYYY-MM-DDT00:00:00'
+    timestr = timestr.replace(" ", "T")
+    BASEDATE = 'YYYY-MM-DDT00:00:00.000000'
     if len(timestr) < len(BASEDATE):
         logger.debug("partial datetime found")
         return timestr + BASEDATE[len(timestr):]

@@ -74,7 +74,7 @@ class Test_load_api(TestCasePlusSQL):
             ['status_id', 'date_time', 'area_id', 'product_id', 'filepath'],
             [
                 '1',
-                '"2018-02-26T13:00"',
+                '"2018-02-26 13:00:00"',
                 '1',
                 '-1',
                 '"/srv/imars-objects/test_test_test' +
@@ -228,7 +228,7 @@ class Test_load_api(TestCasePlusSQL):
                 res,
                 ['date_time', 'product_id', 'uuid', 'filepath'],
                 [
-                    '"{}"'.format(DATETIME[:19]),
+                    '"{}"'.format(DATETIME[:-1].replace("T", " ")),
                     '-2',
                     '"{}"'.format(FAKE_UUID),
                     '"/srv/imars-objects/_fancy_tssst_/2018-171' +

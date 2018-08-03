@@ -31,7 +31,7 @@ class Test_validate_args(TestCase):
                 "filepath": "/fake/path/file_w_date_2018.txt",
                 "product_id": -1,
                 "product_type_name": "test_test_test",
-                "time": "2018-02-26T13:00:00",
+                "time": "2018-02-26T13:00:00.000000",
                 "date_time": datetime(2018, 2, 26, 13),
             },
             result_arg_dict
@@ -65,7 +65,7 @@ class Test_validate_args(TestCase):
                 "filepath": "/usr/local/bin/ipfs",
                 "product_id": -1,
                 "product_type_name": "test_test_test",
-                "time": "2018-02-26T13:00:00",
+                "time": "2018-02-26T13:00:00.000000",
                 "date_time": datetime(2018, 2, 26, 13),
                 "multihash": FILE_HASH,
             },
