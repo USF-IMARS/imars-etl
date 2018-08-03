@@ -106,7 +106,7 @@ class Test_load_api(TestCasePlusSQL):
             ['status_id', 'date_time', 'area_id', 'product_id', 'filepath'],
             [
                 '3',
-                '"2016-02-12T16:25:18"',
+                '"2016-02-12 16:25:18"',
                 '5',
                 '7',
                 '"/srv/imars-objects/extra_data/WV02/2016.02' +
@@ -141,7 +141,7 @@ class Test_load_api(TestCasePlusSQL):
             res,
             ['date_time', 'product_id', 'filepath'],
             [
-                '"2018-06-21T00:00:00"',
+                '"2018-06-21 00:00:00"',
                 '-1',
                 '"/srv/imars-objects/test_test_test/' +
                 'simple_file_with_no_args.txt"'
@@ -178,7 +178,7 @@ class Test_load_api(TestCasePlusSQL):
                 ],
                 [
                     [
-                        '"2018-11-29T13:00:11"',
+                        '"2018-11-29 13:00:11"',
                         '-2',
                         '"/srv/imars-objects/_fancy_test_arg-here_/2018-333' +
                         '/arg_is_test_arg-here_time_is_1311.fancy_file"'

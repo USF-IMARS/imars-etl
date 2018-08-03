@@ -132,7 +132,7 @@ class Test_load_cli(TestCasePlusSQL):
             main(test_args),
             ['date_time', 'area_id', 'product_id', 'filepath'],
             [
-                '"1989-06-07T11:12:00"', '1', '6',
+                '"1989-06-07 11:12:00"', '1', '6',
                 '"/srv/imars-objects/zip_wv2_ftp_ingest' +
                 '/wv2_1989-06-07T1112_myTag.zip"'
             ]
@@ -166,7 +166,7 @@ class Test_load_cli(TestCasePlusSQL):
                 '6',
                 '"/srv/imars-objects/zip_wv2_ftp_ingest' +
                 '/wv2_2000-06-07T1122_myTag.zip"',
-                '"2000-06-07T11:22:00"'
+                '"2000-06-07 11:22:00"'
             ]
         )
 
@@ -203,13 +203,13 @@ class Test_load_cli(TestCasePlusSQL):
                 ],
                 [
                     [
-                        '"1999-01-01T00:00:00"',
+                        '"1999-01-01 00:00:00"',
                         '-1',
                         '"/srv/imars-objects/test_test_test' +
                         '/simple_file_with_no_args.txt"'
                     ],
                     [
-                        '"2018-01-01T00:00:00"',
+                        '"2018-01-01 00:00:00"',
                         '-1',
                         '"/srv/imars-objects/test_test_test' +
                         '/simple_file_with_no_args.txt"'
@@ -252,12 +252,12 @@ class Test_load_cli(TestCasePlusSQL):
                 ],
                 [
                     [
-                        '"1999-01-01T00:00:00"', '-1',
+                        '"1999-01-01 00:00:00"', '-1',
                         '"/srv/imars-objects/test_test_test' +
                         '/simple_file_with_no_args.txt"'
                     ],
                     [
-                        '"2018-01-01T00:00:00"', '-1',
+                        '"2018-01-01 00:00:00"', '-1',
                         '"/srv/imars-objects/test_test_test' +
                         '/simple_file_with_no_args.txt"'
                     ]
@@ -329,13 +329,13 @@ class Test_load_cli(TestCasePlusSQL):
                 ],
                 [
                     [
-                        '"1999-01-01T00:00:00"',
+                        '"1999-01-01 00:00:00"',
                         '-1',
                         '"/srv/imars-objects/test_test_test' +
                         '/simple_file_with_no_args.txt"'
                     ],
                     [
-                        '"2018-01-01T00:00:00"',
+                        '"2018-01-01 00:00:00"',
                         '-1',
                         '"/srv/imars-objects/test_test_test' +
                         '/simple_file_with_no_args.txt"'
