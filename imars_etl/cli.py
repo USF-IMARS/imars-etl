@@ -6,8 +6,10 @@ from argparse import ArgumentParser
 import logging
 
 from imars_etl.util.ConstMapAction import ConstMapAction
-from imars_etl.drivers import DRIVER_MAP_DICT
-
+from imars_etl.drivers.get_storage_driver_from_key \
+    import DRIVER_MAP_DICT as STORAGE_DRIVER_KEYS
+from imars_etl.drivers_metadata.get_metadata_driver_from_key \
+    import DRIVER_MAP_DICT as METADATA_DRIVER_KEYS
 from imars_etl.api import load
 from imars_etl.api import extract
 from imars_etl.api import id_lookup
@@ -170,7 +172,9 @@ def parse_args(argvs):
     )
     parser_load.add_argument(
         "--metadata_file_driver",
-        help="driver to use to parse the file given by `metadata_file`"
+        help="driver to use to parse the file given by `metadata_file`",
+        action=ConstMapAction,
+        options_map_dict=METADATA_DRIVER_KEYS
     )
     parser_load.add_argument(
         "--dry_run",
@@ -184,7 +188,7 @@ def parse_args(argvs):
             "ie: which backend to use"
         ),
         action=ConstMapAction,
-        options_map_dict=DRIVER_MAP_DICT
+        options_map_dict=STORAGE_DRIVER_KEYS
     )
     parser_load.add_argument(
         "--duplicates_ok",

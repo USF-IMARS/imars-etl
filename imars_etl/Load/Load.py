@@ -6,17 +6,19 @@ import numbers
 
 from pymysql.err import IntegrityError
 
-from imars_etl.drivers import DRIVER_MAP_DICT
-from imars_etl.drivers_metadata import dhus_json
+from imars_etl.drivers.get_storage_driver_from_key\
+    import get_storage_driver_from_key
+from imars_etl.drivers_metadata.get_metadata_driver_from_key\
+    import get_metadata_driver_from_key
 from imars_etl.util import get_sql_result
 
 from imars_etl.Load.validate_args import validate_args
 
 LOAD_DEFAULTS = {
-    'storage_driver': DRIVER_MAP_DICT["imars_objects"],
+    'storage_driver': get_storage_driver_from_key('imars_objects'),
     'output_path': None,
     'metadata_file': None,
-    'metadata_file_driver': dhus_json.Parser,
+    'metadata_file_driver': get_metadata_driver_from_key('dhus_json'),
     'nohash': False,
     'noparse': False,
 }
