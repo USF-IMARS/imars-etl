@@ -29,7 +29,7 @@ class Test_imars_obj_load(TestCase):
                 "/wv2_2017-03-01T2233_RB2.zip"
             ),
             "product_id": 6,
-            "date": "2017-03-01T22:33",
+            "time": "2017-03-01T22:33",
             "datetime": datetime(2017, 3, 1, 22, 33),
             "forced_basename": "wv2_2017-03-01T2233_RB2.zip",
             "json": '{"status_id":1,"area_id":1}',
