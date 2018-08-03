@@ -41,7 +41,7 @@ def format_filepath(
     product_type_name=None,
     product_id=None,
     forced_basename=None,
-    datetime=None,
+    date_time=None,
     **kwargs
 ):
     logger = logging.getLogger("{}.{}".format(
@@ -58,11 +58,11 @@ def format_filepath(
         product_type_name=product_type_name,
         product_id=product_id,
         forced_basename=forced_basename,
-        datetime=datetime,
+        date_time=date_time,
         **kwargs
     )
     try:
-        return datetime.strftime(
+        return date_time.strftime(
             (fullpath).format(**args_dict)
         )
     except KeyError as k_err:
