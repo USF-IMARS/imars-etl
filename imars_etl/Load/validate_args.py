@@ -2,11 +2,13 @@ import sys
 import logging
 
 from imars_etl.Load.get_hash import get_hash
+from imars_etl.Load.hashcheck import hashcheck
 from imars_etl.Load.metadata_constraints import ensure_constistent_metadata
 from imars_etl.Load.unify_metadata import unify_metadata
+from imars_etl.Load.unify_metadata import _rm_dict_none_values
 
 
-def validate_args(args_dict):
+def validate_args(args_dict, DEFAULTS={}):
     """
     Returns properly formatted & complete arguments.
     Makes attempts to guess at filling in missing args.
@@ -16,6 +18,31 @@ def validate_args(args_dict):
         sys._getframe().f_code.co_name)
     )
     logger.setLevel(logging.INFO)
+
+    keys_with_defaults = [
+        'storage_driver',
+        'nohash'
+    ]
+    for key in keys_with_defaults:
+        if args_dict.get(key) is None:
+            args_dict[key] = DEFAULTS.get(key)
+
+    # remove keys with None values?
+    args_dict = _rm_dict_none_values(args_dict)
+
+    if args_dict.get('nohash', False) is False:
+        logger.debug('ensuring hash in metadata...')
+        args_dict = ensure_constistent_metadata(
+            args_dict,
+            [
+                ('multihash', ['filepath'], get_hash),
+            ],
+            raise_cannot_constrain=True
+        )
+        hashcheck(**args_dict)
+    else:
+        logger.debug('skipping file hashing.')
+
     # === validate product name and id
     if args_dict.get('directory') is not None:
         # NOTE: this is probably not a hard requirement
@@ -36,18 +63,4 @@ def validate_args(args_dict):
 
     args_dict = unify_metadata(**args_dict)
 
-    # create args['date_time'] from args['time']
-    args_dict['date_time'] = args_dict['time']
-    # TODO: should use LOAD_DEFAULTS['nohash']
-    if args_dict.get('nohash', False) is False:
-        logger.debug('ensuring hash in metadata...')
-        args_dict = ensure_constistent_metadata(
-            args_dict,
-            [
-                ('multihash', ['filepath'], get_hash),
-            ],
-            raise_cannot_constrain=True
-        )
-    else:
-        logger.debug('skipping file hashing.')
     return args_dict

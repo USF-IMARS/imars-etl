@@ -10,8 +10,6 @@ from imars_etl.drivers import DRIVER_MAP_DICT
 from imars_etl.drivers_metadata import dhus_json
 from imars_etl.util import get_sql_result
 
-from imars_etl.Load.unify_metadata import unify_metadata
-from imars_etl.Load.hashcheck import hashcheck
 from imars_etl.Load.validate_args import validate_args
 
 LOAD_DEFAULTS = {
@@ -123,14 +121,14 @@ def _handle_integrity_error(i_err, fpath, duplicates_ok=False, **kwargs):
 
 def _load_file(args_dict):
     """Loads a single file"""
-    args_dict = unify_metadata(**args_dict)
-    args_dict['storage_driver'] = args_dict.get(
-        'storage_driver', LOAD_DEFAULTS['storage_driver']
+    logger = logging.getLogger("{}.{}".format(
+        __name__,
+        sys._getframe().f_code.co_name)
     )
-    args_dict = validate_args(args_dict)
-
-    if args_dict.get('nohash', LOAD_DEFAULTS['nohash']) is False:
-        hashcheck(**args_dict)
+    logger.info("\n\n------- loading file {} -------\n".format(
+        args_dict.get('filepath', '???').split('/')[-1]
+    ))
+    args_dict = validate_args(args_dict, DEFAULTS=LOAD_DEFAULTS)
 
     new_filepath = _actual_load_file_with_driver(**args_dict)
 

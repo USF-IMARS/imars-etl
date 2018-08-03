@@ -26,15 +26,17 @@ def standardize_time_str(timestr):
         __name__,
         sys._getframe().f_code.co_name)
     )
-    BASEDATE = 'YYYY-MM-DDT00:00:00.000'
+    logger.setLevel(logging.INFO)
+    BASEDATE = 'YYYY-MM-DDT00:00:00'
     if len(timestr) < len(BASEDATE):
         logger.debug("partial datetime found")
-        timestr = timestr + BASEDATE[len(timestr):]
+        return timestr + BASEDATE[len(timestr):]
     elif len(timestr) > len(BASEDATE):
         logger.debug("too long datetime trimmed")
-        timestr = timestr[:len(BASEDATE)]
+        return timestr[:len(BASEDATE)]
     else:  # lengths ==
         logger.debug("time str is just right.")
+        return timestr
 
 
 def ensure_constistent_metadata(

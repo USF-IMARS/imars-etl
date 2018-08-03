@@ -20,6 +20,8 @@ def relation(
         __name__,
         sys._getframe().f_code.co_name)
     )
+    logger.setLevel(logging.INFO)
+
     in_vals = [dadict.get(ink) for ink in inkeys]
     if not all([inv is not None for inv in in_vals]):
         if raise_cannot_constrain:

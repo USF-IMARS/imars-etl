@@ -163,9 +163,9 @@ class Test_load_cli(TestCasePlusSQL):
             res,
             ['product_id', 'filepath', 'date_time'],
             [
+                '6',
                 '"/srv/imars-objects/zip_wv2_ftp_ingest' +
                 '/wv2_2000-06-07T1122_myTag.zip"',
-                '6',
                 '"2000-06-07T11:22:00"'
             ]
         )

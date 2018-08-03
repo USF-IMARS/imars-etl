@@ -16,6 +16,11 @@ def unify_metadata(**kwargs):
         __name__,
         sys._getframe().f_code.co_name)
     )
+    logger.setLevel(logging.DEBUG)
+    logger.info('input metadata:\n{}\n'.format(kwargs))
+
+    logger.debug("constrain input meta...")
+    kwargs = ensure_constistent_metadata(kwargs)
     # === filepath metadata
     # TODO: should be `kwargs.get('noparse', LOAD_DEFAULTS['noparse'])`
     if kwargs.get('noparse', False) is False:
@@ -40,7 +45,7 @@ def unify_metadata(**kwargs):
         logger.debug("json str is empty")
         json_metadata = {}
     except KeyError:
-        logger.info("kwargs['json'] is None")
+        logger.debug("kwargs['json'] is None")
         json_metadata = {}
 
     # === sql metadata
@@ -51,18 +56,31 @@ def unify_metadata(**kwargs):
         logger.debug("sql str is empty")
         sql_metadata = {}
     except KeyError:
-        logger.info("kwargs['sql'] is None")
+        logger.debug("kwargs['sql'] is None")
         sql_metadata = {}
 
-    kwargs = _union_dicts_raise_on_conflict(
+    logger.debug("constrain path meta...")
+    path_metadata = ensure_constistent_metadata(path_metadata)
+    logger.debug("constrain file meta...")
+    file_metadata = ensure_constistent_metadata(file_metadata)
+    logger.debug("constrain json meta...")
+    json_metadata = ensure_constistent_metadata(json_metadata)
+    logger.debug("constrain sql meta..")
+    sql_metadata = ensure_constistent_metadata(sql_metadata)
+
+    final_meta = _union_dicts_raise_on_conflict(
         kwargs,
         path_metadata,
         file_metadata,
         json_metadata,
         sql_metadata
     )
-    print('input metadata summary:\n{}\n'.format(kwargs))
-    return kwargs
+    final_meta = _rm_dict_none_values(final_meta)
+
+    input_set = set(kwargs.items())
+    final_set = set(final_meta.items())
+    logger.info('added metadata:\n{}\n'.format(input_set ^ final_set))
+    return final_meta
 
 
 def sql_str_to_dict(sql_str):
@@ -112,6 +130,11 @@ def _union_dicts_raise_on_conflict(*args):
     return result_dict
 
 
+def _rm_dict_none_values(dict_w_nones):
+    """removes keys with values that are None & returns none-less dict"""
+    return {k: v for k, v in dict_w_nones.items() if v is not None}
+
+
 def _dict_union_raise_on_conflict(dict_a, dict_b):
     """
     Union of a & b, but raises error if two keys w/ different vals.
@@ -119,6 +142,10 @@ def _dict_union_raise_on_conflict(dict_a, dict_b):
         This is _probably_ ok for simple types (int & str), but could cause
         weird things if you use this to union dicts with fancy val types.
     """
+    # TODO: maybe this should be done elsewhere?
+    dict_a = _rm_dict_none_values(dict_a)
+    dict_b = _rm_dict_none_values(dict_b)
+
     for key in dict_b:
         if key in dict_a and str(dict_a[key]) != str(dict_b[key]):
             val_a = dict_a[key]

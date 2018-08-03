@@ -22,6 +22,7 @@ class Test_validate_args(TestCase):
             '-j', '{"status_id":1,"area_id":1}',
             '--nohash'
         ])
+        print("\n\n{}\n\n".format(vars(test_args)))
         result_arg_dict = validate_args(vars(test_args))
         self.assertDictContainsSubset(
             {
@@ -64,7 +65,7 @@ class Test_validate_args(TestCase):
                 "filepath": "/usr/local/bin/ipfs",
                 "product_id": -1,
                 "product_type_name": "test_test_test",
-                "time": "2018-02-26T13:00",
+                "time": "2018-02-26T13:00:00",
                 "datetime": datetime(2018, 2, 26, 13),
                 "multihash": FILE_HASH,
             },
