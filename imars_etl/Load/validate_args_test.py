@@ -32,7 +32,7 @@ class Test_validate_args(TestCase):
                 "product_id": -1,
                 "product_type_name": "test_test_test",
                 "time": "2018-02-26T13:00",
-                "datetime": datetime(2018, 2, 26, 13),
+                "date_time": datetime(2018, 2, 26, 13),
             },
             result_arg_dict
         )
@@ -66,7 +66,7 @@ class Test_validate_args(TestCase):
                 "product_id": -1,
                 "product_type_name": "test_test_test",
                 "time": "2018-02-26T13:00:00",
-                "datetime": datetime(2018, 2, 26, 13),
+                "date_time": datetime(2018, 2, 26, 13),
                 "multihash": FILE_HASH,
             },
             result_arg_dict

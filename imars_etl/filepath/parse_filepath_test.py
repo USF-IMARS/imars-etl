@@ -27,7 +27,7 @@ class Test_parse_filepath(TestCase):
         ])
         res_args = parse_filepath(**vars(test_args))
         self.assertEqual(
-            res_args['datetime'],
+            res_args['date_time'],
             datetime(2016, 2, 12, 16, 25, 18)
         )
         self.assertEqual(res_args['idNumber'], "057488585010_01")
@@ -49,7 +49,7 @@ class Test_parse_filepath(TestCase):
         ])
         res_args = parse_filepath(**vars(test_args))
         self.assertEqual(
-            res_args['datetime'],
+            res_args['date_time'],
             datetime(2016, 2, 12, 16, 25, 18)
         )
         self.assertEqual(res_args['idNumber'], "057488585010_01")
@@ -73,7 +73,7 @@ class Test_parse_filepath(TestCase):
             '--nohash',
         ])
         res_args = parse_filepath(**vars(test_args))
-        self.assertEqual(res_args['datetime'], datetime(1997, 1, 1))
+        self.assertEqual(res_args['date_time'], datetime(1997, 1, 1))
         self.assertEqual(
             res_args['product_id'],
             get_product_id("test_test_test")
@@ -91,5 +91,5 @@ class Test_parse_filepath(TestCase):
             '--nohash',
         ])
         res_args = parse_filepath(**vars(test_args))
-        self.assertEqual(res_args['datetime'], datetime(2022, 5, 3, 7, 0, 11))
+        self.assertEqual(res_args['date_time'], datetime(2022, 5, 3, 7, 0, 11))
         self.assertEqual(res_args['test_arg'], "testyTestArg")

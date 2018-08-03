@@ -160,7 +160,7 @@ def _parse_from_product_type_and_filename(
             parsed_vars[param] = val
             # logger.debug('{} extracted :"{}"'.format(param, val))
 
-    parsed_vars['datetime'] = dt
+    parsed_vars['date_time'] = dt
     parsed_vars['time'] = dt.isoformat()
     logger.debug('date extracted: {}'.format(parsed_vars['time']))
     parsed_vars['product_type_name'] = product_type_name

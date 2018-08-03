@@ -113,7 +113,7 @@ def _read_metadata_file(driver, filepath):
 
     metad = {
         'uuid': parser.get_uuid(),
-        'datetime': parser.get_datetime(),
+        'date_time': parser.get_datetime(),
     }
     return ensure_constistent_metadata(
         metad

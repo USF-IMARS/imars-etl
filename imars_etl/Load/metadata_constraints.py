@@ -9,8 +9,8 @@ from imars_etl.filepath.get_product_name import get_product_name
 
 
 BASIC_METADATA_RELATION_CONSTRAINTS = [
-    ('datetime', ['time'], lambda t: datetime.strptime(t, ISO_8601_FMT)),
-    ('time', ['datetime'], lambda dt: dt.strftime(ISO_8601_FMT)),
+    ('date_time', ['time'], lambda t: datetime.strptime(t, ISO_8601_FMT)),
+    ('time', ['date_time'], lambda dt: dt.strftime(ISO_8601_FMT)),
     ('product_type_name', ['product_id'], get_product_name),
     ('product_id', ['product_type_name'], get_product_id),
 ]

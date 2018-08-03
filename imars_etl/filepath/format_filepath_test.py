@@ -15,7 +15,7 @@ class Test_format_filepath(TestCase):
     def test_format_filepath_p_name(self):
         """Create filepath w/ minimal args (product_name)"""
         args = {
-            "datetime": datetime(2015, 5, 25, 15, 55),
+            "date_time": datetime(2015, 5, 25, 15, 55),
             "product_type_name": "test_test_test"
         }
         result = format_filepath(
@@ -29,7 +29,7 @@ class Test_format_filepath(TestCase):
     def test_format_filepath_pid(self):
         """Create filepath w/ minimal args (product_id)"""
         args = {
-            "datetime": datetime(2015, 5, 25, 15, 55),
+            "date_time": datetime(2015, 5, 25, 15, 55),
             "product_id": -1
         }
         result = format_filepath(
@@ -45,7 +45,7 @@ class Test_format_filepath(TestCase):
         with self.assertRaises(KeyError):
             format_filepath(
                 **{
-                    "datetime": datetime(2015, 5, 25, 15, 55),
+                    "date_time": datetime(2015, 5, 25, 15, 55),
                     "product_id": -2
                     # test_arg is required for this path, but is not here
                 }
@@ -54,7 +54,7 @@ class Test_format_filepath(TestCase):
     def test_format_fancy_filepath_w_args(self):
         """Fancy filepath w/ all required args & product_name"""
         args = {
-            "datetime": datetime(2015, 5, 25, 15, 55),
+            "date_time": datetime(2015, 5, 25, 15, 55),
             "product_type_name": "test_fancy_format_test",
             "test_arg": "myTestArg"
         }
@@ -70,7 +70,7 @@ class Test_format_filepath(TestCase):
     def test_format_fancy_filepath_w_nums(self):
         """Fancy filepath w/ all required int arg & product_name"""
         args = {
-            "datetime": datetime(2015, 5, 25, 15, 55),
+            "date_time": datetime(2015, 5, 25, 15, 55),
             "product_type_name": "test_number_format_test",
             "test_num": 3
         }

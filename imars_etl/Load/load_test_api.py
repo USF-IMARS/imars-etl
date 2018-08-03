@@ -97,7 +97,7 @@ class Test_load_api(TestCasePlusSQL):
             ),
             "product_id": 7,
             # "time":"2016-02-12T16:25:18",
-            # "datetime": datetime(2016,2,12,16,25,18),
+            # "date_time": datetime(2016,2,12,16,25,18),
             "json": '{"status_id":3,"area_id":5}',
             "nohash": True,
         }
