@@ -168,7 +168,16 @@ def parse_args(argvs):
     )
     parser_load.add_argument(
         "-m", "--metadata_file",
-        help="file containing metadata for the file being loaded."
+        help=(
+            "File containing metadata for the file being loaded."
+            "This argument can use template variables if used with --directory"
+            " Template variables are pulled from the arguments passed in."
+            " Example: `--metadata_file /my/path/{filename}.xml` to specify "
+            " That the metadata file has the same name as the data file, but "
+            " is in the `/my/path/` directory. Other template vars: \n"
+            " {basename} {filename} {filepath} {time} {date_time} "
+            "{date_time.year} "
+        )
     )
     parser_load.add_argument(
         "--metadata_file_driver",

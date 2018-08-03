@@ -45,6 +45,14 @@ def validate_args(args_dict, DEFAULTS={}):
     else:
         logger.debug('skipping file hashing.')
 
+    if args_dict.get('time') is not None:
+        args_dict['time'] = standardize_time_str(args_dict['time'])
+
+    args_dict = ensure_constistent_metadata(
+        args_dict,
+        raise_cannot_constrain=False
+    )
+
     # === validate product name and id
     if args_dict.get('directory') is not None:
         # NOTE: this is probably not a hard requirement
@@ -57,14 +65,17 @@ def validate_args(args_dict, DEFAULTS={}):
                 "--product_id or --product_type_name must be" +
                 " explicitly set if --directory is used."
             )
-
-    if args_dict.get('time') is not None:
-        args_dict['time'] = standardize_time_str(args_dict['time'])
-
-    args_dict = ensure_constistent_metadata(
-        args_dict,
-        raise_cannot_constrain=False
-    )
+        else:
+            # apply templating to some args:
+            if args_dict.get('filepath') is not None:
+                fpath = args_dict['filepath']
+                fname = fpath.split('/')[-1]
+                fbase = fname.split('.')[0]
+                args_dict.set_default('filename', fname)
+                args_dict.set_default('basename', fbase)
+            if args_dict.get('metadata_file') is not None:
+                args_dict['metadata_file'] = \
+                    args_dict['metadata_file'].format(**args_dict)
 
     args_dict = unify_metadata(**args_dict)
 
