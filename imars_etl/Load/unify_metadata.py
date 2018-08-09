@@ -95,6 +95,12 @@ def sql_str_to_dict(sql_str):
 
     NOTE: 'AND' *is* case-sensitive here.
     """
+    logger = logging.getLogger("{}.{}".format(
+        __name__,
+        sys._getframe().f_code.co_name)
+    )
+    logger.setLevel(logging.DEBUG)
+    logger.debug("parsing metadata from sql: {}".format(sql_str))
     result = {}
     if sql_str is None or len(sql_str) < 1:
         return result
@@ -102,10 +108,21 @@ def sql_str_to_dict(sql_str):
         pairs = sql_str.split(" AND ")
         for pair in pairs:
             key, val = pair.split('=')
+            logger.debug("{}={} is...".format(key, val))
             try:
                 val = int(val)
-            except ValueError:
-                pass  # failure to convert to int just means it isn't an int.
+                logger.debug("int")
+            except ValueError as int_err:
+                # failure to convert to int just means it isn't an int.
+                logger.debug("...not int ({})".format(int_err))
+                try:
+                    val = iso8601strptime(val)
+                    logger.debug("datetime")
+                except ValueError as dt_err:
+                    logger.debug("...not datetime ({})".format(dt_err))
+                    # not an int, not a datetime
+                    # just leave val as a string
+                    logger.debug("string")
             result[key] = val
         return result
 
