@@ -16,7 +16,8 @@ def standardize_time_str(timestr):
         __name__,
         sys._getframe().f_code.co_name)
     )
-    logger.setLevel(logging.INFO)
+    logger.setLevel(logging.DEBUG)
+    timestr = timestr.strip(" \"'")
     timestr = timestr.replace(" ", "T")
     BASEDATE = 'YYYY-MM-DDT00:00:00.000000'
     if len(timestr) < len(BASEDATE):
