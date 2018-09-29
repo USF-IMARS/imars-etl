@@ -41,6 +41,28 @@ $ imars-etl -vvv extract 'date_time < "2018-01-01" AND date_time > "2018-01-07"'
 ```
 ### load
 ```bash
+# load all wv2 xml files from 2014 and call them area=6 (big_bend)
+python3 -m imars_etl -v load \
+    -d /srv/imars-objects/big_bend/wv2/2014 \
+    -p 14 \
+    -j '{"status_id":3, "area_id":6}' \
+    --storage_driver no_upload \
+    -l "WV02_%Y%m%d%H%M%S_{junk}-M1BS-{idNumber:12}_{otherNum:2}_P{passNumber:0>3d}.xml" \
+    --metadata_file_driver wv2_xml  \
+    --metadata_file "{filepath}"  \
+    --nohash
+
+# same as above but for ntf files:
+python3 -m imars_etl -v load \
+    -d /srv/imars-objects/big_bend/wv2/2014 \
+    -p 11 \
+    -j '{"status_id":3, "area_id":6}' \
+    --storage_driver no_upload \
+    -l "WV02_%Y%m%d%H%M%S_{junk}-M1BS-{idNumber:12}_{otherNum:2}_P{passNumber:0>3d}.ntf" \
+    --metadata_file_driver wv2_xml  \
+    --metadata_file "{directory}/{basename}.xml"  \
+    --nohash
+    
 $ imars-etl load --area 1 --time "2017-01-02T13:45" --product_id 4 --filepath /path/to/file.hdf
 
 # auto-parse info (date) from filename using info from `imars_etl.filepath.data`
