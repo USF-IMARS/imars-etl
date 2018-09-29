@@ -115,7 +115,8 @@ data = {
     "zip_wv2_ftp_ingest": {
         "ingest_formats": {
             "matts_wv2_ftp_ingest": {
-                "path_format": "wv2_%Y-%m-%dT%H%M_{area_short_name}.zip",
+                # wv2_2018_09_17T013226_fl_ne_058438311_10_0.zip
+                "path_format": "wv2_%Y-%m-%dT%H%M_{area_short_name}_{order_id:9d}_10_0.zip",
             }
         },
         "imars_object_format": {
