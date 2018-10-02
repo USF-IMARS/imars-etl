@@ -116,13 +116,26 @@ data = {
         "ingest_formats": {
             "matts_wv2_ftp_ingest": {
                 # wv2_2018_09_17T013226_fl_ne_058438311_10_0.zip
-                "path_format": "wv2_%Y_%m_%dT%H%M_{area_short_name}_{order_id:9d}_10_0.zip",
+                "path_format": "wv2_%Y_%m_%dT%H%M%S_{area_short_name}_{order_id:9d}_10_0.zip",
             }
         },
         "imars_object_format": {
-            "path": "/srv/imars-objects/zip_wv2_ftp_ingest",
-            "basename": "wv2_%Y-%m-%dT%H%M_{area_short_name}.zip",
+            "path": "/srv/imars-objects/{area_short_name}/zip_wv2_ftp_ingest",
+            "basename": "wv2_%Y-%m-%dT%H%M%S_{area_short_name}.zip",
             "product_id": 6
+        },
+    },
+    "zip_wv3_ftp_ingest": {
+        "ingest_formats": {
+            "matts_wv2_ftp_ingest": {
+                # wv2_2018_09_17T013226_fl_ne_058438311_10_0.zip
+                "path_format": "wv3_%Y_%m_%dT%H%M%S_{area_short_name}_{order_id:9d}_10_0.zip",
+            }
+        },
+        "imars_object_format": {
+            "path": "/srv/imars-objects/{area_short_name}/zip_wv3_ftp_ingest",
+            "basename": "wv3_%Y-%m-%dT%H%M%S_{area_short_name}.zip",
+            "product_id": 47
         },
     },
     "test_test_test": {
