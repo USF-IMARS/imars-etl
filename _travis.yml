@@ -1,0 +1,22 @@
+language: python
+python:
+  - "2.6"
+  - "2.7"
+  - "3.3"
+  - "3.4"
+  - "3.5"
+  - "3.5-dev"  # 3.5 development branch
+  - "3.6"
+  - "3.6-dev"  # 3.6 development branch
+  - "3.7-dev"  # 3.7 development branch
+# command to install dependencies
+before_install:
+  # === IPFS dependency
+  - wget https://dist.ipfs.io/go-ipfs/v0.4.2/go-ipfs_v0.4.2_linux-amd64.tar.gz
+  - tar xvfz go-ipfs_v0.4.2_linux-amd64.tar.gz
+  - mv go-ipfs/ipfs /usr/local/bin/ipfs
+install:
+  - pip install .[test]
+# command to run tests
+script:
+  - nosetests

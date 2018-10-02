@@ -6,7 +6,7 @@ import io
 
 # import imars_etl
 # NOTE: can't do that here before dependencies installed, silly.
-VERSION = '0.5.4'  # should match __version__ in imars_etl.__init__.py
+VERSION = '0.5.5'  # should match __version__ in imars_etl.__init__.py
 
 
 def read(*filenames, **kwargs):
@@ -18,18 +18,33 @@ def read(*filenames, **kwargs):
             buf.append(f.read())
     return sep.join(buf)
 
-long_description = read('README.md')  # , 'CHANGES.txt')
+_long_description = read('README.md')  # , 'CHANGES.txt')
+
+_tests_require = [
+    line.strip() for line in open('tests_requirements.txt')
+    if line.strip() and not line.strip().startswith('--')
+]
+
+_install_requires = [
+    line.strip() for line in open('requirements.txt')
+    if line.strip() and not line.strip().startswith('--')
+]
+
+_extras_require = {
+    'test': _tests_require
+}
 
 setup(
     name='imars_etl',
     version=VERSION,
     description='Interface for IMaRS ETL operations',
-    long_description=long_description,
+    long_description=_long_description,
     author='Tylar Murray',
     author_email='code+imars_etl@tylar.info',
     url='https://github.com/usf-imars/imars-etl',
-    tests_require=['nose'],
-    install_requires=['pymysql', 'parse'],
+    install_requires=_install_requires,
+    tests_require=_tests_require,
+    extras_require=_extras_require,
     # NOTE: IPFS command line tool is also required...
     # entry_points={  # sets up CLI (eg bash) commands
     #     'console_scripts': [
