@@ -33,9 +33,11 @@ class Test_imars_obj_load(TestCase):
             "date_time": datetime(2017, 3, 1, 22, 33),
             "forced_basename": "wv2_2017-03-01T2233_RB2.zip",
             "json": '{"status_id":1,"area_id":1}',
-            "tag": "RB2"
+            "tag": "RB2",
+            "area_short_name": "RB2"
         }
         self.assertEqual(
             load_file(**test_args),
-            '/srv/imars-objects/zip_wv2_ftp_ingest/wv2_2017-03-01T2233_RB2.zip'
+            '/srv/imars-objects/RB2/zip_wv2_ftp_ingest/'
+            'wv2_2017-03-01T2233_RB2.zip'
         )
