@@ -144,14 +144,14 @@ class Test_load_cli(TestCasePlusSQL):
             imars_etl.py load
                 --dry_run
                 -p 6
-                -f '/path/w/parseable/date/wv2_2000_06_myTag.zip'
+                -f '/path/w/parseable/date/wv2_2000_06_myRegion_123456789_10_0.zip'
         """
         from imars_etl.cli import main
         test_args = [
             '-vvv',
             'load',
             '--dry_run',
-            '-f', "/path/w/parseable/date/wv2_2000-06-07T1122_myTag.zip",
+            '-f', "/path/w/parseable/date/wv2_2000_06_07T112233_myRegion_123456789_10_0.zip",
             '-p', '6',
             '--nohash',
         ]
@@ -164,9 +164,9 @@ class Test_load_cli(TestCasePlusSQL):
             ['product_id', 'filepath', 'date_time'],
             [
                 '6',
-                '"/srv/imars-objects/zip_wv2_ftp_ingest' +
-                '/wv2_2000-06-07T1122_myTag.zip"',
-                '"2000-06-07 11:22:00"'
+                '"/srv/imars-objects/myRegion/zip_wv2_ftp_ingest' +
+                '/wv2_2000-06-07T112233_myRegion.zip"',
+                '"2000-06-07 11:22:33"'
             ]
         )
 

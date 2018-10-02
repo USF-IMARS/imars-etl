@@ -12,7 +12,7 @@ from imars_etl.filepath.get_ingest_format import get_ingest_format
 from imars_etl.filepath.get_ingest_format import get_ingest_formats
 from imars_etl.filepath.get_product_id import get_product_id
 
-logging.getLogger("parse").setLevel(logging.DEBUG)
+logging.getLogger("parse").setLevel(logging.WARN)
 
 
 def parse_filepath(
