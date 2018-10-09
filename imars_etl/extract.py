@@ -2,6 +2,7 @@ import os
 
 from airflow.hooks.mysql_hook import MySqlHook
 
+from imars_etl.util.get_sql_result import validate_sql_result
 from imars_etl.object_storage.IMaRSObjectsObjectHook \
     import IMaRSObjectsObjectHook
 
@@ -37,6 +38,8 @@ def extract(
         result = object_metadata_hook.get_first(full_sql_str)
     else:
         result = object_metadata_hook.get_records(full_sql_str)
+
+    result = validate_sql_result(result)
 
     src_path = result['filepath']
 
