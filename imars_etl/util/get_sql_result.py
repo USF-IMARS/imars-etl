@@ -1,7 +1,8 @@
 import logging
 import sys
 
-from imars_etl import metadatabase
+from airflow.hooks.mysql_hook import MySqlHook
+
 from imars_etl.exceptions.NoMetadataMatchException \
     import NoMetadataMatchException
 from imars_etl.exceptions.TooManyMetadataMatchesException \
@@ -9,7 +10,8 @@ from imars_etl.exceptions.TooManyMetadataMatchesException \
 
 
 def get_sql_result(
-    sql, first=True, check_result=True, should_commit=False
+    sql, first=True, check_result=True, should_commit=False,
+    conn_id="imars_metadata_database_default",
 ):
     """
     Parameters:
@@ -24,37 +26,16 @@ def get_sql_result(
         Connection is not autocommit by default so you must commit to
         save changes to the database.
     """
-    logger = logging.getLogger("{}.{}".format(
-        __name__,
-        sys._getframe().f_code.co_name)
+    object_metadata_hook = MySqlHook(
+        mysql_conn_id=conn_id,
     )
 
-    connection = metadatabase.get_conn()
-    try:
-        with connection.cursor() as cursor:
-            cursor.execute(sql)
+    if first is True:
+        result = object_metadata_hook.get_first(sql)
+    else:
+        result = object_metadata_hook.get_records(sql)
 
-            if first is True:
-                result = [cursor.fetchone()]
-            else:
-                result = cursor.fetchmany(2)
-
-            if check_result is True:
-                validate_sql_result(result)
-
-            if should_commit:
-                connection.commit()
-
-            try:
-                return result[0]
-            except IndexError:
-                if check_result:
-                    raise
-                else:  # we don't care about the error
-                    logger.info("no result from sql request")
-                    return result
-    finally:
-        connection.close()
+    result = validate_sql_result(result)
 
 
 def validate_sql_result(result):
@@ -76,4 +57,4 @@ def validate_sql_result(result):
         )
         # exit(EXIT_STATUS.MULTIPLE_MATCH)
     else:
-        return
+        return result[0]

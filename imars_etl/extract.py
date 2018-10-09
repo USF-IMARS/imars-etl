@@ -1,8 +1,6 @@
 import os
 
-from airflow.hooks.mysql_hook import MySqlHook
-
-from imars_etl.util.get_sql_result import validate_sql_result
+from imars_etl.util.get_sql_result import get_sql_result
 from imars_etl.object_storage.IMaRSObjectsObjectHook \
     import IMaRSObjectsObjectHook
 
@@ -27,17 +25,9 @@ def extract(
     Example usage:
     ./imars-etl.py -vvv extract 'area_id=1'
     """
-    object_metadata_hook = MySqlHook(
-        mysql_conn_id=conn_id,
-    )
-
     full_sql_str = "SELECT filepath FROM file WHERE {}".format(sql)
-    if first is True:
-        result = object_metadata_hook.get_first(full_sql_str)
-    else:
-        result = object_metadata_hook.get_records(full_sql_str)
 
-    result = validate_sql_result(result)
+    get_sql_result(full_sql_str, conn_id=conn_id)
 
     src_path = result['filepath']
 
