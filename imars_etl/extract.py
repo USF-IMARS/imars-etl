@@ -20,8 +20,7 @@ def extract(
     output_path=None,
     storage_driver=EXTRACT_DEFAULTS['storage_driver'],
     first=False,
-    conn_id="default_conn_id",
-    schema="default_schema",
+    conn_id="imars_metadata_database_default",
     **kwargs
 ):
     """
@@ -30,7 +29,6 @@ def extract(
     """
     object_metadata_hook = MySqlHook(
         mysql_conn_id=conn_id,
-        schema=schema
     )
 
     full_sql_str = "SELECT filepath FROM file WHERE {}".format(sql)
