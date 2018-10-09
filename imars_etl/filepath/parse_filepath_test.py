@@ -7,8 +7,22 @@ from datetime import datetime
 
 # dependencies:
 from imars_etl.filepath.parse_filepath import parse_filepath
+from imars_etl.filepath.parse_filepath import _strptime_parsed_pattern
 from imars_etl.filepath.get_product_id import get_product_id
 from imars_etl.cli import parse_args
+
+
+class Test__strptime_parsed_pattern(TestCase):
+    def test_strptime_with_param_with_leading_zeros(self):
+        """strptime works when a named param has leading zeros"""
+        _strptime_parsed_pattern(
+            input_str="w2_2018_09_17T012529_fl_ne_058438305_.z",
+            format_str="w2_%Y_%m_%dT%H%M%S_{area_short_name}_{order_id:9d}_.z",
+            params=dict(
+                area_short_name="fl_ne",
+                order_id=int("058438305")
+            )
+        )
 
 
 class Test_parse_filepath(TestCase):
