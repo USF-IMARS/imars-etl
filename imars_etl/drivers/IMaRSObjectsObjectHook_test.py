@@ -9,7 +9,7 @@ from unittest import TestCase
 from datetime import datetime
 
 # dependencies:
-from imars_etl.drivers.imars_objects.load_file import load_file
+from imars_etl.drivers.IMaRSObjectsObjectHook import IMaRSObjectsObjectHook
 
 
 class Test_imars_obj_load(TestCase):
@@ -37,7 +37,7 @@ class Test_imars_obj_load(TestCase):
             "area_short_name": "RB2"
         }
         self.assertEqual(
-            load_file(**test_args),
+            IMaRSObjectsObjectHook().load(**test_args),
             '/srv/imars-objects/RB2/zip_wv2_ftp_ingest/'
             'wv2_2017-03-01T2233_RB2.zip'
         )

@@ -1,14 +1,14 @@
 import os
 
 from imars_etl.util import get_sql_result
-from imars_etl.drivers.imars_objects.extract_file import extract_file
+from imars_etl.drivers.IMaRSObjectsObjectHook import IMaRSObjectsObjectHook
 
 EXTRACT_DEFAULTS = {
     'storage_driver': "imars_objects"
 }
 
 STORAGE_DRIVERS = {  # map from input strings to extract fn for each backend
-    'imars_objects': extract_file,
+    'imars_objects': IMaRSObjectsObjectHook().extract,
 }
 
 
