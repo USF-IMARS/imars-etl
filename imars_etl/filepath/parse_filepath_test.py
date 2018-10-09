@@ -17,9 +17,9 @@ class Test__strptime_parsed_pattern(TestCase):
         """strptime works when a named param has leading zeros"""
         _strptime_parsed_pattern(
             input_str="w2_2018_09_17T012529_fl_ne_058438305_.z",
-            format_str="w2_%Y_%m_%dT%H%M%S_{area_short_name}_{order_id:09d}_.z",
+            format_str="w2_%Y_%m_%dT%H%M%S_{area_name}_{order_id:09d}_.z",
             params=dict(
-                area_short_name="fl_ne",
+                area_name="fl_ne",
                 order_id=int("058438305")
             )
         )
