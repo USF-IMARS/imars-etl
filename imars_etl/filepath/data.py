@@ -116,7 +116,7 @@ data = {
         "ingest_formats": {
             "matts_wv2_ftp_ingest": {
                 # wv2_2018_09_17T013226_fl_ne_058438311_10_0.zip
-                "path_format": "wv2_%Y_%m_%dT%H%M%S_{area_short_name}_{order_id:9d}_10_0.zip",
+                "path_format": "wv2_%Y_%m_%dT%H%M%S_{area_short_name}_{order_id:09d}_10_0.zip",
             }
         },
         "imars_object_format": {
@@ -129,7 +129,7 @@ data = {
         "ingest_formats": {
             "matts_wv2_ftp_ingest": {
                 # wv2_2018_09_17T013226_fl_ne_058438311_10_0.zip
-                "path_format": "wv3_%Y_%m_%dT%H%M%S_{area_short_name}_{order_id:9d}_10_0.zip",
+                "path_format": "wv3_%Y_%m_%dT%H%M%S_{area_short_name}_{order_id:09d}_10_0.zip",
             }
         },
         "imars_object_format": {
@@ -263,9 +263,9 @@ data = {
                 ],
                 "path_format": (
                     "S3A_OL_1_EFR____%Y%m%dT%H%M%S" +
-                    "_{end_date:8d}T{end_t:6d}_{ing_date:8d}T{ing_t:6d}" +
-                    "_{duration:4d}_{cycle:3d}_{orbit:3d}_{frame:4d}" +
-                    "_SVL_O_NR_{base_collection:3d}.SEN3"
+                    "_{end_date:08d}T{end_t:06d}_{ing_date:08d}T{ing_t:06d}" +
+                    "_{duration:04d}_{cycle:03d}_{orbit:03d}_{frame:04d}" +
+                    "_SVL_O_NR_{base_collection:03d}.SEN3"
                 )
             }
         }
@@ -364,9 +364,9 @@ data = {
                 ],
                 "path_format": (
                     "S3A_OL_1_EFR____%Y%m%dT%H%M%S" +
-                    "_{end_date:8d}T{end_t:6d}_{ing_date:8d}T{ing_t:6d}_" +
-                    "{duration:4d}_{cycle:3d}_{orbit:3d}_{frame:4d}_SVL_O_NR" +
-                    "_{base_collection:3d}.zip"
+                    "_{end_date:08d}T{end_t:06d}_{ing_date:08d}T{ing_t:06d}_" +
+                    "{duration:04d}_{cycle:03d}_{orbit:03d}_{frame:04d}_SVL_O_NR" +
+                    "_{base_collection:03d}.zip"
                 )
             }
         }
@@ -389,13 +389,13 @@ data = {
         "imars_object_format": {
             "path":
                 "/srv/imars-objects/modis_aqua_{area_short_name}/png_chl_7d",
-            "basename": "FGB_A1km_chlor_a_%Y%j_{date_2:6}_7D_MEAN.png",
+            "basename": "FGB_A1km_chlor_a_%Y%j_{date_2:06}_7D_MEAN.png",
             "product_id": 43
         },
         "ingest_formats": {
             "dotis_cron_output": {
                 "path_format":
-                    "FGB_A1km_chlor_a_%Y%j_{date_2:6d}_7D_MEAN.png",
+                    "FGB_A1km_chlor_a_%Y%j_{date_2:06d}_7D_MEAN.png",
             }
         }
     },
@@ -404,13 +404,13 @@ data = {
         "imars_object_format": {
             "path":
                 "/srv/imars-objects/modis_aqua_{area_short_name}/png_chl_7d",
-            "basename": "FGB_A1km_chlor_a_%Y%j_{date_2:6}_7D_ANOM.png",
+            "basename": "FGB_A1km_chlor_a_%Y%j_{date_2:06d}_7D_ANOM.png",
             "product_id": 44
         },
         "ingest_formats": {
             "dotis_cron_output": {
                 "path_format":
-                    "FGB_A1km_chlor_a_%Y%j_{date_2:6d}_7D_ANOM.png",
+                    "FGB_A1km_chlor_a_%Y%j_{date_2:06d}_7D_ANOM.png",
             }
         }
     },
@@ -421,13 +421,13 @@ data = {
                 "/srv/imars-objects/modis_aqua_{area_short_name}/PNG_AQUA/SST/"
                 "/PNG_AQUA/SST"
             ),
-            "basename": "FGB_A1km_chlor_a_%Y%j_{date_2:6}_7D_MEAN.png",
+            "basename": "FGB_A1km_chlor_a_%Y%j_{date_2:06d}_7D_MEAN.png",
             "product_id": 45
         },
         "ingest_formats": {
             "dotis_cron_output": {
                 "path_format":
-                    "FGB_A1km_sst_%Y%j_{date_2:6d}_7D_MEAN.png",
+                    "FGB_A1km_sst_%Y%j_{date_2:06d}_7D_MEAN.png",
             }
         }
     },
@@ -438,13 +438,13 @@ data = {
                 "/srv/imars-objects/modis_aqua_{area_short_name}/PNG_AQUA/SST/"
                 "PNG_AQUA/SST"
             ),
-            "basename": "FGB_A1km_chlor_a_%Y%j_{date_2:6}_7D_ANOM.png",
+            "basename": "FGB_A1km_chlor_a_%Y%j_{date_2:06d}_7D_ANOM.png",
             "product_id": 46
         },
         "ingest_formats": {
             "dotis_cron_output": {
                 "path_format":
-                    "FGB_A1km_sst_%Y%j_{date_2:6d}_7D_ANOM.png",
+                    "FGB_A1km_sst_%Y%j_{date_2:06d}_7D_ANOM.png",
             }
         }
     },
