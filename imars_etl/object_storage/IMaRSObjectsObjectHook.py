@@ -8,7 +8,7 @@ import os
 import shutil
 import sys
 
-from imars_etl.drivers.BaseObjectHook import BaseObjectHook
+from imars_etl.object_storage.BaseObjectHook import BaseObjectHook
 from imars_etl.filepath.format_filepath import format_filepath
 
 

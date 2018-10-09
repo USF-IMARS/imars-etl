@@ -7,7 +7,7 @@ Useful for testing or for cases when you want to interact with the metadata
 only and not actually put/get files.
 """
 
-from imars_etl.drivers.BaseObjectHook import BaseObjectHook
+from imars_etl.object_storage.BaseObjectHook import BaseObjectHook
 
 
 class NoBackendObjectHook(BaseObjectHook):

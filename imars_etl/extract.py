@@ -1,7 +1,7 @@
 import os
 
 from imars_etl.util import get_sql_result
-from imars_etl.drivers.IMaRSObjectsObjectHook import IMaRSObjectsObjectHook
+from imars_etl.object_storage.IMaRSObjectsObjectHook import IMaRSObjectsObjectHook
 
 EXTRACT_DEFAULTS = {
     'storage_driver': "imars_objects"

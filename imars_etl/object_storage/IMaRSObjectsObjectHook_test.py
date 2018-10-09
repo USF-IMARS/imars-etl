@@ -9,7 +9,7 @@ from unittest import TestCase
 from datetime import datetime
 
 # dependencies:
-from imars_etl.drivers.IMaRSObjectsObjectHook import IMaRSObjectsObjectHook
+from imars_etl.object_storage.IMaRSObjectsObjectHook import IMaRSObjectsObjectHook
 
 
 class Test_imars_obj_load(TestCase):

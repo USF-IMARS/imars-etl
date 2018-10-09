@@ -4,7 +4,7 @@ Interacts with Azure Data Lake.
 """
 from airflow.contrib.hooks.azure_data_lake_hook import AzureDataLakeHook
 
-from imars_etl.drivers.BaseObjectHook import BaseObjectHook
+from imars_etl.object_storage.BaseObjectHook import BaseObjectHook
 from imars_etl.filepath.format_filepath import format_filepath
 
 

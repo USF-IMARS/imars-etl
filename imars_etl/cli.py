@@ -6,7 +6,7 @@ from argparse import ArgumentParser
 import logging
 
 from imars_etl.util.ConstMapAction import ConstMapAction
-from imars_etl.drivers.get_storage_driver_from_key \
+from imars_etl.object_storage.get_storage_driver_from_key \
     import DRIVER_MAP_DICT as STORAGE_DRIVER_KEYS
 from imars_etl.drivers_metadata.get_metadata_driver_from_key \
     import DRIVER_MAP_DICT as METADATA_DRIVER_KEYS
