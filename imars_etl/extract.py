@@ -1,7 +1,9 @@
 import os
 
-from imars_etl.util import get_sql_result
-from imars_etl.object_storage.IMaRSObjectsObjectHook import IMaRSObjectsObjectHook
+from airflow.hooks.mysql_hook import MySqlHook
+
+from imars_etl.object_storage.IMaRSObjectsObjectHook \
+    import IMaRSObjectsObjectHook
 
 EXTRACT_DEFAULTS = {
     'storage_driver': "imars_objects"
@@ -17,16 +19,25 @@ def extract(
     output_path=None,
     storage_driver=EXTRACT_DEFAULTS['storage_driver'],
     first=False,
+    conn_id="default_conn_id",
+    schema="default_schema",
     **kwargs
 ):
     """
     Example usage:
     ./imars-etl.py -vvv extract 'area_id=1'
     """
-    result = get_sql_result(
-        "SELECT filepath FROM file WHERE {}".format(sql),
-        first=first
+    object_metadata_hook = MySqlHook(
+        mysql_conn_id=conn_id,
+        schema=schema
     )
+
+    full_sql_str = "SELECT filepath FROM file WHERE {}".format(sql)
+    if first is True:
+        result = object_metadata_hook.get_first(full_sql_str)
+    else:
+        result = object_metadata_hook.get_records(full_sql_str)
+
     src_path = result['filepath']
 
     if output_path is None:
