@@ -1,4 +1,6 @@
 """
+Uses /srv/imars-objects NFS shares.
+Assumes the user has appropriate access to those shares.
 """
 import errno
 import logging
