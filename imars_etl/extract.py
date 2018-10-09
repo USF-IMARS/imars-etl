@@ -27,7 +27,7 @@ def extract(
     """
     full_sql_str = "SELECT filepath FROM file WHERE {}".format(sql)
 
-    get_sql_result(full_sql_str, conn_id=conn_id)
+    result = get_sql_result(full_sql_str, conn_id=conn_id)
 
     src_path = result['filepath']
 
