@@ -40,19 +40,12 @@ def get_sql_result(
                 result = cursor.fetchmany(2)
 
             if check_result is True:
-                validate_sql_result(result)
+                result = validate_sql_result(result)
 
             if should_commit:
                 connection.commit()
 
-            try:
-                return result[0]
-            except IndexError:
-                if check_result:
-                    raise
-                else:  # we don't care about the error
-                    logger.info("no result from sql request")
-                    return result
+            return result
     finally:
         connection.close()
 
@@ -76,4 +69,4 @@ def validate_sql_result(result):
         )
         # exit(EXIT_STATUS.MULTIPLE_MATCH)
     else:
-        return
+        return result[0]
