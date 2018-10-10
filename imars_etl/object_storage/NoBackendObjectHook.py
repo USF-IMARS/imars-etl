@@ -22,3 +22,8 @@ class NoBackendObjectHook(BaseObjectHook):
 
     def extract(self, args):
         return ""
+
+    def format_filepath(self, **kwargs):
+        print('formatting...')
+        print('\n\tgiving back filepath: \t {}\n'.format(kwargs['filepath']))
+        return kwargs['filepath']

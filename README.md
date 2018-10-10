@@ -46,7 +46,7 @@ python3 -m imars_etl -v load \
     -d /srv/imars-objects/big_bend/wv2/2014 \
     -p 14 \
     -j '{"status_id":3, "area_id":6}' \
-    --object_store_conn_id no_upload \
+    --object_store no_upload \
     -l "WV02_%Y%m%d%H%M%S_{junk}-M1BS-{idNumber:12}_{otherNum:2}_P{passNumber:0>3d}.xml" \
     --metadata_file_driver wv2_xml  \
     --metadata_file "{filepath}"  \
@@ -57,7 +57,7 @@ python3 -m imars_etl -v load \
     -d /srv/imars-objects/big_bend/wv2/2014 \
     -p 11 \
     -j '{"status_id":3, "area_id":6}' \
-    --object_store_conn_id no_upload \
+    --object_store no_upload \
     -l "WV02_%Y%m%d%H%M%S_{junk}-M1BS-{idNumber:12}_{otherNum:2}_P{passNumber:0>3d}.ntf" \
     --metadata_file_driver wv2_xml  \
     --metadata_file "{directory}/{basename}.xml"  \

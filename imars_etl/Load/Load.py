@@ -20,14 +20,14 @@ LOAD_DEFAULTS = {
     'metadata_file_driver': get_metadata_driver_from_key('dhus_json'),
     'nohash': False,
     'noparse': False,
-    'object_store_conn_id': DEFAULT_OBJ_STORE_CONN_ID,
+    'object_store': DEFAULT_OBJ_STORE_CONN_ID,
 }
 
 
 def load(
     filepath=None, directory=None,
     metadata_file_driver=LOAD_DEFAULTS['metadata_file_driver'],
-    object_store_conn_id=LOAD_DEFAULTS['object_store_conn_id'],
+    object_store=LOAD_DEFAULTS['object_store'],
     sql="",
     **kwargs
 ):
@@ -48,6 +48,7 @@ def load(
         filepath=filepath,
         directory=directory,
         metadata_file_driver=metadata_file_driver,
+        object_store=object_store,
         sql=sql,
         **kwargs
     )
@@ -153,10 +154,10 @@ def _load_file(args_dict):
 
 def _actual_load_file_with_driver(**kwargs):
     # load file into IMaRS data warehouse
-    obj_store_hook = get_hook(kwargs['object_store_conn_id'])
+    obj_store_hook = get_hook(kwargs['object_store'])
     # assume azure_data_lake-like interface:
     local_src_path = kwargs['filepath']
-    remote_target_path = format_filepath(**kwargs)
+    remote_target_path = format_filepath(hook=obj_store_hook, **kwargs)
     # print("\n\n\t{}\n\n".format(kwargs))
     if kwargs.get('dry_run', False) is False:
         obj_store_hook.upload_file(

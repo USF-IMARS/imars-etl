@@ -14,7 +14,7 @@ def extract(
     output_path=None,
     first=False,
     metadata_conn_id=DEFAULT_METADATA_CONN_ID,
-    object_store_conn_id=DEFAULT_OBJ_STORE_CONN_ID,
+    object_store=DEFAULT_OBJ_STORE_CONN_ID,
     **kwargs
 ):
     """
@@ -33,7 +33,7 @@ def extract(
     # use connection to download & then print a path to where the file can be
     # accessed on the local machine.
     fpath = _extract(
-        object_store_conn_id,
+        object_store,
         src_path,
         target_path=output_path,
         first=False,

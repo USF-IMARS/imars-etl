@@ -191,7 +191,7 @@ def parse_args(argvs):
         action="store_true"
     )
     parser_load.add_argument(
-        "--object_store_conn_id",
+        "--object_store",
         help=(
             "Connection id to use for loading the file into object storage. " +
             "ie: which backend to use"

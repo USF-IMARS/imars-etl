@@ -22,7 +22,7 @@ def validate_args(args_dict, DEFAULTS={}):
     logger.setLevel(logging.INFO)
 
     keys_with_defaults = [
-        'object_store_conn_id',
+        'object_store',
         'metadata_conn_id',
         'nohash'
     ]

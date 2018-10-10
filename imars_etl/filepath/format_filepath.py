@@ -38,39 +38,42 @@ def get_imars_object_paths():
 
 
 def format_filepath(
-    product_type_name=None,
-    product_id=None,
-    forced_basename=None,
-    date_time=None,
+    hook=None,
     **kwargs
 ):
     logger = logging.getLogger("{}.{}".format(
         __name__,
         sys._getframe().f_code.co_name)
     )
-    fullpath = _format_filepath_template(
-        product_type_name=product_type_name,
-        product_id=product_id,
-        forced_basename=forced_basename
-    )
-    logger.info("formatting imars-obj path \n>>'{}'".format(fullpath))
-    args_dict = dict(
-        product_type_name=product_type_name,
-        product_id=product_id,
-        forced_basename=forced_basename,
-        date_time=date_time,
-        **kwargs
-    )
     try:
-        return date_time.strftime(
-            (fullpath).format(**args_dict)
+        logger.debug("hook is {}".format(hook))
+        return hook.format_filepath(**kwargs)
+    except AttributeError:
+        logger.debug('hook has no format_filepath method')
+        product_type_name = kwargs.get("product_type_name")
+        product_id = kwargs.get("product_id")
+        forced_basename = kwargs.get("forced_basename")
+
+        fullpath = _format_filepath_template(
+            product_type_name=product_type_name,
+            product_id=product_id,
+            forced_basename=forced_basename
         )
-    except KeyError as k_err:
-        logger.error(
-            "cannot guess an argument required to make path. "
-            " pass this argument manually using --json "
+        logger.info("formatting imars-obj path \n>>'{}'".format(fullpath))
+        args_dict = dict(
+            **kwargs
         )
-        raise k_err
+        try:
+            date_time = kwargs.get("date_time")
+            return date_time.strftime(
+                (fullpath).format(**args_dict)
+            )
+        except KeyError as k_err:
+            logger.error(
+                "cannot guess an argument required to make path. "
+                " pass this argument manually using --json "
+            )
+            raise k_err
 
 
 def _format_filepath_template(
