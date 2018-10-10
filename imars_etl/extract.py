@@ -18,7 +18,7 @@ def extract(
     output_path=None,
     storage_driver=EXTRACT_DEFAULTS['storage_driver'],
     first=False,
-    conn_id="imars_metadata_database_default",
+    conn_id="imars_metadata_database_default",  # TODO: add this to the CLI
     **kwargs
 ):
     """

@@ -1,12 +1,11 @@
 import logging
 import sys
 
-from airflow.hooks.mysql_hook import MySqlHook
-
 from imars_etl.exceptions.NoMetadataMatchException \
     import NoMetadataMatchException
 from imars_etl.exceptions.TooManyMetadataMatchesException \
     import TooManyMetadataMatchesException
+from imars_etl.get_connection import get_connection
 
 
 def get_sql_result(
@@ -26,9 +25,7 @@ def get_sql_result(
         Connection is not autocommit by default so you must commit to
         save changes to the database.
     """
-    object_metadata_hook = MySqlHook(
-        mysql_conn_id=conn_id,
-    )
+    object_metadata_hook = get_connection(conn_id).get_hook()
 
     if first is True:
         result = object_metadata_hook.get_first(sql)
