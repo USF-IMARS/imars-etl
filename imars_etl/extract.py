@@ -39,6 +39,7 @@ def extract(
     # use driver to download & then print a path to where the file can be
     # accessed on the local machine.
     fpath = _extract(
+        object_store_conn_id,
         src_path,
         target_path=output_path,
         storage_driver=storage_driver,

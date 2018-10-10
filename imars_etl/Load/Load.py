@@ -11,8 +11,9 @@ from imars_etl.object_storage.get_storage_driver_from_key\
 from imars_etl.drivers_metadata.get_metadata_driver_from_key\
     import get_metadata_driver_from_key
 from imars_etl.util import get_sql_result
-
+from imars_etl.get_hook import get_hook
 from imars_etl.Load.validate_args import validate_args
+from imars_etl.filepath.format_filepath import format_filepath
 
 LOAD_DEFAULTS = {
     'storage_driver': get_storage_driver_from_key('imars_objects'),
@@ -27,6 +28,7 @@ LOAD_DEFAULTS = {
 def load(
     filepath=None, directory=None,
     metadata_file_driver=LOAD_DEFAULTS['metadata_file_driver'],
+    object_store_conn_id="imars_object_store",  # TODO: add this to the CLI
     sql="",
     **kwargs
 ):
@@ -150,15 +152,21 @@ def _load_file(args_dict):
             _handle_integrity_error(i_err, new_filepath, **args_dict)
 
 
-def _actual_load_file_with_driver(**kwargs):
+def _actual_load_file_with_driver(
+        obj_store_conn_id='imars_object_store', **kwargs
+):
     # load file into IMaRS data warehouse
-    # NOTE: _load should support args.dry_run=True also
-    selected_driver = kwargs.get(
-        'storage_driver',
-        LOAD_DEFAULTS['storage_driver']
-    )
-    print("\n\n\t{}\n\n".format(kwargs))
-    return selected_driver(**kwargs)
+    obj_store_hook = get_hook(obj_store_conn_id)
+    # assume azure_data_lake-like interface:
+    local_src_path = kwargs['filepath']
+    remote_target_path = format_filepath(**kwargs)
+    # print("\n\n\t{}\n\n".format(kwargs))
+    if kwargs.get('dry_run', False) is False:
+        obj_store_hook.upload_file(
+            local_path=local_src_path,
+            remote_path=remote_target_path
+        )
+    return remote_target_path
 
 
 def _make_sql_insert(**kwargs):
