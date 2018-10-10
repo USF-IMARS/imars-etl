@@ -1,6 +1,6 @@
 import os
 
-from imars_etl.get_connection import get_connection
+from imars_etl.get_hook import get_hook
 from imars_etl.util.get_sql_result import get_sql_result
 from imars_etl.object_storage.IMaRSObjectsObjectHook \
     import IMaRSObjectsObjectHook
@@ -51,7 +51,7 @@ def extract(
 
 
 def _extract(obj_store_conn_id, src_path, target_path, **kwargs):
-    obj_store_hook = get_connection(object_store_conn_id).get_hook()
+    obj_store_hook = get_hook(obj_store_conn_id)
     # assume azure_data_lake-like interface:
     obj_store_hook.download_file(local_path=target_path, remote_path=src_path)
     return target_path

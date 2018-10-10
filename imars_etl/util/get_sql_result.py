@@ -5,7 +5,7 @@ from imars_etl.exceptions.NoMetadataMatchException \
     import NoMetadataMatchException
 from imars_etl.exceptions.TooManyMetadataMatchesException \
     import TooManyMetadataMatchesException
-from imars_etl.get_connection import get_connection
+from imars_etl.get_hook import get_hook
 
 
 def get_sql_result(
@@ -25,7 +25,7 @@ def get_sql_result(
         Connection is not autocommit by default so you must commit to
         save changes to the database.
     """
-    object_metadata_hook = get_connection(conn_id).get_hook()
+    object_metadata_hook = get_hook(conn_id)
 
     if first is True:
         result = object_metadata_hook.get_first(sql)
