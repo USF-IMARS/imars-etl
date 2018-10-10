@@ -9,8 +9,8 @@ from imars_etl.get_hook import get_hook
 
 
 def get_sql_result(
-    sql, first=True, check_result=True, should_commit=False,
-    conn_id="imars_metadata_database_default",
+    sql, conn_id,
+    first=True, check_result=True, should_commit=False,
 ):
     """
     Parameters:

@@ -12,6 +12,7 @@ from imars_etl.util import get_sql_result
 from imars_etl.get_hook import get_hook
 from imars_etl.Load.validate_args import validate_args
 from imars_etl.filepath.format_filepath import format_filepath
+from imars_etl.object_storage import DEFAULT_OBJ_STORE_CONN_ID
 
 LOAD_DEFAULTS = {
     'output_path': None,
@@ -19,14 +20,14 @@ LOAD_DEFAULTS = {
     'metadata_file_driver': get_metadata_driver_from_key('dhus_json'),
     'nohash': False,
     'noparse': False,
-    'object_store_conn_id': "imars_object_store",
+    'object_store_conn_id': DEFAULT_OBJ_STORE_CONN_ID,
 }
 
 
 def load(
     filepath=None, directory=None,
     metadata_file_driver=LOAD_DEFAULTS['metadata_file_driver'],
-    object_store_conn_id="imars_object_store",  # TODO: add this to the CLI
+    object_store_conn_id=LOAD_DEFAULTS['object_store_conn_id'],
     sql="",
     **kwargs
 ):
@@ -150,11 +151,9 @@ def _load_file(args_dict):
             _handle_integrity_error(i_err, new_filepath, **args_dict)
 
 
-def _actual_load_file_with_driver(
-        obj_store_conn_id='imars_object_store', **kwargs
-):
+def _actual_load_file_with_driver(**kwargs):
     # load file into IMaRS data warehouse
-    obj_store_hook = get_hook(obj_store_conn_id)
+    obj_store_hook = get_hook(kwargs['obj_store_conn_id'])
     # assume azure_data_lake-like interface:
     local_src_path = kwargs['filepath']
     remote_target_path = format_filepath(**kwargs)
