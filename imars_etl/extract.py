@@ -1,5 +1,6 @@
 import os
 
+from imars_etl.get_connection import get_connection
 from imars_etl.util.get_sql_result import get_sql_result
 from imars_etl.object_storage.IMaRSObjectsObjectHook \
     import IMaRSObjectsObjectHook
@@ -18,7 +19,8 @@ def extract(
     output_path=None,
     storage_driver=EXTRACT_DEFAULTS['storage_driver'],
     first=False,
-    conn_id="imars_metadata_database_default",  # TODO: add this to the CLI
+    metadata_conn_id="imars_metadata",  # TODO: add this to the CLI
+    object_store_conn_id="imars_object_store",  # TODO: add this to the CLI
     **kwargs
 ):
     """
@@ -27,7 +29,7 @@ def extract(
     """
     full_sql_str = "SELECT filepath FROM file WHERE {}".format(sql)
 
-    result = get_sql_result(full_sql_str, conn_id=conn_id)
+    result = get_sql_result(full_sql_str, conn_id=metadata_conn_id)
 
     src_path = result['filepath']
 
@@ -36,9 +38,7 @@ def extract(
 
     # use driver to download & then print a path to where the file can be
     # accessed on the local machine.
-    fpath = STORAGE_DRIVERS[
-        storage_driver
-    ](
+    fpath = _extract(
         src_path,
         target_path=output_path,
         storage_driver=storage_driver,
@@ -48,3 +48,10 @@ def extract(
 
     print(fpath)
     return fpath
+
+
+def _extract(obj_store_conn_id, src_path, target_path, **kwargs):
+    obj_store_hook = get_connection(object_store_conn_id).get_hook()
+    # assume azure_data_lake-like interface:
+    obj_store_hook.download_file(local_path=target_path, remote_path=src_path)
+    return target_path
