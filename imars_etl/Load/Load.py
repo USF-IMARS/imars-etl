@@ -6,8 +6,6 @@ import numbers
 
 from pymysql.err import IntegrityError
 
-from imars_etl.object_storage.get_storage_driver_from_key\
-    import get_storage_driver_from_key
 from imars_etl.drivers_metadata.get_metadata_driver_from_key\
     import get_metadata_driver_from_key
 from imars_etl.util import get_sql_result
@@ -16,12 +14,12 @@ from imars_etl.Load.validate_args import validate_args
 from imars_etl.filepath.format_filepath import format_filepath
 
 LOAD_DEFAULTS = {
-    'storage_driver': get_storage_driver_from_key('imars_objects'),
     'output_path': None,
     'metadata_file': None,
     'metadata_file_driver': get_metadata_driver_from_key('dhus_json'),
     'nohash': False,
     'noparse': False,
+    'object_store_conn_id': "imars_object_store",
 }
 
 

@@ -50,12 +50,12 @@ class Test_load_cli(TestCasePlusSQL):
             ]
         )
 
-    def test_load_basic_custom_driver(self):
+    def test_load_basic_custom_obj_store(self):
         """
-        CLI using `no_upload` `storage_driver` passes path through unchanged
+        CLI using `no_upload` `object_store` passes path through unchanged
             imars_etl.py load
                 --dry_run
-                --storage_driver no_upload
+                --object_store no_upload
                 -f /fake/path/file_w_date_2018.txt
                 -p -1
                 -p '2018-02-26T13:00'
@@ -69,7 +69,7 @@ class Test_load_cli(TestCasePlusSQL):
             '-vvv',
             'load',
             '--dry_run',
-            '--storage_driver', 'no_upload',
+            '--object_store', 'no_upload',
             '-f', FPATH,
             '-p', '-1',
             '-t', "2018-02-26T13:00",

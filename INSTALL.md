@@ -15,5 +15,5 @@
 
 # dependency details
 * IPFS is required for hashing files during load & may be used as an object
-    storage driver in the future.
+    storage connection in the future.
 * airflow is used to manage secure connections to metadata & object stores.

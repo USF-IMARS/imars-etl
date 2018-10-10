@@ -23,3 +23,11 @@ def get_hook(conn_id):
         .filter(Connection.conn_id == conn_id)
         .one()
     ).get_hook()
+
+
+def get_hooks_list():
+    """get list of all hooks available"""
+    return (
+        list(settings.Session().query(Connection))
+        .append(BUILT_IN_CONNECTIONS.keys())
+    )
