@@ -153,7 +153,7 @@ def _load_file(args_dict):
 
 def _actual_load_file_with_driver(**kwargs):
     # load file into IMaRS data warehouse
-    obj_store_hook = get_hook(kwargs['obj_store_conn_id'])
+    obj_store_hook = get_hook(kwargs['object_store_conn_id'])
     # assume azure_data_lake-like interface:
     local_src_path = kwargs['filepath']
     remote_target_path = format_filepath(**kwargs)
