@@ -14,6 +14,8 @@ from imars_etl.Load.validate_args import validate_args
 from imars_etl.object_storage import DEFAULT_OBJ_STORE_CONN_ID
 from imars_etl.object_storage.hook_wrappers.DataLakeHookWrapper \
     import DataLakeHookWrapper
+from imars_etl.object_storage.hook_wrappers.FSHookWrapper \
+    import FSHookWrapper
 from imars_etl.object_storage.hook_wrappers.BaseHookWrapper \
     import WrapperMismatchException
 
@@ -175,7 +177,10 @@ def _actual_load_file_with_driver(**kwargs):
     except WrapperMismatchException:
         logger.debug('hook not DataLake-like')
 
-    # TODO: try FSHook-like wrapper
+    try:
+        result = FSHookWrapper(obj_store_hook).load(**kwargs)
+    except WrapperMismatchException:
+        logger.debug('hook not FSHook-like')
 
     if result is None:
         raise AttributeError(

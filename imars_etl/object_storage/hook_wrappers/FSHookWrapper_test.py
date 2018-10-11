@@ -7,47 +7,22 @@ takes care of any argument checking & auto-filling.
 # std modules:
 from unittest import TestCase
 from datetime import datetime
+try:
+    # py2
+    from mock import MagicMock
+except ImportError:
+    # py3
+    from unittest.mock import MagicMock
 
 # dependencies:
-from imars_etl.object_storage.IMaRSObjectsObjectHook \
-    import IMaRSObjectsObjectHook
-
-
-class Test_imars_obj_load(TestCase):
-
-    # Tests:
-    #########################
-    # === bash CLI
-    def test_load_zip_wv2_ftp_ingest(self):
-        """
-        Load zip_wv2_ftp_ingest
-        """
-        test_args = {
-            "verbose": 3,
-            "dry_run": True,
-            "filepath": (
-                "/srv/imars-objects/ftp-ingest" +
-                "/wv2_2017-03-01T2233_RB2.zip"
-            ),
-            "product_id": 6,
-            "time": "2017-03-01T22:33",
-            "date_time": datetime(2017, 3, 1, 22, 33),
-            "forced_basename": "wv2_2017-03-01T2233_RB2.zip",
-            "json": '{"status_id":1,"area_id":1}',
-            "tag": "RB2",
-            "area_short_name": "RB2"
-        }
-        self.assertEqual(
-            IMaRSObjectsObjectHook().load(**test_args),
-            '/srv/imars-objects/RB2/zip_wv2_ftp_ingest/'
-            'wv2_2017-03-01T2233_RB2.zip'
-        )
+from imars_etl.object_storage.hook_wrappers.FSHookWrapper \
+    import FSHookWrapper
 
 
 class Test_format_filepath_template(TestCase):
     def test_format_filename_template(self):
         """Create basic file format template with 100% knowledge"""
-        result = IMaRSObjectsObjectHook._format_filepath_template(
+        result = FSHookWrapper._format_filepath_template(
             "test_fancy_format_test",
             -2,
             forced_basename=None
@@ -60,7 +35,7 @@ class Test_format_filepath_template(TestCase):
 
     def test_format_filename_w_product_id(self):
         """Can create file format template with only product_id"""
-        result = IMaRSObjectsObjectHook._format_filepath_template(
+        result = FSHookWrapper._format_filepath_template(
             None,
             -2,
             forced_basename=None
@@ -73,7 +48,7 @@ class Test_format_filepath_template(TestCase):
 
     def test_format_filename_w_prod_name(self):
         """Can create file format template with only product_type_name"""
-        result = IMaRSObjectsObjectHook._format_filepath_template(
+        result = FSHookWrapper._format_filepath_template(
             "test_fancy_format_test",
             None,
             forced_basename=None
@@ -87,7 +62,7 @@ class Test_format_filepath_template(TestCase):
     def test_format_filename_w_nothing(self):
         """File format template with no product info raises err"""
         with self.assertRaises(ValueError):
-            IMaRSObjectsObjectHook._format_filepath_template(
+            FSHookWrapper._format_filepath_template(
                 None,
                 None,
                 forced_basename=None
@@ -95,6 +70,10 @@ class Test_format_filepath_template(TestCase):
 
 
 class Test_format_filepath(TestCase):
+    fake_fs_hook = MagicMock(
+        get_path=lambda: "/srv/imars-objects"
+    )
+
     # TODO: test mismatched pid & product_name throws err?
     def test_format_filepath_p_name(self):
         """Create filepath w/ minimal args (product_name)"""
@@ -102,7 +81,7 @@ class Test_format_filepath(TestCase):
             "date_time": datetime(2015, 5, 25, 15, 55),
             "product_type_name": "test_test_test"
         }
-        result = IMaRSObjectsObjectHook().format_filepath(
+        result = FSHookWrapper(self.fake_fs_hook).format_filepath(
             **args
         )
         self.assertEqual(
@@ -116,7 +95,7 @@ class Test_format_filepath(TestCase):
             "date_time": datetime(2015, 5, 25, 15, 55),
             "product_id": -1
         }
-        result = IMaRSObjectsObjectHook().format_filepath(
+        result = FSHookWrapper(self.fake_fs_hook).format_filepath(
             **args
         )
         self.assertEqual(
@@ -127,7 +106,7 @@ class Test_format_filepath(TestCase):
     def test_format_filepath_fancy_raise(self):
         """Raise on fancy filepath missing required arg in path"""
         with self.assertRaises(KeyError):
-            IMaRSObjectsObjectHook().format_filepath(
+            FSHookWrapper(self.fake_fs_hook).format_filepath(
                 **{
                     "date_time": datetime(2015, 5, 25, 15, 55),
                     "product_id": -2
@@ -142,7 +121,7 @@ class Test_format_filepath(TestCase):
             "product_type_name": "test_fancy_format_test",
             "test_arg": "myTestArg"
         }
-        result = IMaRSObjectsObjectHook().format_filepath(
+        result = FSHookWrapper(self.fake_fs_hook).format_filepath(
             **args
         )
         self.assertEqual(
@@ -158,7 +137,7 @@ class Test_format_filepath(TestCase):
             "product_type_name": "test_number_format_test",
             "test_num": 3
         }
-        result = IMaRSObjectsObjectHook().format_filepath(
+        result = FSHookWrapper(self.fake_fs_hook).format_filepath(
             **args
         )
         self.assertEqual(

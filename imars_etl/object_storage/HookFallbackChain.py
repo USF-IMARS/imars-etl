@@ -17,7 +17,7 @@ class HookFallbackChain(BaseObjectHook):
         params:
         -------
         hooklist : list of (wrapped) hooks
-            eg: [IMaRSObjectsObjectHook(), FSObjectHook()]
+            eg: [FSHook('/srv/imars-objects'), FSObjectHook()]
         """
         assert len(hooklist > 1)
         self.hooklist = hooklist

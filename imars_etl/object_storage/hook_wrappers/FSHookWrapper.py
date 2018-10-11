@@ -1,6 +1,6 @@
 """
-Uses /srv/imars-objects NFS shares.
-Assumes the user has appropriate access to those shares.
+Provides wrapper for airflow.contrib.hooks.FSHook-like object storage
+hooks.
 """
 import errno
 import logging
@@ -8,16 +8,22 @@ import os
 import shutil
 import sys
 
-from imars_etl.object_storage.BaseObjectHook import BaseObjectHook
+from imars_etl.object_storage.hook_wrappers.BaseHookWrapper \
+    import BaseHookWrapper
+
 from imars_etl.filepath.data import data
 
 
-class IMaRSObjectsObjectHook(BaseObjectHook):
+class FSHookWrapper(BaseHookWrapper):
 
-    def __init__(self, *args, **kwargs):
-        super(IMaRSObjectsObjectHook, self).__init__(
-            *args, source=None, **kwargs
-        )
+    # TODO: need to adapt methods to use self.hook.get_path() instead of
+    #       assuming `/srv/imars-objects`
+
+    REQUIRED_ATTRS = {
+        'load': ['get_path'],
+        'extract': ['get_path'],
+        'format_filepath': ['get_path'],
+    }
 
     def load(self, **kwargs):
         logger = logging.getLogger("{}.{}".format(
@@ -97,7 +103,7 @@ class IMaRSObjectsObjectHook(BaseObjectHook):
             product_id)
         )
         for prod_name, prod_meta in (
-            IMaRSObjectsObjectHook.get_imars_object_paths().items()
+            FSHookWrapper.get_imars_object_paths().items()
         ):
             logger.debug(
                 "is {} (#{})?".format(prod_name, prod_meta['product_id'])
