@@ -4,6 +4,7 @@ from imars_etl.util.timestrings import standardize_time_str
 from imars_etl.util.timestrings import iso8601strptime
 from imars_etl.filepath.get_product_id import get_product_id
 from imars_etl.filepath.get_product_name import get_product_name
+from imars_etl.id_lookup import id_lookup
 
 
 BASIC_METADATA_RELATION_CONSTRAINTS = [
@@ -11,6 +12,8 @@ BASIC_METADATA_RELATION_CONSTRAINTS = [
     ('time', ['date_time'], lambda dt: dt.strftime(ISO_8601_FMT)),
     ('product_type_name', ['product_id'], get_product_name),
     ('product_id', ['product_type_name'], get_product_id),
+    ('area_id', ['area_short_name'], lambda a_id: id_lookup(a_id, 'area')),
+    ('area_short_name', ['area_id'], lambda a_name: id_lookup(a_name, 'area')),
 ]
 
 

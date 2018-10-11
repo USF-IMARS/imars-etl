@@ -25,6 +25,11 @@ def get_sql_result(
         Connection is not autocommit by default so you must commit to
         save changes to the database.
     """
+    logger = logging.getLogger("{}.{}".format(
+        __name__,
+        sys._getframe().f_code.co_name)
+    )
+    logger.debug("QUERY: {}".format(sql))
     object_metadata_hook = get_hook(conn_id)
 
     if first is True:
@@ -32,7 +37,12 @@ def get_sql_result(
     else:
         result = object_metadata_hook.get_records(sql)
 
-    result = validate_sql_result(result)
+    try:
+        result = validate_sql_result(result)
+    except (NoMetadataMatchException, TooManyMetadataMatchesException):
+        if check_result is True:
+            raise
+    return result
 
 
 def validate_sql_result(result):

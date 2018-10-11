@@ -10,8 +10,12 @@ def id_lookup(
     metadata_conn_id=DEFAULT_METADATA_DB_CONN_ID
 ):
     """
-    translates between numeric id numbers & short names for tables like
-    area, product, etc
+    Translates between numeric id numbers & short names for tables like
+    area, product, etc.
+
+    Example Usages:
+    --------------
+    id_lookup(value=3, table='area')
     """
     assert value is not None
     assert table is not None
@@ -34,7 +38,7 @@ def id_lookup(
         ),
         conn_id=metadata_conn_id,
         first=first,
-    )[column_to_get]
+    )[0]
 
     print(translation)
     return translation
