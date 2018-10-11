@@ -16,6 +16,7 @@ before_install:
   - tar xvfz go-ipfs_v0.4.2_linux-amd64.tar.gz
   - mv go-ipfs/ipfs /usr/local/bin/ipfs
 install:
+  - export SLUGIFY_USES_TEXT_UNIDECODE=yes
   - pip install .[test]
 # command to run tests
 script:

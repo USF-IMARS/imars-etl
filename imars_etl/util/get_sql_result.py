@@ -1,15 +1,16 @@
 import logging
 import sys
 
-from imars_etl import metadatabase
 from imars_etl.exceptions.NoMetadataMatchException \
     import NoMetadataMatchException
 from imars_etl.exceptions.TooManyMetadataMatchesException \
     import TooManyMetadataMatchesException
+from imars_etl.get_hook import get_hook
 
 
 def get_sql_result(
-    sql, first=True, check_result=True, should_commit=False
+    sql, conn_id,
+    first=True, check_result=True, should_commit=False,
 ):
     """
     Parameters:
@@ -24,30 +25,14 @@ def get_sql_result(
         Connection is not autocommit by default so you must commit to
         save changes to the database.
     """
-    logger = logging.getLogger("{}.{}".format(
-        __name__,
-        sys._getframe().f_code.co_name)
-    )
+    object_metadata_hook = get_hook(conn_id)
 
-    connection = metadatabase.get_conn()
-    try:
-        with connection.cursor() as cursor:
-            cursor.execute(sql)
+    if first is True:
+        result = object_metadata_hook.get_first(sql)
+    else:
+        result = object_metadata_hook.get_records(sql)
 
-            if first is True:
-                result = [cursor.fetchone()]
-            else:
-                result = cursor.fetchmany(2)
-
-            if check_result is True:
-                result = validate_sql_result(result)
-
-            if should_commit:
-                connection.commit()
-
-            return result
-    finally:
-        connection.close()
+    result = validate_sql_result(result)
 
 
 def validate_sql_result(result):

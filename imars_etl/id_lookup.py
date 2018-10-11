@@ -1,8 +1,14 @@
 
 from imars_etl.util import get_sql_result
+from imars_etl.metadata_db import DEFAULT_METADATA_DB_CONN_ID
 
 
-def id_lookup(value=None, table=None, first=False):
+def id_lookup(
+    value=None,
+    table=None,
+    first=False,
+    metadata_conn_id=DEFAULT_METADATA_DB_CONN_ID
+):
     """
     translates between numeric id numbers & short names for tables like
     area, product, etc
@@ -26,6 +32,7 @@ def id_lookup(value=None, table=None, first=False):
             column_given,
             value
         ),
+        conn_id=metadata_conn_id,
         first=first,
     )[column_to_get]
 
