@@ -1,13 +1,13 @@
 
 from imars_etl.util import get_sql_result
-from imars_etl.metadata_db import DEFAULT_METADATA_CONN_ID
+from imars_etl.metadata_db import DEFAULT_METADATA_DB_CONN_ID
 
 
 def select(
     sql='',
     cols='*',
     first=False,
-    metadata_conn_id=DEFAULT_METADATA_CONN_ID,
+    metadata_conn_id=DEFAULT_METADATA_DB_CONN_ID,
     **kwargs
 ):
     """

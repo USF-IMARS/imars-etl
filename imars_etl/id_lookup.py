@@ -1,13 +1,13 @@
 
 from imars_etl.util import get_sql_result
-from imars_etl.metadata_db import DEFAULT_METADATA_CONN_ID
+from imars_etl.metadata_db import DEFAULT_METADATA_DB_CONN_ID
 
 
 def id_lookup(
     value=None,
     table=None,
     first=False,
-    metadata_conn_id=DEFAULT_METADATA_CONN_ID
+    metadata_conn_id=DEFAULT_METADATA_DB_CONN_ID
 ):
     """
     translates between numeric id numbers & short names for tables like

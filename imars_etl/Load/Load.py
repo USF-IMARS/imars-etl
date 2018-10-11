@@ -12,6 +12,7 @@ from imars_etl.util import get_sql_result
 from imars_etl.get_hook import get_hook
 from imars_etl.Load.validate_args import validate_args
 from imars_etl.object_storage import DEFAULT_OBJ_STORE_CONN_ID
+from imars_etl.metadata_db import DEFAULT_METADATA_DB_CONN_ID
 from imars_etl.object_storage.hook_wrappers.DataLakeHookWrapper \
     import DataLakeHookWrapper
 from imars_etl.object_storage.hook_wrappers.FSHookWrapper \
@@ -27,6 +28,7 @@ LOAD_DEFAULTS = {
     'nohash': False,
     'noparse': False,
     'object_store': DEFAULT_OBJ_STORE_CONN_ID,
+    'metadata_db': DEFAULT_METADATA_DB_CONN_ID,
 }
 
 
@@ -34,6 +36,7 @@ def load(
     filepath=None, directory=None,
     metadata_file_driver=LOAD_DEFAULTS['metadata_file_driver'],
     object_store=LOAD_DEFAULTS['object_store'],
+    metadata_db=LOAD_DEFAULTS['metadata_db'],
     sql="",
     **kwargs
 ):
@@ -55,6 +58,7 @@ def load(
         directory=directory,
         metadata_file_driver=metadata_file_driver,
         object_store=object_store,
+        metadata_db=metadata_db,
         sql=sql,
         **kwargs
     )
@@ -150,6 +154,7 @@ def _load_file(args_dict):
         try:
             return get_sql_result(
                 sql,
+                args_dict['metadata_db'],
                 check_result=False,
                 should_commit=(not args_dict.get('dry_run', False)),
                 first=args_dict.get("first", False),
