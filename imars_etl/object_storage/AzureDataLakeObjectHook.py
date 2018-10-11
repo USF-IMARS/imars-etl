@@ -15,7 +15,6 @@ class AzureDataLakeObjectHook(AzureDataLakeHook, BaseObjectHook):
         **kwargs
     ):
         kwargs.setdefault('source', None)
-        kwargs['source'] = None
         kwargs['azure_data_lake_conn_id'] = "imars_etl_azure_lake_conn_id"
         super(AzureDataLakeObjectHook, self).__init__(
             *args, **kwargs
