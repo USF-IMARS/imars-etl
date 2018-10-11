@@ -11,8 +11,12 @@ from imars_etl.drivers_metadata.get_metadata_driver_from_key\
 from imars_etl.util import get_sql_result
 from imars_etl.get_hook import get_hook
 from imars_etl.Load.validate_args import validate_args
-from imars_etl.filepath.format_filepath import format_filepath
 from imars_etl.object_storage import DEFAULT_OBJ_STORE_CONN_ID
+from imars_etl.object_storage.hook_wrappers.DataLakeHookWrapper \
+    import DataLakeHookWrapper
+from imars_etl.object_storage.hook_wrappers.BaseHookWrapper \
+    import WrapperMismatchException
+
 
 LOAD_DEFAULTS = {
     'output_path': None,
@@ -154,17 +158,31 @@ def _load_file(args_dict):
 
 def _actual_load_file_with_driver(**kwargs):
     # load file into IMaRS data warehouse
+    logger = logging.getLogger("{}.{}".format(
+        __name__,
+        sys._getframe().f_code.co_name)
+    )
     obj_store_hook = get_hook(kwargs['object_store'])
-    # assume azure_data_lake-like interface:
-    local_src_path = kwargs['filepath']
-    remote_target_path = format_filepath(hook=obj_store_hook, **kwargs)
-    # print("\n\n\t{}\n\n".format(kwargs))
-    if kwargs.get('dry_run', False) is False:
-        obj_store_hook.upload_file(
-            local_path=local_src_path,
-            remote_path=remote_target_path
+    result = None
+
+    try:  # direct usage (no wrapper)
+        result = obj_store_hook.load(**kwargs)
+    except AttributeError:
+        logger.debug('raw hook failed')
+
+    try:  # azure_data_lake-like interface:
+        result = DataLakeHookWrapper(obj_store_hook).load(**kwargs)
+    except WrapperMismatchException:
+        logger.debug('hook not DataLake-like')
+
+    # TODO: try FSHook-like wrapper
+
+    if result is None:
+        raise AttributeError(
+            "hook '{}' has unknown interface.".format(obj_store_hook)
         )
-    return remote_target_path
+    else:
+        return result
 
 
 def _make_sql_insert(**kwargs):
