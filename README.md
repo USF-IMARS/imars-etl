@@ -62,7 +62,18 @@ python3 -m imars_etl -v load \
     --metadata_file_driver wv2_xml  \
     --metadata_file "{directory}/{basename}.xml"  \
     --nohash
-    
+
+# practice loading a WV2 .zip file (pid 6) from DigitalGlobe:
+#     NOTE: use `--dry_run` to practice
+#     NOTE: `area_id:7` in the json must match fl_se
+python -m imars_etl -v load \
+-f /srv/imars-objects/ftp-ingest/wv2_2018_10_08T115750_fl_se_058523212_10_0.zip \
+-p 6 \
+-j '{"status_id":3, "area_id":7}' \
+--object_store no_upload \
+--dry_run
+
+# manually enter the time
 $ imars-etl load --area 1 --time "2017-01-02T13:45" --product_id 4 --filepath /path/to/file.hdf
 
 # auto-parse info (date) from filename using info from `imars_etl.filepath.data`
