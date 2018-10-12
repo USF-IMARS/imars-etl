@@ -163,7 +163,9 @@ def _load_file(args_dict):
                 pass
     if args_dict.get('dry_run', False):  # test mode returns the sql string
         logger.debug('oh, just a test')
-        return _make_sql_insert(**args_dict)
+        return _make_sql_insert(**args_dict).replace(
+            args_dict['filepath'], new_filepath
+        )
     else:
         try:
             db_conn_id = args_dict['metadata_db']
@@ -257,7 +259,7 @@ def _make_sql_insert(**kwargs):
         sys._getframe().f_code.co_name)
     )
     logger.setLevel(logging.WARN)
-    keys, vals = _make_sql_row_and_keys(**kwargs)
+    keys, vals = _make_sql_row_and_key_strings(**kwargs)
     # Create a new record
     SQL = "INSERT INTO file ("+keys+") VALUES ("+vals+")"
     logger.debug(SQL)
