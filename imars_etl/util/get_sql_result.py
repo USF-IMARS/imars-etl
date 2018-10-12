@@ -29,6 +29,7 @@ def get_sql_result(
         __name__,
         sys._getframe().f_code.co_name)
     )
+    logger.setLevel(logging.DEBUG)
     logger.debug("QUERY: {}".format(sql))
     object_metadata_hook = get_hook(conn_id)
 
@@ -42,6 +43,7 @@ def get_sql_result(
     except (NoMetadataMatchException, TooManyMetadataMatchesException):
         if check_result is True:
             raise
+    logger.debug("RESULT: {}".format(result))
     return result
 
 

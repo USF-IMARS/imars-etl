@@ -31,6 +31,11 @@ LOAD_DEFAULTS = {
     'metadata_db': DEFAULT_METADATA_DB_CONN_ID,
 }
 
+VALID_FILE_TABLE_COLNAMES = [  # TODO: get this from db
+    'filepath', 'date_time', 'product_id', 'is_day_pass',
+    'area_id', 'status_id', 'uuid', 'multihash'
+]
+
 
 def load(
     filepath=None, directory=None,
@@ -139,6 +144,7 @@ def _load_file(args_dict):
         __name__,
         sys._getframe().f_code.co_name)
     )
+    logger.setLevel(logging.DEBUG)
     logger.info("\n\n------- loading file {} -------\n".format(
         args_dict.get('filepath', '???').split('/')[-1]
     ))
@@ -146,18 +152,28 @@ def _load_file(args_dict):
 
     new_filepath = _actual_load_file_with_driver(**args_dict)
 
-    sql = _make_sql_insert(**args_dict)
-    sql = sql.replace(args_dict['filepath'], new_filepath)
+    fields, rows = _make_sql_row_and_key_lists(**args_dict)
+    for row_i, row in enumerate(rows):
+        for i, element in enumerate(row):
+            try:
+                rows[row_i][i] = element.replace(
+                    args_dict['filepath'], new_filepath
+                )
+            except (AttributeError, TypeError):  # element not a string
+                pass
     if args_dict.get('dry_run', False):  # test mode returns the sql string
-        return sql
+        logger.debug('oh, just a test')
+        return _make_sql_insert(**args_dict)
     else:
         try:
-            return get_sql_result(
-                sql,
-                args_dict['metadata_db'],
-                check_result=False,
-                should_commit=(not args_dict.get('dry_run', False)),
-                first=args_dict.get("first", False),
+            db_conn_id = args_dict['metadata_db']
+            metadata_hook = get_hook(db_conn_id)
+            metadata_hook.insert_rows(
+                table='file',
+                rows=rows,
+                target_fields=fields,
+                commit_every=1000,
+                replace=False,
             )
         except IntegrityError as i_err:
             _handle_integrity_error(i_err, new_filepath, **args_dict)
@@ -195,16 +211,25 @@ def _actual_load_file_with_driver(**kwargs):
         return result
 
 
-def _make_sql_insert(**kwargs):
-    """Creates SQL INSERT INTO statement with metadata from given args dict"""
-    VALID_FILE_TABLE_COLNAMES = [  # TODO: get this from db
-        'filepath', 'date_time', 'product_id', 'is_day_pass',
-        'area_id', 'status_id', 'uuid', 'multihash'
-    ]
-    logger = logging.getLogger("{}.{}".format(
-        __name__,
-        sys._getframe().f_code.co_name)
-    )
+def _make_sql_row_and_key_lists(**kwargs):
+    """
+    Creates SQL key & value lists with metadata from given args dict
+    """
+    keys = []
+    vals = []
+    for key in kwargs:
+        val = kwargs[key]
+        if key in VALID_FILE_TABLE_COLNAMES:
+            keys.append(key)
+            vals.append(val)
+    return keys, [vals]
+
+
+def _make_sql_row_and_key_strings(**kwargs):
+    """
+    !!! DEPRECATED !!!
+    Creates SQL key & value strings with metadata from given args dict
+    """
     KEY_FMT_STR = '{},'  # how we format sql keys
     keys = ""
     vals = ""
@@ -219,7 +244,20 @@ def _make_sql_insert(**kwargs):
             vals += val_fmt_str.format(val)
     keys = keys[:-1]  # trim last comma
     vals = vals[:-1]
+    return keys, vals
 
+
+def _make_sql_insert(**kwargs):
+    """
+    !!! DEPRECATED !!!
+    Creates SQL INSERT INTO statement with metadata from given args dict
+    """
+    logger = logging.getLogger("{}.{}".format(
+        __name__,
+        sys._getframe().f_code.co_name)
+    )
+    logger.setLevel(logging.WARN)
+    keys, vals = _make_sql_row_and_keys(**kwargs)
     # Create a new record
     SQL = "INSERT INTO file ("+keys+") VALUES ("+vals+")"
     logger.debug(SQL)
