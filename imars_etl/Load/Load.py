@@ -8,7 +8,6 @@ from pymysql.err import IntegrityError
 
 from imars_etl.drivers_metadata.get_metadata_driver_from_key\
     import get_metadata_driver_from_key
-from imars_etl.util import get_sql_result
 from imars_etl.get_hook import get_hook
 from imars_etl.get_hook import DEFAULT_OBJ_STORE_CONN_ID
 from imars_etl.get_hook import DEFAULT_METADATA_DB_CONN_ID
