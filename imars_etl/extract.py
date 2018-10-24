@@ -2,8 +2,8 @@ import os
 
 from imars_etl.get_hook import get_hook
 from imars_etl.get_hook import DEFAULT_OBJ_STORE_CONN_ID
+from imars_etl.get_hook import DEFAULT_METADATA_DB_CONN_ID
 from imars_etl.util.get_sql_result import get_sql_result
-from imars_etl.metadata_db import DEFAULT_METADATA_DB_CONN_ID
 
 EXTRACT_DEFAULTS = {
 }

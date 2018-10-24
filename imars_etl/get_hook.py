@@ -11,6 +11,7 @@ from imars_etl.object_storage.NoBackendObjectHook \
     import NoBackendObjectHook
 
 DEFAULT_OBJ_STORE_CONN_ID = "imars_objects"
+DEFAULT_METADATA_DB_CONN_ID = "imars_metadata"
 
 BUILT_IN_CONNECTIONS = {
     "no_backend": NoBackendObjectHook,
