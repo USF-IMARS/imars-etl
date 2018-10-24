@@ -10,6 +10,8 @@ from imars_etl.object_storage.HookFallbackChain \
 from imars_etl.object_storage.NoBackendObjectHook \
     import NoBackendObjectHook
 
+DEFAULT_OBJ_STORE_CONN_ID = "imars_objects"
+
 BUILT_IN_CONNECTIONS = {
     "no_backend": NoBackendObjectHook,
     "no_upload": NoBackendObjectHook,

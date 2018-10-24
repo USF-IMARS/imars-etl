@@ -7,9 +7,9 @@ import logging
 
 from imars_etl.util.ConstMapAction import ConstMapAction
 from imars_etl.get_hook import get_hooks_list
+from imars_etl.get_hook import DEFAULT_OBJ_STORE_CONN_ID
 from imars_etl.drivers_metadata.get_metadata_driver_from_key \
     import DRIVER_MAP_DICT as METADATA_DRIVER_KEYS
-from imars_etl.object_storage import DEFAULT_OBJ_STORE_CONN_ID
 from imars_etl.api import load
 from imars_etl.api import extract
 from imars_etl.api import id_lookup
