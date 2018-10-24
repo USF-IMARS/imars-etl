@@ -12,13 +12,7 @@ from imars_etl.get_hook import get_hook
 from imars_etl.get_hook import DEFAULT_OBJ_STORE_CONN_ID
 from imars_etl.get_hook import DEFAULT_METADATA_DB_CONN_ID
 from imars_etl.Load.validate_args import validate_args
-from imars_etl.object_storage.hook_wrappers.DataLakeHookWrapper \
-    import DataLakeHookWrapper
-from imars_etl.object_storage.hook_wrappers.FSHookWrapper \
-    import FSHookWrapper
-from imars_etl.object_storage.hook_wrappers.BaseHookWrapper \
-    import WrapperMismatchException
-
+from imars_etl.object_storage.ObjectStorageHandler import ObjectStorageHandler
 
 LOAD_DEFAULTS = {
     'output_path': None,
@@ -149,7 +143,7 @@ def _load_file(args_dict):
     ))
     args_dict = validate_args(args_dict, DEFAULTS=LOAD_DEFAULTS)
 
-    new_filepath = _actual_load_file_with_driver(**args_dict)
+    new_filepath = ObjectStorageHandler(**args_dict).load(**args_dict)
 
     fields, rows = _make_sql_row_and_key_lists(**args_dict)
     for row_i, row in enumerate(rows):
@@ -178,38 +172,6 @@ def _load_file(args_dict):
             )
         except IntegrityError as i_err:
             _handle_integrity_error(i_err, new_filepath, **args_dict)
-
-
-def _actual_load_file_with_driver(**kwargs):
-    # load file into IMaRS data warehouse
-    logger = logging.getLogger("{}.{}".format(
-        __name__,
-        sys._getframe().f_code.co_name)
-    )
-    obj_store_hook = get_hook(kwargs['object_store'])
-    result = None
-
-    try:  # direct usage (no wrapper)
-        result = obj_store_hook.load(**kwargs)
-    except AttributeError:
-        logger.debug('raw hook failed')
-
-    try:  # azure_data_lake-like interface:
-        result = DataLakeHookWrapper(obj_store_hook).load(**kwargs)
-    except WrapperMismatchException:
-        logger.debug('hook not DataLake-like')
-
-    try:
-        result = FSHookWrapper(obj_store_hook).load(**kwargs)
-    except WrapperMismatchException:
-        logger.debug('hook not FSHook-like')
-
-    if result is None:
-        raise AttributeError(
-            "hook '{}' has unknown interface.".format(obj_store_hook)
-        )
-    else:
-        return result
 
 
 def _make_sql_row_and_key_lists(**kwargs):

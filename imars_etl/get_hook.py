@@ -24,6 +24,7 @@ def get_hook(conn_id):
     """
     Get hook object by id string.
     """
+    # TODO: separate object_storage & metadata_db hooks
     logger = logging.getLogger("{}.{}".format(
         __name__,
         sys._getframe().f_code.co_name)
