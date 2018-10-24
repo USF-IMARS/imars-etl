@@ -1,6 +1,7 @@
 import logging
 import sys
 
+from sqlalchemy.orm.exc import NoResultFound
 from airflow import settings
 from airflow.models import Connection
 from airflow.contrib.hooks.fs_hook import FSHook
@@ -41,7 +42,13 @@ def get_hook(conn_id):
         assert(  # no multi-chain funny business.
             "hook_fallback_chain" not in hook_conn_ids
         )
-        hooks = [get_hook(c_id) for c_id in hook_conn_ids]
+        logger.debug("Hook is fallback chain. Decending into chain.")
+        hooks = []
+        for c_id in hook_conn_ids:
+            try:
+                hooks.append(get_hook(c_id))
+            except NoResultFound:
+                logger.warn("Chained connection '{}' not found.".format(c_id))
         return HookFallbackChain(hooks)
     else:
         logger.debug("hook not a fallback chain")
