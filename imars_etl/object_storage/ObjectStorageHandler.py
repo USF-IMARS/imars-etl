@@ -31,7 +31,6 @@ Backends| HD| NFS| FUSE | S3  | Azure         | MySQL      | MsSQL | SQLite |
 ```
 """
 from imars_etl.BaseHookHandler import BaseHookHandler
-from imars_etl.util.try_hooks_n_wrappers import try_hooks_n_wrappers
 from imars_etl.object_storage.hook_wrappers.DataLakeHookWrapper \
     import DataLakeHookWrapper
 from imars_etl.object_storage.hook_wrappers.FSHookWrapper \
@@ -43,23 +42,20 @@ OBJECT_WRAPPERS = [DataLakeHookWrapper, FSHookWrapper]
 class ObjectStorageHandler(BaseHookHandler):
     def __init__(self, **kwargs):
         super(ObjectStorageHandler, self).__init__(
-            hook_conn_id=kwargs['object_store']
+            hook_conn_id=kwargs['object_store'],
+            wrapper_classes=OBJECT_WRAPPERS,
         )
 
     def load(self, **kwargs):
         # _guess_wrapper(h, 'load', **kwargs) for h in self.obj_store_hooks
         # ... but catching exceptions
-        return try_hooks_n_wrappers(
+        return self.try_hooks_n_wrappers(
             method='load',
-            hooks=self.hooks_list,
-            wrappers=OBJECT_WRAPPERS,
             m_kwargs=kwargs
         )
 
     def extract(self, src_path, target_path):
-        return try_hooks_n_wrappers(
+        return self.try_hooks_n_wrappers(
             method='extract',
-            hooks=self.hooks_list,
-            wrappers=OBJECT_WRAPPERS,
             m_args=[src_path, target_path],
         )

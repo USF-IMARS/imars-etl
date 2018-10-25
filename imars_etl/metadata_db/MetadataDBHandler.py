@@ -34,7 +34,6 @@ import logging
 import sys
 
 from imars_etl.BaseHookHandler import BaseHookHandler
-from imars_etl.util.try_hooks_n_wrappers import try_hooks_n_wrappers
 from imars_etl.exceptions.NoMetadataMatchException \
     import NoMetadataMatchException
 from imars_etl.exceptions.TooManyMetadataMatchesException \
@@ -46,7 +45,8 @@ METADATA_DB_WRAPPERS = []
 class MetadataDBHandler(BaseHookHandler):
     def __init__(self, **kwargs):
         super(MetadataDBHandler, self).__init__(
-            hook_conn_id=kwargs['metadata_db']
+            hook_conn_id=kwargs['metadata_db'],
+            wrapper_classes=METADATA_DB_WRAPPERS
         )
 
     def insert_rows(
@@ -57,10 +57,8 @@ class MetadataDBHandler(BaseHookHandler):
         commit_every=1000,
         replace=False,
     ):
-        return try_hooks_n_wrappers(
+        return self.try_hooks_n_wrappers(
             method='insert_rows',
-            hooks=self.hooks_list,
-            wrappers=METADATA_DB_WRAPPERS,
             m_args=[],
             m_kwargs=dict(
                 table=table,
@@ -72,19 +70,15 @@ class MetadataDBHandler(BaseHookHandler):
         )
 
     def get_first(self, sql):
-        return try_hooks_n_wrappers(
+        return self.try_hooks_n_wrappers(
             method='get_first',
-            hooks=self.hooks_list,
-            wrappers=METADATA_DB_WRAPPERS,
             m_args=[sql],
             m_kwargs={}
         )
 
     def _get_records(self, sql):
-        return try_hooks_n_wrappers(
+        return self.try_hooks_n_wrappers(
             method='get_records',
-            hooks=self.hooks_list,
-            wrappers=METADATA_DB_WRAPPERS,
             m_args=[sql],
             m_kwargs={}
         )
