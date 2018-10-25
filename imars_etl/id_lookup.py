@@ -1,6 +1,6 @@
 
-from imars_etl.util import get_sql_result
 from imars_etl.get_hook import DEFAULT_METADATA_DB_CONN_ID
+from imars_etl.metadata_db.MetadataDBHandler import MetadataDBHandler
 
 
 def id_lookup(
@@ -29,14 +29,16 @@ def id_lookup(
         column_given = 'short_name'
         column_to_get = 'id'
 
-    translation = get_sql_result(
+    metadata_db = MetadataDBHandler(
+        metadata_db=metadata_conn_id,
+    )
+    translation = metadata_db.get_records(
         "SELECT {} FROM {} WHERE {}={}".format(
             column_to_get,
             table,
             column_given,
             value
         ),
-        conn_id=metadata_conn_id,
         first=first,
     )[0]
 

@@ -24,12 +24,7 @@ def extract(
     full_sql_str = "SELECT filepath FROM file WHERE {}".format(sql)
 
     metadata_db = MetadataDBHandler(
-        sql=sql,
-        output_path=output_path,
-        first=first,
         metadata_db=metadata_conn_id,
-        object_store=object_store,
-        **kwargs
     )
     result = metadata_db.get_records(
         full_sql_str,
