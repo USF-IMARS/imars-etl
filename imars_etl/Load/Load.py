@@ -8,11 +8,11 @@ from pymysql.err import IntegrityError
 
 from imars_etl.drivers_metadata.get_metadata_driver_from_key\
     import get_metadata_driver_from_key
-from imars_etl.get_hook import get_hook
 from imars_etl.get_hook import DEFAULT_OBJ_STORE_CONN_ID
 from imars_etl.get_hook import DEFAULT_METADATA_DB_CONN_ID
 from imars_etl.Load.validate_args import validate_args
 from imars_etl.object_storage.ObjectStorageHandler import ObjectStorageHandler
+from imars_etl.metadata_db.MetadataDBHandler import MetadataDBHandler
 
 LOAD_DEFAULTS = {
     'output_path': None,
@@ -161,9 +161,7 @@ def _load_file(args_dict):
         )
     else:
         try:
-            db_conn_id = args_dict['metadata_db']
-            metadata_hook = get_hook(db_conn_id)
-            metadata_hook.insert_rows(
+            MetadataDBHandler(**args_dict).insert_rows(
                 table='file',
                 rows=rows,
                 target_fields=fields,
