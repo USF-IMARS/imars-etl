@@ -33,8 +33,8 @@ Backends| HD| NFS| FUSE | S3  | Azure         | MySQL      | MsSQL | SQLite |
 import logging
 import sys
 
+from imars_etl.BaseHookHandler import BaseHookHandler
 from imars_etl.util.try_hooks_n_wrappers import try_hooks_n_wrappers
-from imars_etl.get_hook import get_hook_list
 from imars_etl.exceptions.NoMetadataMatchException \
     import NoMetadataMatchException
 from imars_etl.exceptions.TooManyMetadataMatchesException \
@@ -43,9 +43,11 @@ from imars_etl.exceptions.TooManyMetadataMatchesException \
 METADATA_DB_WRAPPERS = []
 
 
-class MetadataDBHandler(object):
+class MetadataDBHandler(BaseHookHandler):
     def __init__(self, **kwargs):
-        self.db_hooks = get_hook_list(kwargs['metadata_db'])
+        super(MetadataDBHandler, self).__init__(
+            hook_conn_id=kwargs['metadata_db']
+        )
 
     def insert_rows(
         self,
@@ -57,7 +59,7 @@ class MetadataDBHandler(object):
     ):
         return try_hooks_n_wrappers(
             method='insert_rows',
-            hooks=self.db_hooks,
+            hooks=self.hooks_list,
             wrappers=METADATA_DB_WRAPPERS,
             m_args=[],
             m_kwargs=dict(
@@ -72,7 +74,7 @@ class MetadataDBHandler(object):
     def get_first(self, sql):
         return try_hooks_n_wrappers(
             method='get_first',
-            hooks=self.db_hooks,
+            hooks=self.hooks_list,
             wrappers=METADATA_DB_WRAPPERS,
             m_args=[sql],
             m_kwargs={}
@@ -81,7 +83,7 @@ class MetadataDBHandler(object):
     def _get_records(self, sql):
         return try_hooks_n_wrappers(
             method='get_records',
-            hooks=self.db_hooks,
+            hooks=self.hooks_list,
             wrappers=METADATA_DB_WRAPPERS,
             m_args=[sql],
             m_kwargs={}
