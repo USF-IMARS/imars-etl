@@ -50,9 +50,12 @@ class ObjectStorageHandler(object):
         # NOTE: in the future we could do better than just guessing
         return self._guess_load_hook_handlers(**kwargs)
 
-    def extract(self, args):
-        # TODO
-        raise NotImplementedError()
+    def extract(self, src_path, target_path, **kwargs):
+        # assume azure_data_lake-like interface:
+        self.obj_store_hook.download_file(
+            local_path=target_path, remote_path=src_path
+        )
+        return target_path
 
     def format_filepath(self):
         # TODO

@@ -1,6 +1,6 @@
 import os
 
-from imars_etl.get_hook import get_hook
+from imars_etl.object_storage.ObjectStorageHandler import ObjectStorageHandler
 from imars_etl.get_hook import DEFAULT_OBJ_STORE_CONN_ID
 from imars_etl.get_hook import DEFAULT_METADATA_DB_CONN_ID
 from imars_etl.util.get_sql_result import get_sql_result
@@ -30,10 +30,17 @@ def extract(
     if output_path is None:
         output_path = "./" + os.path.basename(src_path)
 
+    object_storage = ObjectStorageHandler(
+        sql=sql,
+        output_path=output_path,
+        first=first,
+        metadata_conn_id=metadata_conn_id,
+        object_store=object_store,
+        **kwargs
+    )
     # use connection to download & then print a path to where the file can be
     # accessed on the local machine.
-    fpath = _extract(
-        object_store,
+    fpath = object_storage.extract(
         src_path,
         target_path=output_path,
         first=False,
@@ -42,10 +49,3 @@ def extract(
 
     print(fpath)
     return fpath
-
-
-def _extract(obj_store_conn_id, src_path, target_path, **kwargs):
-    obj_store_hook = get_hook(obj_store_conn_id)
-    # assume azure_data_lake-like interface:
-    obj_store_hook.download_file(local_path=target_path, remote_path=src_path)
-    return target_path
