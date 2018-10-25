@@ -6,12 +6,11 @@ from airflow import settings
 from airflow.models import Connection
 from airflow.contrib.hooks.fs_hook import FSHook
 
-from imars_etl.object_storage.HookFallbackChain \
-    import HookFallbackChain
 from imars_etl.object_storage.NoBackendObjectHook \
     import NoBackendObjectHook
 
 DEFAULT_OBJ_STORE_CONN_ID = "imars_objects"
+# DEFAULT_OBJ_STORE_CONN_ID = "hook_fallback_chain.imars_objects.local_tmp"
 DEFAULT_METADATA_DB_CONN_ID = "imars_metadata"
 
 BUILT_IN_CONNECTIONS = {
@@ -20,22 +19,12 @@ BUILT_IN_CONNECTIONS = {
 }
 
 
-def get_hook(conn_id):
-    """
-    Get hook object by id string.
-    """
-    # TODO: separate object_storage & metadata_db hooks
+def get_hook_list(conn_id):
     logger = logging.getLogger("{}.{}".format(
         __name__,
         sys._getframe().f_code.co_name)
     )
     logger.info("getting hook for conn_id '{}'".format(conn_id))
-
-    # check for built-in
-    if conn_id in BUILT_IN_CONNECTIONS:
-        return BUILT_IN_CONNECTIONS[conn_id]()
-    else:
-        logger.debug("hook not built-in".format(conn_id))
 
     # check for fallback chain
     if conn_id.startswith("hook_fallback_chain."):
@@ -47,12 +36,31 @@ def get_hook(conn_id):
         hooks = []
         for c_id in hook_conn_ids:
             try:
-                hooks.append(get_hook(c_id))
+                hooks.append(_get_hook(c_id))
             except NoResultFound:
                 logger.warn("Chained connection '{}' not found.".format(c_id))
-        return HookFallbackChain(hooks)
+        return hooks
     else:
         logger.debug("hook not a fallback chain")
+
+    return [_get_hook(conn_id)]
+
+
+def _get_hook(conn_id):
+    """
+    Get hook object by id string.
+    """
+    # TODO: separate object_storage & metadata_db hooks
+    logger = logging.getLogger("{}.{}".format(
+        __name__,
+        sys._getframe().f_code.co_name)
+    )
+
+    # check for built-in
+    if conn_id in BUILT_IN_CONNECTIONS:
+        return BUILT_IN_CONNECTIONS[conn_id]()
+    else:
+        logger.debug("hook not built-in".format(conn_id))
 
     # fetch encrypted connection from airflow:
     session = settings.Session()

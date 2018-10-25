@@ -21,22 +21,23 @@ class HookFallbackChain(BaseObjectHook):
         """
         assert len(hooklist) > 0
         self.hooklist = hooklist
+        self.cursor = 0
         super(HookFallbackChain, self).__init__(
             source, **kwargs
         )
 
     def load(self, filepath=None, **kwargs):
-        exceptions = []
-        for hook in self.hooklist:
-            try:
-                remote_target_path = hook.load(filepath=filepath, **kwargs)
-                return remote_target_path
-            except Exception as ex:
-                exceptions.append(ex)
+        if self.cursor == len(self.hooklist):
+            raise RuntimeError("All hooks failed")
         else:
-            raise Exception(
-                "All hooks failed. Exceptions: {}".format(exceptions)
-            )
+            try:
+                remote_target_path = self.hooklist[self.cursor].load(
+                    filepath=None, **kwargs
+                )
+                return remote_target_path
+            except Exception:
+                raise
+
 
     def extract(self, src_path, target_path, **kwargs):
         exceptions = []
@@ -49,6 +50,4 @@ class HookFallbackChain(BaseObjectHook):
             except Exception as ex:
                 exceptions.append(ex)
         else:
-            raise Exception(
-                "All hooks failed. Exceptions: {}".format(exceptions)
-            )
+            raise exceptions[:-1]  # raise the last exception

@@ -33,7 +33,7 @@ Backends| HD| NFS| FUSE | S3  | Azure         | MySQL      | MsSQL | SQLite |
 import logging
 import sys
 
-from imars_etl.get_hook import get_hook
+from imars_etl.get_hook import get_hook_list
 from imars_etl.exceptions.NoMetadataMatchException \
     import NoMetadataMatchException
 from imars_etl.exceptions.TooManyMetadataMatchesException \
@@ -42,10 +42,11 @@ from imars_etl.exceptions.TooManyMetadataMatchesException \
 
 class MetadataDBHandler(object):
     def __init__(self, **kwargs):
-        self.db_hook = get_hook(kwargs['metadata_db'])
+        self.db_hooks = get_hook_list(kwargs['metadata_db'])
 
     def insert_rows(self, *args, **kwargs):
-        self.db_hook.insert_rows(*args, **kwargs)
+        db_hook = self.db_hooks[0]
+        db_hook.insert_rows(*args, **kwargs)
 
     def get_records(
         self, sql,
@@ -70,7 +71,8 @@ class MetadataDBHandler(object):
         )
         logger.setLevel(logging.DEBUG)
         logger.debug("QUERY: {}".format(sql))
-        object_metadata_hook = self.db_hook
+        db_hook = self.db_hooks[0]
+        object_metadata_hook = db_hook
 
         if first is True:
             result = object_metadata_hook.get_first(sql)
