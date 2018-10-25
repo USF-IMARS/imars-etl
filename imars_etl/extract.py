@@ -1,9 +1,9 @@
 import os
 
 from imars_etl.object_storage.ObjectStorageHandler import ObjectStorageHandler
+from imars_etl.metadata_db.MetadataDBHandler import MetadataDBHandler
 from imars_etl.get_hook import DEFAULT_OBJ_STORE_CONN_ID
 from imars_etl.get_hook import DEFAULT_METADATA_DB_CONN_ID
-from imars_etl.util.get_sql_result import get_sql_result
 
 EXTRACT_DEFAULTS = {
 }
@@ -23,7 +23,19 @@ def extract(
     """
     full_sql_str = "SELECT filepath FROM file WHERE {}".format(sql)
 
-    result = get_sql_result(full_sql_str, conn_id=metadata_conn_id)
+    metadata_db = MetadataDBHandler(
+        sql=sql,
+        output_path=output_path,
+        first=first,
+        metadata_db=metadata_conn_id,
+        object_store=object_store,
+        **kwargs
+    )
+    result = metadata_db.get_records(
+        full_sql_str,
+        first=first,
+        **kwargs
+    )
 
     src_path = result['filepath']
 
