@@ -33,20 +33,59 @@ Backends| HD| NFS| FUSE | S3  | Azure         | MySQL      | MsSQL | SQLite |
 import logging
 import sys
 
+from imars_etl.util.try_hooks_n_wrappers import try_hooks_n_wrappers
 from imars_etl.get_hook import get_hook_list
 from imars_etl.exceptions.NoMetadataMatchException \
     import NoMetadataMatchException
 from imars_etl.exceptions.TooManyMetadataMatchesException \
     import TooManyMetadataMatchesException
 
+METADATA_DB_WRAPPERS = []
+
 
 class MetadataDBHandler(object):
     def __init__(self, **kwargs):
         self.db_hooks = get_hook_list(kwargs['metadata_db'])
 
-    def insert_rows(self, *args, **kwargs):
-        db_hook = self.db_hooks[0]
-        db_hook.insert_rows(*args, **kwargs)
+    def insert_rows(
+        self,
+        table='file',
+        rows=[],
+        target_fields=[],
+        commit_every=1000,
+        replace=False,
+    ):
+        return try_hooks_n_wrappers(
+            method='insert_rows',
+            hooks=self.db_hooks,
+            wrappers=METADATA_DB_WRAPPERS,
+            m_args=[],
+            m_kwargs=dict(
+                table=table,
+                rows=rows,
+                target_fields=target_fields,
+                commit_every=commit_every,
+                replace=replace,
+            )
+        )
+
+    def get_first(self, sql):
+        return try_hooks_n_wrappers(
+            method='get_first',
+            hooks=self.db_hooks,
+            wrappers=METADATA_DB_WRAPPERS,
+            m_args=[sql],
+            m_kwargs={}
+        )
+
+    def _get_records(self, sql):
+        return try_hooks_n_wrappers(
+            method='get_records',
+            hooks=self.db_hooks,
+            wrappers=METADATA_DB_WRAPPERS,
+            m_args=[sql],
+            m_kwargs={}
+        )
 
     def get_records(
         self, sql,
@@ -71,13 +110,11 @@ class MetadataDBHandler(object):
         )
         logger.setLevel(logging.DEBUG)
         logger.debug("QUERY: {}".format(sql))
-        db_hook = self.db_hooks[0]
-        object_metadata_hook = db_hook
 
         if first is True:
-            result = object_metadata_hook.get_first(sql)
+            result = self.get_first(sql)
         else:
-            result = object_metadata_hook.get_records(sql)
+            result = self._get_records(sql)
 
         try:
             result = validate_sql_result(result)

@@ -16,7 +16,7 @@ class DataLakeHookWrapper(BaseHookWrapper):
     }
 
     def load(self, filepath=None, **kwargs):
-        local_src_path = kwargs['filepath']
+        local_src_path = filepath
         remote_target_path = self.format_filepath(**kwargs)
         # print("\n\n\t{}\n\n".format(kwargs))
         if kwargs.get('dry_run', False) is False:
@@ -26,7 +26,7 @@ class DataLakeHookWrapper(BaseHookWrapper):
             )
         return remote_target_path
 
-    def extract(self, src_path, target_path, **kwargs):
+    def extract(self, src_path, target_path):
         self.hook.download_file(local_path=target_path, remote_path=src_path)
         return target_path
 
