@@ -26,10 +26,13 @@ def select(
     """
     sql_query = "SELECT {} FROM file WHERE {};".format(cols, sql)
     print(sql_query)
-    result = get_sql_result(
+    metadata_db = MetadataDBHandler(
+        metadata_db=metadata_conn_id,
+    )
+    result = metadata_db.get_records(
         sql_query,
-        conn_id=metadata_conn_id,
         first=first,
     )
+
     print(result)
     return result
