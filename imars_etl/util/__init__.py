@@ -1,2 +1,1 @@
 from imars_etl.util.dict_to_argparse_namespace import dict_to_argparse_namespace
-from imars_etl.util.get_sql_result import get_sql_result
