@@ -9,9 +9,8 @@ from airflow.contrib.hooks.fs_hook import FSHook
 from imars_etl.object_storage.NoBackendObjectHook \
     import NoBackendObjectHook
 
-DEFAULT_OBJ_STORE_CONN_ID = "imars_objects"
-# DEFAULT_OBJ_STORE_CONN_ID = "hook_fallback_chain.imars_objects.local_tmp"
-DEFAULT_METADATA_DB_CONN_ID = "imars_metadata"
+DEFAULT_OBJ_STORE_CONN_ID = "fallback_chain.local_tmp.imars_objects"
+DEFAULT_METADATA_DB_CONN_ID = "fallback_chain.local_metadb.imars_metadata"
 
 BUILT_IN_CONNECTIONS = {
     "no_backend": NoBackendObjectHook,
@@ -27,10 +26,10 @@ def get_hook_list(conn_id):
     logger.info("getting hook for conn_id '{}'".format(conn_id))
 
     # check for fallback chain
-    if conn_id.startswith("hook_fallback_chain."):
+    if conn_id.startswith("fallback_chain."):
         hook_conn_ids = conn_id.split('.')[1:]
         assert(  # no multi-chain funny business.
-            "hook_fallback_chain" not in hook_conn_ids
+            "fallback_chain" not in hook_conn_ids
         )
         logger.debug("Hook is fallback chain. Decending into chain.")
         hooks = []
