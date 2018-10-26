@@ -40,12 +40,15 @@ from imars_etl.exceptions.TooManyMetadataMatchesException \
     import TooManyMetadataMatchesException
 
 METADATA_DB_WRAPPERS = []
+DEFAULT_METADATA_DB_CONN_ID = "fallback_chain.local_metadb.imars_metadata"
 
 
 class MetadataDBHandler(BaseHookHandler):
     def __init__(self, **kwargs):
         super(MetadataDBHandler, self).__init__(
-            hook_conn_id=kwargs['metadata_db'],
+            hook_conn_id=kwargs.get(
+                'metadata_db', DEFAULT_METADATA_DB_CONN_ID
+            ),
             wrapper_classes=METADATA_DB_WRAPPERS
         )
 

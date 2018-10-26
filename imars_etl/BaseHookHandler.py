@@ -9,8 +9,6 @@ from airflow.contrib.hooks.fs_hook import FSHook
 from imars_etl.object_storage.NoBackendObjectHook \
     import NoBackendObjectHook
 
-DEFAULT_METADATA_DB_CONN_ID = "fallback_chain.local_metadb.imars_metadata"
-
 
 class BaseHookHandler(object):
     def __init__(self, hook_conn_id, wrapper_classes, built_in_hooks={}):
