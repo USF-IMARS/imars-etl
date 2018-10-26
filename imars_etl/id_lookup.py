@@ -1,5 +1,5 @@
 
-from imars_etl.get_hook import DEFAULT_METADATA_DB_CONN_ID
+from imars_etl.BaseHookHandler import DEFAULT_METADATA_DB_CONN_ID
 from imars_etl.metadata_db.MetadataDBHandler import MetadataDBHandler
 
 
