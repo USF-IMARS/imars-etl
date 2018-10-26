@@ -44,19 +44,28 @@ class BaseHookHandler(object):
         m_kwargs : dict
             kwargs to pass to method `method(**kwargs)`
         """
+        exceptions = ""
         for hook in self.hooks_list:
             try:  # try this hook
                 try:  # directly
                     return getattr(hook, method)(*m_args, **m_kwargs)
-                except:  # with wrappers
+                except Exception as unwr_exc:  # with wrappers
+                    exceptions += ("\n\t(unwrapped) {}:\n\t\t{}".format(
+                        hook, unwr_exc
+                    ))
                     for wrapper in self.wrapper_classes:
                         try:  # try this wrapper
                             return getattr(wrapper(hook), method)(
                                 *m_args, **m_kwargs
                             )
-                        except:  # wrapper did not work
+                        except Exception as wr_exc:  # wrapper did not work
+                            exceptions.append("\n{}( {} ):\n\t\t{}".format(
+                                wrapper, hook, wr_exc
+                            ))
                             continue
             except:  # hook did not work
                 continue
         else:
-            raise  # none of the hooks worked with any of the wrappers
+            raise RuntimeError(
+                "All hooks failed. Attempts:{}".format(exceptions)
+            )
