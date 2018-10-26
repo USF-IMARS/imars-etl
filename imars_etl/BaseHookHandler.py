@@ -1,3 +1,6 @@
+import logging
+import sys
+
 from imars_etl.get_hook import get_hook_list
 
 
@@ -44,28 +47,33 @@ class BaseHookHandler(object):
         m_kwargs : dict
             kwargs to pass to method `method(**kwargs)`
         """
+        logger = logging.getLogger("{}.{}".format(
+            __name__,
+            sys._getframe().f_code.co_name
+        ))
         exceptions = ""
         for hook in self.hooks_list:
-            try:  # try this hook
-                try:  # directly
-                    return getattr(hook, method)(*m_args, **m_kwargs)
-                except Exception as unwr_exc:  # with wrappers
-                    exceptions += ("\n\t(unwrapped) {}:\n\t\t{}".format(
-                        hook, unwr_exc
-                    ))
-                    for wrapper in self.wrapper_classes:
-                        try:  # try this wrapper
-                            return getattr(wrapper(hook), method)(
-                                *m_args, **m_kwargs
-                            )
-                        except Exception as wr_exc:  # wrapper did not work
-                            exceptions.append("\n{}( {} ):\n\t\t{}".format(
-                                wrapper, hook, wr_exc
-                            ))
-                            continue
-            except:  # hook did not work
-                continue
+            try:  # directly
+                return getattr(hook, method)(*m_args, **m_kwargs)
+            except Exception as unwr_exc:  # with wrappers
+                exceptions += "\n\t(unwrapped) {}:\n\t\t{}".format(
+                    hook, unwr_exc
+                )
+                for wrapper in self.wrapper_classes:
+                    try:  # try this wrapper
+                        return getattr(wrapper(hook), method)(
+                            *m_args, **m_kwargs
+                        )
+                    except Exception as wr_exc:  # wrapper did not work
+                        exceptions += "\n{}( {} ):\n\t\t{}".format(
+                            wrapper, hook, wr_exc
+                        )
+                        continue
         else:
+            logger.debug("\n\t   hooks:{}\n\twrappers:{}".format(
+                self.hooks_list,
+                self.wrapper_classes,
+            ))
             raise RuntimeError(
                 "All hooks failed. Attempts:{}".format(exceptions)
             )
