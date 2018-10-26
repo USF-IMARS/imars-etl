@@ -37,12 +37,13 @@ from imars_etl.object_storage.hook_wrappers.FSHookWrapper \
     import FSHookWrapper
 
 OBJECT_WRAPPERS = [DataLakeHookWrapper, FSHookWrapper]
+DEFAULT_OBJ_STORE_CONN_ID = "fallback_chain.local_tmp.imars_objects"
 
 
 class ObjectStorageHandler(BaseHookHandler):
     def __init__(self, **kwargs):
         super(ObjectStorageHandler, self).__init__(
-            hook_conn_id=kwargs['object_store'],
+            hook_conn_id=kwargs.get('object_store', DEFAULT_OBJ_STORE_CONN_ID),
             wrapper_classes=OBJECT_WRAPPERS,
         )
 

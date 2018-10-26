@@ -8,10 +8,10 @@ from pymysql.err import IntegrityError
 
 from imars_etl.drivers_metadata.get_metadata_driver_from_key\
     import get_metadata_driver_from_key
-from imars_etl.BaseHookHandler import DEFAULT_OBJ_STORE_CONN_ID
 from imars_etl.BaseHookHandler import DEFAULT_METADATA_DB_CONN_ID
 from imars_etl.Load.validate_args import validate_args
 from imars_etl.object_storage.ObjectStorageHandler import ObjectStorageHandler
+from imars_etl.object_storage.ObjectStorageHandler import DEFAULT_OBJ_STORE_CONN_ID
 from imars_etl.metadata_db.MetadataDBHandler import MetadataDBHandler
 
 LOAD_DEFAULTS = {
