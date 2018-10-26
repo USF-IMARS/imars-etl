@@ -30,7 +30,6 @@ def extract(
     result = metadata_db.get_records(
         full_sql_str,
         first=first,
-        **kwargs
     )
 
     src_path = result['filepath']
