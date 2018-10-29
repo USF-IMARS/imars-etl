@@ -12,7 +12,12 @@ from imars_etl.util.TestCasePlusSQL import TestCasePlusSQL
 
 class Test_load_api(TestCasePlusSQL):
     # === python API (passes dicts)
-    def test_load_python_basic_dict(self):
+    @patch(
+        "imars_etl.object_storage.ObjectStorageHandler."
+        "ObjectStorageHandler.load",
+        return_value="/tmp/imars-etl-test-fpath"
+    )
+    def test_load_python_basic_dict(self, mock_load):
         """
         API basic imars_etl.load:
             imars_etl.load({
@@ -35,19 +40,23 @@ class Test_load_api(TestCasePlusSQL):
         # 'INSERT INTO file'
         # + ' (status_id,date_time,area_id,product_id,filepath)'
         # + ' VALUES (1,"2018-02-26T13:00",1,-1,'+
-        # '"/srv/imars-objects/test_test_test/simple_file_with_no_args.txt")'
+        # '"/tmp/imars-etl-test-fpath")'
         self.assertSQLInsertKeyValuesMatch(
             res,
             ['date_time', 'product_id', 'filepath'],
             [
                 '"2018-02-26 13:00:00"',
                 '-1',
-                '"/srv/imars-objects/test_test_test' +
-                '/simple_file_with_no_args.txt"'
+                '"{}"'.format(mock_load.return_value)
             ]
         )
 
-    def test_load_python_with_json(self):
+    @patch(
+        "imars_etl.object_storage.ObjectStorageHandler."
+        "ObjectStorageHandler.load",
+        return_value="/tmp/imars-etl-test-fpath"
+    )
+    def test_load_python_with_json(self, mock_load):
         """
         API imars_etl.load with --json option
             imars_etl.load({
@@ -77,12 +86,16 @@ class Test_load_api(TestCasePlusSQL):
                 '"2018-02-26 13:00:00"',
                 '1',
                 '-1',
-                '"/srv/imars-objects/test_test_test' +
-                '/simple_file_with_no_args.txt"'
+                '"{}"'.format(mock_load.return_value)
             ]
         )
 
-    def test_load_att_wv2_m1bs(self):
+    @patch(
+        "imars_etl.object_storage.ObjectStorageHandler."
+        "ObjectStorageHandler.load",
+        return_value="/tmp/imars-etl-test-fpath"
+    )
+    def test_load_att_wv2_m1bs(self, mock_load):
         """
         API load att_wv2_m1bs with inferred date from filepath
         """
@@ -109,13 +122,16 @@ class Test_load_api(TestCasePlusSQL):
                 '"2016-02-12 16:25:18"',
                 '5',
                 '7',
-                '"/srv/imars-objects/extra_data/WV02/2016.02' +
-                '/WV02_20160212162518_0000000000000000_16Feb12162518-M1BS' +
-                '-057522945010_P002.att"'
+                '"{}"'.format(mock_load.return_value)
             ]
         )
 
-    def test_custom_input_load_format(self):
+    @patch(
+        "imars_etl.object_storage.ObjectStorageHandler."
+        "ObjectStorageHandler.load",
+        return_value="/tmp/imars-etl-test-fpath"
+    )
+    def test_custom_input_load_format(self, mock_load):
         """
         imars_etl.load using manually input load_format
             imars_etl.load({
@@ -143,12 +159,16 @@ class Test_load_api(TestCasePlusSQL):
             [
                 '"2018-06-21 00:00:00"',
                 '-1',
-                '"/srv/imars-objects/test_test_test/' +
-                'simple_file_with_no_args.txt"'
+                '"{}"'.format(mock_load.return_value)
             ]
         )
 
-    def test_load_dir(self):
+    @patch(
+        "imars_etl.object_storage.ObjectStorageHandler."
+        "ObjectStorageHandler.load",
+        return_value="/tmp/imars-etl-test-fpath"
+    )
+    def test_load_dir(self, mock_load):
         """Load directory vi python API"""
         FAKE_TEST_DIR = "/fake/dir/of/files/w/parseable/dates"
         with patch('os.walk') as mockwalk:
@@ -180,14 +200,18 @@ class Test_load_api(TestCasePlusSQL):
                     [
                         '"2018-11-29 13:00:11"',
                         '-2',
-                        '"/srv/imars-objects/_fancy_test_arg-here_/2018-333' +
-                        '/arg_is_test_arg-here_time_is_1311.fancy_file"'
+                        '"{}"'.format(mock_load.return_value)
                     ]
                 ]
             )
 
+    @patch(
+        "imars_etl.object_storage.ObjectStorageHandler."
+        "ObjectStorageHandler.load",
+        return_value="/tmp/imars-etl-test-fpath"
+    )
     def test_load_file_w_metadata_file_date(
-        self
+        self, mock_load
     ):
         """
         API load file w/ metadata file containing date
@@ -231,7 +255,6 @@ class Test_load_api(TestCasePlusSQL):
                     '"{}"'.format(DATETIME[:-1].replace("T", " ")),
                     '-2',
                     '"{}"'.format(FAKE_UUID),
-                    '"/srv/imars-objects/_fancy_tssst_/2018-171' +
-                    '/arg_is_tssst_time_is_1548.fancy_file"'
+                    '"{}"'.format(mock_load.return_value)
                 ]
             )

@@ -29,7 +29,7 @@ class Test_format_filepath_template(TestCase):
         )
         self.assertEqual(
             result,
-            "/srv/imars-objects/_fancy_{test_arg}_/%Y-%j" +
+            "_fancy_{test_arg}_/%Y-%j" +
             "/arg_is_{test_arg}_time_is_%H%S.fancy_file"
         )
 
@@ -42,7 +42,7 @@ class Test_format_filepath_template(TestCase):
         )
         self.assertEqual(
             result,
-            "/srv/imars-objects/_fancy_{test_arg}_/%Y-%j" +
+            "_fancy_{test_arg}_/%Y-%j" +
             "/arg_is_{test_arg}_time_is_%H%S.fancy_file"
         )
 
@@ -55,7 +55,7 @@ class Test_format_filepath_template(TestCase):
         )
         self.assertEqual(
             result,
-            "/srv/imars-objects/_fancy_{test_arg}_/%Y-%j" +
+            "_fancy_{test_arg}_/%Y-%j" +
             "/arg_is_{test_arg}_time_is_%H%S.fancy_file"
         )
 
@@ -71,7 +71,7 @@ class Test_format_filepath_template(TestCase):
 
 class Test_format_filepath(TestCase):
     fake_fs_hook = MagicMock(
-        get_path=lambda: "/srv/imars-objects"
+        get_path=lambda: "/fake_path/"
     )
 
     # TODO: test mismatched pid & product_name throws err?
@@ -86,7 +86,7 @@ class Test_format_filepath(TestCase):
         )
         self.assertEqual(
             result,
-            "/srv/imars-objects/test_test_test/simple_file_with_no_args.txt"
+            "/fake_path/test_test_test/simple_file_with_no_args.txt"
         )
 
     def test_format_filepath_pid(self):
@@ -100,7 +100,7 @@ class Test_format_filepath(TestCase):
         )
         self.assertEqual(
             result,
-            "/srv/imars-objects/test_test_test/simple_file_with_no_args.txt"
+            "/fake_path/test_test_test/simple_file_with_no_args.txt"
         )
 
     def test_format_filepath_fancy_raise(self):
@@ -126,7 +126,7 @@ class Test_format_filepath(TestCase):
         )
         self.assertEqual(
             result,
-            "/srv/imars-objects/_fancy_myTestArg_/2015-145" +
+            "/fake_path/_fancy_myTestArg_/2015-145" +
             "/arg_is_myTestArg_time_is_1500.fancy_file"
         )
 
@@ -142,6 +142,6 @@ class Test_format_filepath(TestCase):
         )
         self.assertEqual(
             result,
-            "/srv/imars-objects/_fancy_003_/2015/" +
+            "/fake_path/_fancy_003_/2015/" +
             "num_is_0003_time_is_15.fancy_file"
         )

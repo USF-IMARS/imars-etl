@@ -85,7 +85,7 @@ class Test_validate_args(TestCase):
             '--dry_run',
             '-f',
             (
-                "/srv/imars-objects/ftp-ingest/"
+                "fake_fpath/ftp-ingest/"
                 "wv2_2018_10_08T115750_fl_se_058523212_10_0.zip"
             ),
             '--nohash'
