@@ -55,8 +55,9 @@ class ObjectStorageHandler(BaseHookHandler):
             m_kwargs=kwargs
         )
 
-    def extract(self, src_path, target_path):
+    def extract(self, src_path, target_path, **kwargs):
         return self.try_hooks_n_wrappers(
             method='extract',
             m_args=[src_path, target_path],
+            m_kwargs=kwargs
         )

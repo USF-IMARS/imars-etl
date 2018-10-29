@@ -32,7 +32,7 @@ def extract(
         first=first,
     )
 
-    src_path = result['filepath']
+    src_path = result[0]
 
     if output_path is None:
         output_path = "./" + os.path.basename(src_path)
