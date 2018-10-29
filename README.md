@@ -46,7 +46,7 @@ python3 -m imars_etl -v load \
     -d /srv/imars-objects/big_bend/wv2/2014 \
     -p 14 \
     -j '{"status_id":3, "area_id":6}' \
-    --storage_driver no_upload \
+    --object_store no_upload \
     -l "WV02_%Y%m%d%H%M%S_{junk}-M1BS-{idNumber:12}_{otherNum:2}_P{passNumber:0>3d}.xml" \
     --metadata_file_driver wv2_xml  \
     --metadata_file "{filepath}"  \
@@ -57,12 +57,23 @@ python3 -m imars_etl -v load \
     -d /srv/imars-objects/big_bend/wv2/2014 \
     -p 11 \
     -j '{"status_id":3, "area_id":6}' \
-    --storage_driver no_upload \
+    --object_store no_upload \
     -l "WV02_%Y%m%d%H%M%S_{junk}-M1BS-{idNumber:12}_{otherNum:2}_P{passNumber:0>3d}.ntf" \
     --metadata_file_driver wv2_xml  \
     --metadata_file "{directory}/{basename}.xml"  \
     --nohash
-    
+
+# practice loading a WV2 .zip file (pid 6) from DigitalGlobe:
+#     NOTE: use `--dry_run` to practice
+#     NOTE: `area_id:7` in the json must match fl_se
+python -m imars_etl -v load \
+-f /srv/imars-objects/ftp-ingest/wv2_2018_10_08T115750_fl_se_058523212_10_0.zip \
+-p 6 \
+-j '{"status_id":3, "area_id":7}' \
+--object_store no_upload \
+--dry_run
+
+# manually enter the time
 $ imars-etl load --area 1 --time "2017-01-02T13:45" --product_id 4 --filepath /path/to/file.hdf
 
 # auto-parse info (date) from filename using info from `imars_etl.filepath.data`
@@ -99,6 +110,38 @@ load({
     "date_time": "2018-03-06T17:14",
     "status_id": 3
 })
+```
+
+# Object Storage & Metadata connections
+Connections are managed using apache-airflow hooks.
+Connections can be installed using the `airflow connections` command.
+Within the code connections are wrapped in a few ways to unify backend
+interactions down to two interfaces: "object_storage" and "metadata_db".
+
+The hooks provided by airflow often have differing interfaces.
+Multiple HookWrappers are provided here to wrap around one or more hook classes
+and provide a consistent interface to object_storage or metadata_db backends.
+Two HookHandlers (ObjectStoreHookHandler and MetadataDBHookHandler) are provided
+to serve as the topmost interface.
+HookHandlers apply the appropriate wrappers to hooks to provide either a
+metadata or object-store interface, so users don't have to worry about
+HookHandlers.
+
+```
+# OSI-like model:
+
+        |-------------------------------------+-----------------------------|
+methods | .load() .extract()                  | .get_first() .get_records() |
+        | .format_filepath()                  | .insert_rows()              |
+        |-------------------------------------|-----------------------------|
+Handles | ObjectStoreHookHandler              | MetadataDBHookHandler       |
+        |---------------+---------------------|-----------------------------|
+Wrappers| FSHookWrapper | DataLakeHookWrapper |                             |
+        |---------------|-----+---------------|-----------------------------|
+Hooks   |       FS      | S3  | AzureDataLake | DbAPIHook                   |
+        |---------------|-----|---------------|------------+-------+--------|
+Backends| HD| NFS| FUSE | S3  | Azure         | MySQL      | MsSQL | SQLite |
+        |---------------+-----+---------------+------------+-------+--------+
 ```
 
 # Installation

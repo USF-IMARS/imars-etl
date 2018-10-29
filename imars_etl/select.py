@@ -1,8 +1,15 @@
 
-from imars_etl.util import get_sql_result
+from imars_etl.metadata_db.MetadataDBHandler import MetadataDBHandler
+from imars_etl.metadata_db.MetadataDBHandler import DEFAULT_METADATA_DB_CONN_ID
 
 
-def select(sql='', cols='*', first=False, **kwargs):
+def select(
+    sql='',
+    cols='*',
+    first=False,
+    metadata_conn_id=DEFAULT_METADATA_DB_CONN_ID,
+    **kwargs
+):
     """
     Prints json-formatted metadata for first entry in given args.sql
 
@@ -19,9 +26,13 @@ def select(sql='', cols='*', first=False, **kwargs):
     """
     sql_query = "SELECT {} FROM file WHERE {};".format(cols, sql)
     print(sql_query)
-    result = get_sql_result(
+    metadata_db = MetadataDBHandler(
+        metadata_db=metadata_conn_id,
+    )
+    result = metadata_db.get_records(
         sql_query,
         first=first,
     )
+
     print(result)
     return result

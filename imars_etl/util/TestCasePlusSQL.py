@@ -9,7 +9,7 @@ from unittest import TestCase
 def parse_keys_vals_from_sql_insert(sql_str):
     # 'INSERT INTO file (
     # product_id,filepath,date_time) VALUES (
-    # 6,"/srv/imars-objects/zip_wv2_ftp_ingest/wv2_2000-06-07T1122_m...")'
+    # 6,".../zip_wv2_ftp_ingest/wv2_2000-06-07T1122_m...")'
     pre, keys, vals = sql_str.split('(')
     keys = keys.split(')')[0].split(',')
     vals = vals.split(')')[0].split(',')

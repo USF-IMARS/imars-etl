@@ -22,7 +22,8 @@ def validate_args(args_dict, DEFAULTS={}):
     logger.setLevel(logging.INFO)
 
     keys_with_defaults = [
-        'storage_driver',
+        'object_store',
+        'metadata_conn_id',
         'nohash'
     ]
     for key in keys_with_defaults:

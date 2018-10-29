@@ -35,7 +35,7 @@ def wv2_ingest_prod(
         this is the case for all files except those in /GIS_FILES
 
     """
-    WV2_OUT_PATH = "/srv/imars-objects/extra_data/WV02/%Y.%m"
+    WV2_OUT_PATH = "extra_data/WV02/%Y.%m"
 
     m1bs_or_p1bs = m1bs_or_p1bs.upper()
     assert(m1bs_or_p1bs == 'M' or m1bs_or_p1bs == 'P')
@@ -120,7 +120,7 @@ data = {
             }
         },
         "imars_object_format": {
-            "path": "/srv/imars-objects/{area_short_name}/zip_wv2_ftp_ingest",
+            "path": "{area_short_name}/zip_wv2_ftp_ingest",
             "basename": "wv2_%Y-%m-%dT%H%M%S_{area_short_name}.zip",
             "product_id": 6
         },
@@ -133,7 +133,7 @@ data = {
             }
         },
         "imars_object_format": {
-            "path": "/srv/imars-objects/{area_short_name}/zip_wv3_ftp_ingest",
+            "path": "{area_short_name}/zip_wv3_ftp_ingest",
             "basename": "wv3_%Y-%m-%dT%H%M%S_{area_short_name}.zip",
             "product_id": 47
         },
@@ -147,7 +147,7 @@ data = {
             }
         },
         "imars_object_format": {
-            "path": "/srv/imars-objects/test_test_test",
+            "path": "test_test_test",
             "basename": "simple_file_with_no_args.txt",
             "product_id": -1
         },
@@ -164,7 +164,7 @@ data = {
             },
         },
         "imars_object_format": {
-            "path": "/srv/imars-objects/_fancy_{test_arg}_/%Y-%j",
+            "path": "_fancy_{test_arg}_/%Y-%j",
             "basename": "arg_is_{test_arg}_time_is_%H%S.fancy_file",
             "product_id": -2
         },
@@ -178,7 +178,7 @@ data = {
             },
         },
         "imars_object_format": {
-            "path": "/srv/imars-objects/_fancy_{test_num:0>3d}_/%Y",
+            "path": "_fancy_{test_num:0>3d}_/%Y",
             "basename": "num_is_{test_num:0>4d}_time_is_%H.fancy_file",
             "product_id": -3
         },
@@ -192,7 +192,7 @@ data = {
               "https://modaps.modaps.eosdis.nasa.gov" +
               "/services/about/products/c6/MYD01.html",
         "imars_object_format": {
-            "path": "/srv/imars-objects/{area_short_name}/myd01",
+            "path": "{area_short_name}/myd01",
             "basename": "A%Y%j.%H%M.hdf",
             "product_id": 5
         },
@@ -216,7 +216,7 @@ data = {
     "zip_ntf_wv2_ftp_ingest": {
         "//": "older format from digital globe with mostly ntf files at root",
         "imars_object_format": {
-            "path": "/srv/imars-objects/NONE",  # <- TODO
+            "path": "NONE",  # <- TODO
             "basename": "wv2_ntf_%Y-%m-%dT%H%M_{tag}.zip",
             "product_id": 34
         },
@@ -229,7 +229,7 @@ data = {
     "myd0_otis_l2": {
         "//": "modis aqua l2 files using @dotis's gpt graph'",
         "imars_object_format": {
-            "path": "/srv/imars-objects/{area_short_name}/myd0_otis_l2",
+            "path": "{area_short_name}/myd0_otis_l2",
             "basename": "myd0_otis_l2_A%Y%j%H%M%S.hdf",
             "product_id": 35
         },
@@ -242,7 +242,7 @@ data = {
     "s3a_ol_1_efr": {
         "//": "s3 efr files",
         "imars_object_format": {
-            "path": "/srv/imars-objects/{area_short_name}/s3a_ol_1_efr",
+            "path": "{area_short_name}/s3a_ol_1_efr",
             "basename": "S3A_OL_1_EFR____%Y%m%dT%H%M%S.SEN3",
             "product_id": 36
         },
@@ -273,7 +273,7 @@ data = {
     "tif_r_rs_wv2": {
         "//": "wv2 classification R_rs output tif",
         "imars_object_format": {
-            "path": "/srv/imars-objects/{area_short_name}/tif_r_rs_wv2",
+            "path": "{area_short_name}/tif_r_rs_wv2",
             "basename": "wv2_Rrs_%Y%m%dT%H%M%S.tif",
             "product_id": 37
         },
@@ -289,7 +289,7 @@ data = {
     "tif_rrs_wv2": {
         "//": "wv2 classification rrs output tif",
         "imars_object_format": {
-            "path": "/srv/imars-objects/{area_short_name}/tif_rrs_wv2",
+            "path": "{area_short_name}/tif_rrs_wv2",
             "basename": "wv2_rrs_%Y%m%dT%H%M%S.tif",
             "product_id": 38
         },
@@ -305,7 +305,7 @@ data = {
     "tif_bathy_wv2": {
         "//": "wv2 classification rrs output tif",
         "imars_object_format": {
-            "path": "/srv/imars-objects/{area_short_name}/tif_bathy_wv2",
+            "path": "{area_short_name}/tif_bathy_wv2",
             "basename": "wv2_bathy_%Y%m%dT%H%M%S.tif",
             "product_id": 39
         },
@@ -321,7 +321,7 @@ data = {
     "tif_classification": {
         "//": "wv2 classification rrs output tif",
         "imars_object_format": {
-            "path": "/srv/imars-objects/{area_short_name}/tif_classification",
+            "path": "{area_short_name}/tif_classification",
             "basename": "wv2_classification_%Y%m%dT%H%M%S.tif",
             "product_id": 40
         },
@@ -343,7 +343,7 @@ data = {
     "zip_s3a_ol_1_efr": {
         "//": "s3 zip ingests",
         "imars_object_format": {
-            "path": "/srv/imars-objects/{area_short_name}/zip_s3a_ol_1_efr",
+            "path": "{area_short_name}/zip_s3a_ol_1_efr",
             "basename": "S3A_OL_1_EFR____%Y%m%dT%H%M%S.zip",
             "product_id": 41
         },
@@ -374,7 +374,7 @@ data = {
     "chlor_a_l3_pass": {
         "//": "modis aqua l3 from @dotis's airflow'",
         "imars_object_format": {
-            "path": "/srv/imars-objects/{area_short_name}/chlor_a_l3_pass",
+            "path": "{area_short_name}/chlor_a_l3_pass",
             "basename": "chlor_a_l3_pass_A%Y%j%H%M%S.hdf",
             "product_id": 42
         },
@@ -388,7 +388,7 @@ data = {
         "//": "modis aqua png from @dotis",
         "imars_object_format": {
             "path":
-                "/srv/imars-objects/modis_aqua_{area_short_name}/png_chl_7d",
+                "modis_aqua_{area_short_name}/png_chl_7d",
             "basename": "FGB_A1km_chlor_a_%Y%j_{date_2:06}_7D_MEAN.png",
             "product_id": 43
         },
@@ -403,7 +403,7 @@ data = {
         "//": "modis aqua png from @dotis",
         "imars_object_format": {
             "path":
-                "/srv/imars-objects/modis_aqua_{area_short_name}/png_chl_7d",
+                "modis_aqua_{area_short_name}/png_chl_7d",
             "basename": "FGB_A1km_chlor_a_%Y%j_{date_2:06d}_7D_ANOM.png",
             "product_id": 44
         },
@@ -418,7 +418,7 @@ data = {
         "//": "modis aqua png from @dotis",
         "imars_object_format": {
             "path": (
-                "/srv/imars-objects/modis_aqua_{area_short_name}/PNG_AQUA/SST/"
+                "modis_aqua_{area_short_name}/PNG_AQUA/SST/"
                 "/PNG_AQUA/SST"
             ),
             "basename": "FGB_A1km_chlor_a_%Y%j_{date_2:06d}_7D_MEAN.png",
@@ -435,7 +435,7 @@ data = {
         "//": "modis aqua png from @dotis",
         "imars_object_format": {
             "path": (
-                "/srv/imars-objects/modis_aqua_{area_short_name}/PNG_AQUA/SST/"
+                "modis_aqua_{area_short_name}/PNG_AQUA/SST/"
                 "PNG_AQUA/SST"
             ),
             "basename": "FGB_A1km_chlor_a_%Y%j_{date_2:06d}_7D_ANOM.png",
@@ -476,7 +476,7 @@ data = {
     # }
     # "png": {
     #     "path": (
-    #         "/srv/imars-objects/modis_aqua_{region_shortname}" +
+    #         "modis_aqua_{region_shortname}" +
     #         "/png_{variable_name}"
     #     ),
     #     "basename": ISO_8601_FMT + "_{variable_name}.png"

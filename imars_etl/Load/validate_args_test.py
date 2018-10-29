@@ -71,3 +71,32 @@ class Test_validate_args(TestCase):
             },
             result_arg_dict
         )
+
+    def test_validate_gets_area_id_from_area_name(self):
+        """
+        area_id can be inferred from area_name
+        """
+        from imars_etl.Load.Load import validate_args
+        from imars_etl.cli import parse_args
+
+        test_args = parse_args([
+            '-vvv',
+            'load',
+            '--dry_run',
+            '-f',
+            (
+                "fake_fpath/ftp-ingest/"
+                "wv2_2018_10_08T115750_fl_se_058523212_10_0.zip"
+            ),
+            '--nohash'
+        ])
+        result_arg_dict = validate_args(vars(test_args))
+        self.assertDictContainsSubset(
+            {
+                "verbose": 3,
+                "dry_run": True,
+                "area_short_name": "fl_se",
+                "area_id": 7,
+            },
+            result_arg_dict
+        )
