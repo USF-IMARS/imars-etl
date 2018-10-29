@@ -57,12 +57,13 @@ class BaseHookHandler(object):
             __name__,
             sys._getframe().f_code.co_name
         ))
-        exceptions = ""
+        err_msg = ""
         for hook in self.hooks_list:
+            err_msg += "\n\thook: {}".format(hook)
             try:  # directly
                 return getattr(hook, method)(*m_args, **m_kwargs)
             except Exception as unwr_exc:  # with wrappers
-                exceptions += "\n\t(unwrapped) {}:\n\t\t{}".format(
+                err_msg += "\n\t\t(unwrapped) {}:\n\t\t\t{}".format(
                     hook, unwr_exc
                 )
                 for wrapper in self.wrapper_classes:
@@ -71,7 +72,7 @@ class BaseHookHandler(object):
                             *m_args, **m_kwargs
                         )
                     except Exception as wr_exc:  # wrapper did not work
-                        exceptions += "\n{}( {} ):\n\t\t{}".format(
+                        err_msg += "\n\t\t{}( {} ):\n\t\t\t{}".format(
                             wrapper, hook, wr_exc
                         )
                         continue
@@ -81,7 +82,7 @@ class BaseHookHandler(object):
                 self.wrapper_classes,
             ))
             raise RuntimeError(
-                "All hooks failed. Attempts:{}".format(exceptions)
+                "All hooks failed. Attempts:{}".format(err_msg)
             )
 
 

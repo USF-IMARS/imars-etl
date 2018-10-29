@@ -15,10 +15,6 @@ from imars_etl.filepath.data import data
 
 
 class FSHookWrapper(BaseHookWrapper):
-
-    # TODO: need to adapt methods to use self.hook.get_path() instead of
-    #       assuming `/srv/imars-objects`
-
     REQUIRED_ATTRS = {
         'load': ['get_path'],
         'extract': ['get_path'],
@@ -71,7 +67,8 @@ class FSHookWrapper(BaseHookWrapper):
             product_id=product_id,
             forced_basename=forced_basename
         )
-        logger.info("formatting imars-obj path \n>>'{}'".format(fullpath))
+        fullpath = self.hook.get_path() + fullpath
+        logger.info("formatting FS path \n>>'{}'".format(fullpath))
         args_dict = dict(
             **kwargs
         )
@@ -143,17 +140,17 @@ class FSHookWrapper(BaseHookWrapper):
             "test_test_test":{
                 "//": "this is a fake type used for testing only",
                 "basename": "simple_file_with_no_args.txt",
-                "path"    : "/srv/imars-objects/test_test_test",
+                "path"    : "test_test_test",
                 "product_id": -1
             },
             "zip_wv2_ftp_ingest":{
                 "basename": "wv2_%Y_%m_{tag}.zip",
-                "path"    : "/srv/imars-objects/{product_type_name}",
+                "path"    : "{product_type_name}",
                 "product_id": 6
             },
             "att_wv2_m1bs":{
                 "basename": "WV2_%Y%m%d%H%M%S-M1-{idNumber}_P{passNumber}.att",
-                "path": "/srv/imars-objects/extra_data/WV02/%Y.%m",
+                "path": "extra_data/WV02/%Y.%m",
                 "product_id": 7
             }
         }
