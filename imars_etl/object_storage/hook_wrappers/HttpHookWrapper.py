@@ -35,9 +35,11 @@ class HttpHookWrapper(BaseHookWrapper):
         try:  # target_path_or_file_handle is file handle
             tgt_file = target_path_or_file_handle
             tgt_file.write(response.content)
+            logger.info("used given file handle")
         except AttributeError:  # eg: 'str' object has no attribute 'write'
             # target_path_or_file_handle is str filepath
-            with open(target_path_or_file_handle, 'w') as tgt_file:
+            logger.info("opening file '{}'".format(target_path_or_file_handle))
+            with open(target_path_or_file_handle, 'wb') as tgt_file:
                 tgt_file.write(response.content)
         return target_path_or_file_handle
 
