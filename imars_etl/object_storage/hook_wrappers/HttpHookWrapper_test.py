@@ -3,7 +3,6 @@
 
 # std modules:
 from unittest import TestCase
-from datetime import datetime
 from io import StringIO
 try:
     # py2

@@ -2,6 +2,9 @@
 Provides wrapper for airflow.hooks.http_hook-like object storage
 hooks.
 """
+import logging
+import sys
+
 from imars_etl.filepath.format_filepath import format_filepath
 from imars_etl.object_storage.hook_wrappers.BaseHookWrapper \
     import BaseHookWrapper
@@ -18,7 +21,14 @@ class HttpHookWrapper(BaseHookWrapper):
     def load(self, filepath=None, **kwargs):
         raise NotImplementedError('http loading not (yet) supported')
 
-    def extract(self, src_path, target_path_or_file_handle):
+    def extract(self, src_path, target_path_or_file_handle, **kwargs):
+        logger = logging.getLogger("{}.{}".format(
+            __name__,
+            sys._getframe().f_code.co_name)
+        )
+        logger.info("fetching URL http://{} / {}".format(
+            self.hook.base_url, src_path
+        ))
         response = self.hook.run(
             endpoint=src_path
         )
