@@ -113,7 +113,9 @@ def get_hook_list(conn_id):
             try:
                 hooks.append(_get_hook(c_id))
             except NoResultFound:
-                logger.warn("Chained connection '{}' not found.".format(c_id))
+                logger.warning(
+                    "Chained connection '{}' not found.".format(c_id)
+                )
         return hooks
     else:
         logger.debug("hook not a fallback chain")

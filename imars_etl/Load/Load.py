@@ -123,7 +123,7 @@ def _handle_integrity_error(i_err, fpath, duplicates_ok=False, **kwargs):
     logger.debug("errmsg,={}".format(errmsg))
     DUPLICATE_ENTRY_ERRNO = 1062
     if (errnum == DUPLICATE_ENTRY_ERRNO and duplicates_ok):
-        logger.warn(
+        logger.warning(
             "IntegrityError: Duplicate entry for '{}'".format(
                 fpath
             )

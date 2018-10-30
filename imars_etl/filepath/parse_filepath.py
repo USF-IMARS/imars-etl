@@ -71,7 +71,7 @@ def parse_filepath(
                 logger.debug("nope. caught error: \n>>>{}".format(s_err))
                 product_type_name = None
         else:
-            logger.warn("could not match filepath to any known patterns.")
+            logger.warning("could not match filepath to any known patterns.")
             args_parsed = {}
 
     for key in args_parsed.keys():

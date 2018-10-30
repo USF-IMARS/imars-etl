@@ -29,6 +29,8 @@ class HttpHookWrapper(BaseHookWrapper):
         logger.info("fetching URL http://{} / {}".format(
             self.hook.base_url, src_path
         ))
+        if not src_path.startswith("/"):
+            src_path = "/" + src_path
         response = self.hook.run(
             endpoint=src_path
         )
