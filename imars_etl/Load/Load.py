@@ -139,7 +139,7 @@ def _load_file(args_dict):
         sys._getframe().f_code.co_name)
     )
     logger.setLevel(logging.DEBUG)
-    logger.info("\n\n------- loading file {} -------\n".format(
+    logger.info("------- loading file {} ----------------\n".format(
         args_dict.get('filepath', '???').split('/')[-1]
     ))
     args_dict = validate_args(args_dict, DEFAULTS=LOAD_DEFAULTS)
