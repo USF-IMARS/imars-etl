@@ -107,7 +107,6 @@ class MetadataDBHandler(BaseHookHandler):
             __name__,
             sys._getframe().f_code.co_name)
         )
-        logger.setLevel(logging.DEBUG)
         logger.debug("QUERY: {}".format(sql))
 
         if first is True:

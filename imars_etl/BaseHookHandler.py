@@ -4,6 +4,8 @@ import sys
 from sqlalchemy.orm.exc import NoResultFound
 from airflow import settings
 from airflow.models import Connection
+
+from airflow.hooks.http_hook import HttpHook
 from airflow.contrib.hooks.fs_hook import FSHook
 
 from imars_etl.object_storage.NoBackendObjectHook \
@@ -111,7 +113,9 @@ def get_hook_list(conn_id):
             try:
                 hooks.append(_get_hook(c_id))
             except NoResultFound:
-                logger.warn("Chained connection '{}' not found.".format(c_id))
+                logger.warning(
+                    "Chained connection '{}' not found.".format(c_id)
+                )
         return hooks
     else:
         logger.debug("hook not a fallback chain")
@@ -168,6 +172,12 @@ def _get_supplemental_hook(conn):
     if conn.conn_type == 'fs':
         logger.debug('fs hook')
         return FSHook(conn_id=conn.conn_id)
+    elif conn.conn_type == 'http':
+        logger.debug('http hook')
+        return HttpHook(
+            method='GET',  # TODO: this should come from ...somewhere
+            http_conn_id=conn.conn_id,
+        )
     else:
         logger.debug('hook not found for conn')
         raise ValueError("cannot get hook for connection {}".format(conn))

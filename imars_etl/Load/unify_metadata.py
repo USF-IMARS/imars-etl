@@ -17,10 +17,9 @@ def unify_metadata(**kwargs):
         __name__,
         sys._getframe().f_code.co_name)
     )
-    logger.setLevel(logging.DEBUG)
-    logger.info('input metadata:\n{}\n'.format(kwargs))
+    logger.debug('input metadata:\n{}\n'.format(kwargs))
 
-    logger.debug("constrain input meta...")
+    # logger.debug("constrain input meta...")
     kwargs = ensure_constistent_metadata(kwargs)
     # === filepath metadata
     # TODO: should be `kwargs.get('noparse', LOAD_DEFAULTS['noparse'])`

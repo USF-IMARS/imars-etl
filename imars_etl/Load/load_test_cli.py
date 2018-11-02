@@ -124,7 +124,8 @@ class Test_load_cli(TestCasePlusSQL):
                 --dry_run
                 -j '{"area_id":1}'
                 -p 6
-                -f '/path/w/parseable/date/wv2_1989_06_07T111234_gom_123456789_10_0.zip'
+                -f '/path/w/parseable/date/\
+                wv2_1989_06_07T111234_gom_123456789_10_0.zip'
         """
         from imars_etl.cli import main
         mock_load.return_value = "/tmp/imars-etl-test-fpath"
@@ -132,7 +133,8 @@ class Test_load_cli(TestCasePlusSQL):
             '-vvv',
             'load',
             '--dry_run',
-            '-f', "/path/w/parseable/date/wv2_1989_06_07T111234_gom_123456789_10_0.zip",
+            '-f', "/path/w/parseable/date/" +
+            "wv2_1989_06_07T111234_gom_123456789_10_0.zip",
             '-j', '{"area_id":1}',
             '-p', '6',
             '--nohash',
@@ -164,7 +166,8 @@ class Test_load_cli(TestCasePlusSQL):
             '-vvv',
             'load',
             '--dry_run',
-            '-f', "/path/w/parseable/date/wv2_2000_06_07T112233_gom_123456789_10_0.zip",
+            '-f', "/path/w/parseable/date/" +
+            "wv2_2000_06_07T112233_gom_123456789_10_0.zip",
             '-p', '6',
             '--nohash',
         ]
@@ -371,7 +374,8 @@ class Test_load_cli(TestCasePlusSQL):
 
     @patch('os.walk')
     @patch(
-        'imars_etl.object_storage.ObjectStorageHandler.ObjectStorageHandler.load',
+        'imars_etl.object_storage.ObjectStorageHandler' +
+        '.ObjectStorageHandler.load',
         return_value="/fake/imars-obj/path"
     )
     def test_load_directory_leaves_unmatched_files_alone(

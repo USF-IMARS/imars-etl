@@ -35,9 +35,14 @@ from imars_etl.object_storage.hook_wrappers.DataLakeHookWrapper \
     import DataLakeHookWrapper
 from imars_etl.object_storage.hook_wrappers.FSHookWrapper \
     import FSHookWrapper
+from imars_etl.object_storage.hook_wrappers.HttpHookWrapper \
+    import HttpHookWrapper
 
-OBJECT_WRAPPERS = [DataLakeHookWrapper, FSHookWrapper]
-DEFAULT_OBJ_STORE_CONN_ID = "fallback_chain.local_tmp.imars_objects"
+OBJECT_WRAPPERS = [DataLakeHookWrapper, FSHookWrapper, HttpHookWrapper]
+DEFAULT_OBJ_STORE_CONN_ID = (
+    "fallback_chain."
+    "local_tmp.imars_objects.imars_http"
+)
 
 
 class ObjectStorageHandler(BaseHookHandler):

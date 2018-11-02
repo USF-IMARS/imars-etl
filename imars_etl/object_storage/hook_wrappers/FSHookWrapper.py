@@ -48,6 +48,8 @@ class FSHookWrapper(BaseHookWrapper):
             __name__,
             sys._getframe().f_code.co_name)
         )
+        if not src_path.startswith("/"):
+            src_path = self.hook.get_path() + src_path
         logger.debug(["cp", src_path, target_path])
         shutil.copy(src_path, target_path)
         return target_path

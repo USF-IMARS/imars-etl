@@ -123,7 +123,7 @@ def _handle_integrity_error(i_err, fpath, duplicates_ok=False, **kwargs):
     logger.debug("errmsg,={}".format(errmsg))
     DUPLICATE_ENTRY_ERRNO = 1062
     if (errnum == DUPLICATE_ENTRY_ERRNO and duplicates_ok):
-        logger.warn(
+        logger.warning(
             "IntegrityError: Duplicate entry for '{}'".format(
                 fpath
             )
@@ -139,7 +139,7 @@ def _load_file(args_dict):
         sys._getframe().f_code.co_name)
     )
     logger.setLevel(logging.DEBUG)
-    logger.info("\n\n------- loading file {} -------\n".format(
+    logger.info("------- loading file {} ----------------\n".format(
         args_dict.get('filepath', '???').split('/')[-1]
     ))
     args_dict = validate_args(args_dict, DEFAULTS=LOAD_DEFAULTS)
