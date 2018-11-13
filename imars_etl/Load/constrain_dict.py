@@ -16,9 +16,9 @@ def relation(
         getter.
     Raises if one or more of the 'inkeys' is not in dadict.
     """
-    logger = logging.getLogger("{}.{}".format(
+    logger = logging.getLogger("imars_etl.{}".format(
         __name__,
-        sys._getframe().f_code.co_name)
+        )
     )
 
     in_vals = [dadict.get(ink) for ink in inkeys]

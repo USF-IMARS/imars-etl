@@ -15,9 +15,9 @@ def validate_args(args_dict, DEFAULTS={}):
     Returns properly formatted & complete arguments.
     Makes attempts to guess at filling in missing args.
     """
-    logger = logging.getLogger("{}.{}".format(
+    logger = logging.getLogger("imars_etl.{}".format(
         __name__,
-        sys._getframe().f_code.co_name)
+        )
     )
 
     keys_with_defaults = [

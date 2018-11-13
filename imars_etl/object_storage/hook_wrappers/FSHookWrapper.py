@@ -22,9 +22,9 @@ class FSHookWrapper(BaseHookWrapper):
     }
 
     def load(self, **kwargs):
-        logger = logging.getLogger("{}.{}".format(
+        logger = logging.getLogger("imars_etl.{}".format(
             __name__,
-            sys._getframe().f_code.co_name)
+            )
         )
         # logger.debug('_load(args)| args=\n\t{}'.format(args))
         ul_target = self.format_filepath(**kwargs)
@@ -44,9 +44,9 @@ class FSHookWrapper(BaseHookWrapper):
         return ul_target
 
     def extract(self, src_path, target_path, **kwargs):
-        logger = logging.getLogger("{}.{}".format(
+        logger = logging.getLogger("imars_etl.{}".format(
             __name__,
-            sys._getframe().f_code.co_name)
+            )
         )
         if not src_path.startswith("/"):
             src_path = self.hook.get_path() + src_path
@@ -55,9 +55,9 @@ class FSHookWrapper(BaseHookWrapper):
         return target_path
 
     def format_filepath(self, **kwargs):
-        logger = logging.getLogger("{}.{}".format(
+        logger = logging.getLogger("imars_etl.{}".format(
             __name__,
-            sys._getframe().f_code.co_name)
+            )
         )
 
         product_type_name = kwargs.get("product_type_name")
@@ -92,9 +92,9 @@ class FSHookWrapper(BaseHookWrapper):
         product_id=None,
         forced_basename=None
     ):
-        logger = logging.getLogger("{}.{}".format(
+        logger = logging.getLogger("imars_etl.{}".format(
             __name__,
-            sys._getframe().f_code.co_name)
+            )
         )
         logger.info("placing {} (#{})...".format(
             product_type_name,

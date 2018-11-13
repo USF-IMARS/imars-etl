@@ -28,9 +28,9 @@ def parse_filepath(
     types if args.product_type_name is not given
     parse_filepath but for argparse namespaces
     """
-    logger = logging.getLogger("{}.{}".format(
+    logger = logging.getLogger("imars_etl.{}".format(
         __name__,
-        sys._getframe().f_code.co_name)
+        )
     )
     args_dict = {}
     if (load_format is not None):
@@ -118,9 +118,9 @@ def _parse_from_product_type_and_filename(
     parsed_vars : dict
         dict of vars that were parsed from the given info
     """
-    logger = logging.getLogger("{}.{}".format(
+    logger = logging.getLogger("imars_etl.{}".format(
         __name__,
-        sys._getframe().f_code.co_name
+
     ))
     logger.debug("parsing as {}".format(pattern_name))
     filename = filepath

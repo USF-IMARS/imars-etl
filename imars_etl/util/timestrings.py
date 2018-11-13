@@ -12,9 +12,9 @@ def standardize_time_str(timestr):
         This means that leaving off hours, minutes, seconds, ms assumes that
         they are zero.
     """
-    logger = logging.getLogger("{}.{}".format(
+    logger = logging.getLogger("imars_etl.{}".format(
         __name__,
-        sys._getframe().f_code.co_name)
+        )
     )
     timestr = timestr.strip(" \"'")
     timestr = timestr.replace(" ", "T")

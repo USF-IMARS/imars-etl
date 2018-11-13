@@ -266,10 +266,13 @@ def parse_args(argvs):
         # file_handler
     ]
 
+    logging.getLogger('imars_etl').addHandler(stream_handler)
+    logging.getLogger('imars_etl').propagate = False
+
     # basicConfig.level must be set to *lowest* of all levels used in handlers
     logging.basicConfig(
         handlers=_handlers,
-        level=logging.DEBUG
+        level=logging.WARNING
     )
     # =========================================================================
     return args

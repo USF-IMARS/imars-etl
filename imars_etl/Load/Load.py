@@ -113,9 +113,9 @@ def _load_dir(args_dict):
 
 
 def _handle_integrity_error(i_err, fpath, duplicates_ok=False, **kwargs):
-    logger = logging.getLogger("{}.{}".format(
+    logger = logging.getLogger("imars_etl.{}".format(
         __name__,
-        sys._getframe().f_code.co_name)
+        )
     )
     logger.debug(i_err)
     errnum, errmsg = i_err.args
@@ -134,9 +134,9 @@ def _handle_integrity_error(i_err, fpath, duplicates_ok=False, **kwargs):
 
 def _load_file(args_dict):
     """Loads a single file"""
-    logger = logging.getLogger("{}.{}".format(
+    logger = logging.getLogger("imars_etl.{}".format(
         __name__,
-        sys._getframe().f_code.co_name)
+        )
     )
     logger.info("------- loading file {} ----------------\n".format(
         args_dict.get('filepath', '???').split('/')[-1]
@@ -213,9 +213,9 @@ def _make_sql_insert(**kwargs):
     !!! DEPRECATED !!!
     Creates SQL INSERT INTO statement with metadata from given args dict
     """
-    logger = logging.getLogger("{}.{}".format(
+    logger = logging.getLogger("imars_etl.{}".format(
         __name__,
-        sys._getframe().f_code.co_name)
+        )
     )
     keys, vals = _make_sql_row_and_key_strings(**kwargs)
     # Create a new record
