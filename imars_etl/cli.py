@@ -15,6 +15,7 @@ from imars_etl.api import load
 from imars_etl.api import extract
 from imars_etl.api import id_lookup
 from imars_etl.api import select
+from imars_etl.api import find
 
 from imars_etl.Load.Load import LOAD_DEFAULTS
 
@@ -73,6 +74,20 @@ def parse_args(argvs):
         "help": "return first result if multiple rather than exiting w/ error",
         "action": "store_true"
     }
+    NAME_ARGS = [
+        "-n",
+        "--product_type_name", "--name", "--short_name"
+    ]
+    NAME_KWARGS = {
+            "help": "product type id short_name"
+    }
+    PID_ARGS = [
+            "-p", "--product_id", "--pid",
+    ]
+    PID_KWARGS = {
+        "help": "product type id (pid)",
+        "type": int
+    }
 
     # === extract
     parser_extract = subparsers.add_parser(
@@ -121,6 +136,19 @@ def parse_args(argvs):
         help="id # or short_name to translate."
     )
 
+    # === find
+    parser_find = subparsers.add_parser(
+        'find',
+        help='list files in dir matching given data'
+    )
+    parser_find.set_defaults(func=find)
+    parser_find.add_argument(*NAME_ARGS, **NAME_KWARGS)
+    parser_find.add_argument(*PID_ARGS, **PID_KWARGS)
+    parser_find.add_argument(
+        "directory",
+        help="path to directory of files to be searched",
+    )
+
     # === load
     parser_load = subparsers.add_parser(
         'load',
@@ -128,28 +156,13 @@ def parse_args(argvs):
     )
     parser_load.set_defaults(func=load, **LOAD_DEFAULTS)
     # required args
-    required_named_args = parser_load.add_mutually_exclusive_group(
-        required=True
-    )
-    required_named_args.add_argument(
-        "-f", "--filepath",
-        help="path to file to upload"
-    )
-    required_named_args.add_argument(
-        "-d", "--directory",
-        help="path to directory of files to be loaded"
-    )
-    # args required only with --directory
     parser_load.add_argument(
-        "-n",
-        "--product_type_name", "--name", "--short_name",
-        help="product type id short_name"
-    )
-    parser_load.add_argument(
-        "-p", "--product_id", "--pid",
-        help="product type id (pid)", type=int
+        "filepath",
+        help="path to file to upload",
     )
     # optional args
+    parser_load.add_argument(*NAME_ARGS, **NAME_KWARGS)
+    parser_load.add_argument(*PID_ARGS, **PID_KWARGS)
     parser_load.add_argument(
         "-t", "--time",
         help="ISO8601-formatted date-time string of product"

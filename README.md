@@ -41,6 +41,12 @@ $ imars-etl -vvv extract 'date_time < "2018-01-01" AND date_time > "2018-01-07"'
 ```
 ### load
 ```bash
+# use imars_etl find to load a directory:
+python3 -m imars_etl find -p 14 /srv/imars-objects/big_bend/wv2/2014 \
+    | python3 -m imars_etl load
+
+# TODO: the following are out of date and need to be updated:
+
 # load all wv2 xml files from 2014 and call them area=6 (big_bend)
 python3 -m imars_etl -v load \
     -d /srv/imars-objects/big_bend/wv2/2014 \

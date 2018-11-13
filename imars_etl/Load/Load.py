@@ -1,7 +1,5 @@
 import logging
 import sys
-import os
-import copy
 import numbers
 
 from pymysql.err import IntegrityError
@@ -32,7 +30,7 @@ VALID_FILE_TABLE_COLNAMES = [  # TODO: get this from db
 
 
 def load(
-    filepath=None, directory=None,
+    filepath=None,
     metadata_file_driver=LOAD_DEFAULTS['metadata_file_driver'],
     object_store=LOAD_DEFAULTS['object_store'],
     metadata_db=LOAD_DEFAULTS['metadata_db'],
@@ -54,7 +52,6 @@ def load(
     """
     args_dict = dict(
         filepath=filepath,
-        directory=directory,
         metadata_file_driver=metadata_file_driver,
         object_store=object_store,
         metadata_db=metadata_db,
@@ -63,53 +60,10 @@ def load(
     )
     if filepath is not None:
         return _load_file(args_dict)  # TODO: ideally we would splat these.
-    elif directory is not None:
-        return _load_dir(args_dict)
     else:
         # NOTE: this should be thrown by the arparse arg group before getting
         #   here, but we throw here for the python API.
-        raise ValueError("one of --filepath or --directory is required.")
-
-
-def _load_dir(args_dict):
-    """
-    Loads multiple files that match from a directory
-
-    returns:
-        insert_statements : str[]
-            list of insert statements for all files found
-
-    """
-    logger = logging.getLogger("{}.{}".format(
-        __name__,
-        sys._getframe().f_code.co_name)
-    )
-    insert_statements = []  #
-    # logger.debug("searching w/ '{}'...".format(fmt))
-    orig_args = copy.deepcopy(args_dict)
-    loaded_count = 0
-    skipped_count = 0
-    duplicate_count = 0
-    for root, dirs, files in os.walk(args_dict['directory']):
-        for filename in files:
-            try:
-                fpath = os.path.join(root, filename)
-                args_dict['filepath'] = fpath
-                insert_statements.append(_load_file(args_dict))
-                logger.debug("loading {}...".format(fpath))
-                loaded_count += 1
-            except SyntaxError:
-                logger.debug("skipping {}...".format(fpath))
-                skipped_count += 1
-            except IntegrityError as i_err:
-                _handle_integrity_error(i_err, fpath, **args_dict)
-                duplicate_count += 1
-            finally:
-                args_dict = copy.deepcopy(orig_args)  # reset args
-    logger.info("{} files loaded, {} skipped, {} duplicates.".format(
-        loaded_count, skipped_count, duplicate_count
-    ))
-    return insert_statements
+        raise ValueError("filepath is required.")
 
 
 def _handle_integrity_error(i_err, fpath, duplicates_ok=False, **kwargs):
