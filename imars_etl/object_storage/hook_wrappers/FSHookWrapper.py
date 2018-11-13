@@ -96,7 +96,6 @@ class FSHookWrapper(BaseHookWrapper):
             __name__,
             sys._getframe().f_code.co_name)
         )
-        logger.setLevel(logging.INFO)
         logger.info("placing {} (#{})...".format(
             product_type_name,
             product_id)

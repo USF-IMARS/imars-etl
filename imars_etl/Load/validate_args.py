@@ -19,7 +19,6 @@ def validate_args(args_dict, DEFAULTS={}):
         __name__,
         sys._getframe().f_code.co_name)
     )
-    logger.setLevel(logging.INFO)
 
     keys_with_defaults = [
         'object_store',
