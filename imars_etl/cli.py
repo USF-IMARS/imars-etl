@@ -231,13 +231,6 @@ def parse_args(argvs):
     # =========================================================================
     # === set up logging behavior
     # =========================================================================
-    if (args.verbose == 0):
-        logging.basicConfig(level=logging.WARNING)
-    elif (args.verbose == 1):
-        logging.basicConfig(level=logging.INFO)
-    else:  # } (args.verbose == 2){
-        logging.basicConfig(level=logging.DEBUG)
-
     # === (optional) create custom logging format(s)
     # https://docs.python.org/3/library/logging.html#logrecord-attributes
     formatter = logging.Formatter(
@@ -247,7 +240,6 @@ def parse_args(argvs):
     # === (optional) create handlers
     # https://docs.python.org/3/howto/logging.html#useful-handlers
     stream_handler = logging.StreamHandler()
-    stream_handler.setLevel(logging.DEBUG)
     stream_handler.setFormatter(formatter)
 
     # LOG_DIR = "/var/opt/imars_etl/"
@@ -256,8 +248,17 @@ def parse_args(argvs):
     # file_handler = RotatingFileHandler(
     #    LOG_DIR+'imars_etl.log', maxBytes=1e6, backupCount=5
     # )
-    # file_handler.setLevel(logging.DEBUG)
     # file_handler.setFormatter(formatter)
+
+    if (args.verbose == 0):
+        stream_handler.setLevel(logging.WARNING)
+        # file_handler.setLevel(logging.WARNING)
+    elif (args.verbose == 1):
+        stream_handler.setLevel(logging.INFO)
+        # file_handler.setLevel(logging.DEBUG)
+    else:  # } (args.verbose == 2){
+        stream_handler.setLevel(logging.DEBUG)
+        # file_handler.setLevel(logging.DEBUG)
 
     # === add the handlers (if any) to the logger
     _handlers = [
