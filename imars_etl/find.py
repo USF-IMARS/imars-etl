@@ -1,6 +1,9 @@
 import os
+import copy
 import logging
 import sys
+
+from imars_etl.Load.validate_args import validate_args
 
 
 def find(
@@ -22,22 +25,27 @@ def find(
         __name__,
         sys._getframe().f_code.co_name)
     )
-    filepath_list = []
     # logger.debug("searching w/ '{}'...".format(fmt))
-    loaded_count = 0
-    skipped_count = 0
+    filepath_list = []
+    matches = 0
+    unmatches = 0
     for root, dirs, files in os.walk(directory):
         for filename in files:
+            kwargs_copy = copy.deepcopy(kwargs)
             try:
                 fpath = os.path.join(root, filename)
-                # kwargs_copy['filepath'] = fpath
+                kwargs_copy['filepath'] = fpath
+                validate_args(kwargs_copy)
+
+                # TODO: throw exception if does not match
+
                 print(fpath)
                 filepath_list.append(fpath)
-                loaded_count += 1
+                matches += 1
             except SyntaxError:
                 logger.debug("skipping {}...".format(fpath))
-                skipped_count += 1
-    logger.info("{} files loaded, {} skipped.".format(
-        loaded_count, skipped_count
+                unmatches += 1
+    logger.info("{} matching files found out of {} searched.".format(
+        matches, unmatches + matches
     ))
     return filepath_list
