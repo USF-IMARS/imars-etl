@@ -98,7 +98,6 @@ def sql_str_to_dict(sql_str):
         __name__,
         sys._getframe().f_code.co_name)
     )
-    logger.setLevel(logging.DEBUG)
     logger.debug("parsing metadata from sql: {}".format(sql_str))
     result = {}
     if sql_str is None or len(sql_str) < 1:
@@ -161,7 +160,6 @@ def _dict_union_raise_on_conflict(dict_a, dict_b, auto_reconsile=True):
         __name__,
         sys._getframe().f_code.co_name)
     )
-    logger.setLevel(logging.DEBUG)
 
     # TODO: maybe this should be done elsewhere?
     dict_a = _rm_dict_none_values(dict_a)
@@ -196,7 +194,6 @@ def _reconsile_conflicting_values(vala, valb):
         __name__,
         sys._getframe().f_code.co_name)
     )
-    logger.setLevel(logging.DEBUG)
     newval = None
 
     reconsilers = [

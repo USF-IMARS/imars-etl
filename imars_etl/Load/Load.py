@@ -92,7 +92,6 @@ def _load_file(args_dict):
         __name__,
         sys._getframe().f_code.co_name)
     )
-    logger.setLevel(logging.DEBUG)
     logger.info("------- loading file {} ----------------\n".format(
         args_dict.get('filepath', '???').split('/')[-1]
     ))
@@ -172,7 +171,6 @@ def _make_sql_insert(**kwargs):
         __name__,
         sys._getframe().f_code.co_name)
     )
-    logger.setLevel(logging.WARN)
     keys, vals = _make_sql_row_and_key_strings(**kwargs)
     # Create a new record
     SQL = "INSERT INTO file ("+keys+") VALUES ("+vals+")"

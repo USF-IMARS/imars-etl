@@ -10,7 +10,6 @@ def get_product_name(product_id):
         __name__,
         sys._getframe().f_code.co_name)
     )
-    logger.setLevel(logging.INFO)
     logger.debug("get_data_from_pid({})".format(product_id))
     for product_short_name, product_data in data.items():
         pid = product_data["imars_object_format"]["product_id"]
