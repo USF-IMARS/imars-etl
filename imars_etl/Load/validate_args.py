@@ -19,8 +19,6 @@ def validate_args(args_dict, DEFAULTS={}):
         __name__,
         sys._getframe().f_code.co_name)
     )
-    logger.setLevel(logging.INFO)
-
     keys_with_defaults = [
         'object_store',
         'metadata_conn_id',
@@ -54,29 +52,17 @@ def validate_args(args_dict, DEFAULTS={}):
         raise_cannot_constrain=False
     )
 
-    # === validate product name and id
-    if args_dict.get('directory') is not None:
-        # NOTE: this is probably not a hard requirement
-        #   but it seems like a good safety precaution.
-        if(
-            args_dict.get('product_id') is None and
-            args_dict.get('product_type_name') is None
-        ):
-            raise ValueError(
-                "--product_id or --product_type_name must be" +
-                " explicitly set if --directory is used."
-            )
-        else:
-            # apply templating to some args:
-            if args_dict.get('filepath') is not None:
-                fpath = args_dict['filepath']
-                fname = fpath.split('/')[-1]
-                fbase = fname.split('.')[0]
-                args_dict.setdefault('filename', fname)
-                args_dict.setdefault('basename', fbase)
-            if args_dict.get('metadata_file') is not None:
-                args_dict['metadata_file'] = \
-                    args_dict['metadata_file'].format(**args_dict)
+    # + basename & filename args:
+    if args_dict.get('filepath') is not None:
+        fpath = args_dict['filepath']
+        fname = fpath.split('/')[-1]
+        fbase = fname.split('.')[0]
+        args_dict.setdefault('filename', fname)
+        args_dict.setdefault('basename', fbase)
+    # apply templating to some args:
+    if args_dict.get('metadata_file') is not None:
+        args_dict['metadata_file'] = \
+            args_dict['metadata_file'].format(**args_dict)
 
     args_dict = unify_metadata(**args_dict)
 
