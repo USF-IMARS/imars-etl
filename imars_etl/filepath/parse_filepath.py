@@ -3,7 +3,6 @@ parse metadata out of a filepath
 """
 from datetime import datetime
 import logging
-import sys
 import os
 
 from parse import parse
@@ -11,8 +10,6 @@ from parse import parse
 from imars_etl.filepath.get_ingest_format import get_ingest_format
 from imars_etl.filepath.get_ingest_format import get_ingest_formats
 from imars_etl.filepath.get_product_id import get_product_id
-
-logging.getLogger("parse").setLevel(logging.WARN)
 
 
 def parse_filepath(

@@ -10,8 +10,6 @@ from airflow.contrib.hooks.fs_hook import FSHook
 from imars_etl.object_storage.NoBackendObjectHook \
     import NoBackendObjectHook
 
-logging.getLogger('airflow').setLevel(logging.WARNING)
-
 
 class BaseHookHandler(object):
     def __init__(self, hook_conn_id, wrapper_classes, built_in_hooks={}):

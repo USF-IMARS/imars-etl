@@ -1,4 +1,3 @@
-import sys
 import logging
 
 from imars_etl.Load.get_hash import get_hash
