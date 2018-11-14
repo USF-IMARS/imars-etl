@@ -13,9 +13,9 @@ def unify_metadata(**kwargs):
     Combines metadata from file & json dicts into kwargs.
     Raises error if data is mismatched.
     """
-    logger = logging.getLogger("{}.{}".format(
+    logger = logging.getLogger("imars_etl.{}".format(
         __name__,
-        sys._getframe().f_code.co_name)
+        )
     )
     logger.debug('input metadata:\n{}\n'.format(kwargs))
 
@@ -94,11 +94,10 @@ def sql_str_to_dict(sql_str):
 
     NOTE: 'AND' *is* case-sensitive here.
     """
-    logger = logging.getLogger("{}.{}".format(
+    logger = logging.getLogger("imars_etl.{}".format(
         __name__,
-        sys._getframe().f_code.co_name)
+        )
     )
-    logger.setLevel(logging.DEBUG)
     logger.debug("parsing metadata from sql: {}".format(sql_str))
     result = {}
     if sql_str is None or len(sql_str) < 1:
@@ -157,11 +156,10 @@ def _dict_union_raise_on_conflict(dict_a, dict_b, auto_reconsile=True):
         This is _probably_ ok for simple types (int & str), but could cause
         weird things if you use this to union dicts with fancy val types.
     """
-    logger = logging.getLogger("{}.{}".format(
+    logger = logging.getLogger("imars_etl.{}".format(
         __name__,
-        sys._getframe().f_code.co_name)
+        )
     )
-    logger.setLevel(logging.DEBUG)
 
     # TODO: maybe this should be done elsewhere?
     dict_a = _rm_dict_none_values(dict_a)
@@ -192,11 +190,10 @@ def _dict_union_raise_on_conflict(dict_a, dict_b, auto_reconsile=True):
 
 def _reconsile_conflicting_values(vala, valb):
     """attempts to resolve two conflicting values into one"""
-    logger = logging.getLogger("{}.{}".format(
+    logger = logging.getLogger("imars_etl.{}".format(
         __name__,
-        sys._getframe().f_code.co_name)
+        )
     )
-    logger.setLevel(logging.DEBUG)
     newval = None
 
     reconsilers = [

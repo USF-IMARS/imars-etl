@@ -25,7 +25,7 @@ def select(
 
     """
     sql_query = "SELECT {} FROM file WHERE {};".format(cols, sql)
-    print(sql_query)
+    # logger.debug(sql_query)
     metadata_db = MetadataDBHandler(
         metadata_db=metadata_conn_id,
     )
@@ -34,5 +34,4 @@ def select(
         first=first,
     )
 
-    print(result)
     return result

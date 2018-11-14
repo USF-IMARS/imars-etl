@@ -2,8 +2,8 @@
 Define CLI interface using argparse.
 
 """
-from argparse import ArgumentParser
 import logging
+from argparse import ArgumentParser
 
 from imars_etl.util.ConstMapAction import ConstMapAction
 from imars_etl.BaseHookHandler import get_hooks_list
@@ -15,6 +15,7 @@ from imars_etl.api import load
 from imars_etl.api import extract
 from imars_etl.api import id_lookup
 from imars_etl.api import select
+from imars_etl.api import find
 
 from imars_etl.Load.Load import LOAD_DEFAULTS
 
@@ -23,7 +24,20 @@ from imars_etl.extract import EXTRACT_DEFAULTS
 
 def main(argvs):
     args = parse_args(argvs)
-    return args.func(**vars(args))
+    result = args.func(**vars(args))
+
+    if args.func in [extract, id_lookup, select]:
+        # print return value
+        print(result)
+    elif args.func in [find, load]:
+        # do nothing w/ return value
+        pass
+    else:
+        raise NotImplementedError(
+            "unsure how to handle returned value for func {}".format(args.func)
+        )
+
+    return result
 
 
 def parse_args(argvs):
@@ -73,6 +87,20 @@ def parse_args(argvs):
         "help": "return first result if multiple rather than exiting w/ error",
         "action": "store_true"
     }
+    NAME_ARGS = [
+        "-n",
+        "--product_type_name", "--name", "--short_name"
+    ]
+    NAME_KWARGS = {
+            "help": "product type id short_name"
+    }
+    PID_ARGS = [
+            "-p", "--product_id", "--pid",
+    ]
+    PID_KWARGS = {
+        "help": "product type id (pid)",
+        "type": int
+    }
 
     # === extract
     parser_extract = subparsers.add_parser(
@@ -121,6 +149,19 @@ def parse_args(argvs):
         help="id # or short_name to translate."
     )
 
+    # === find
+    parser_find = subparsers.add_parser(
+        'find',
+        help='list files in dir matching given data'
+    )
+    parser_find.set_defaults(func=find)
+    parser_find.add_argument(*NAME_ARGS, **NAME_KWARGS)
+    parser_find.add_argument(*PID_ARGS, **PID_KWARGS)
+    parser_find.add_argument(
+        "directory",
+        help="path to directory of files to be searched",
+    )
+
     # === load
     parser_load = subparsers.add_parser(
         'load',
@@ -128,28 +169,13 @@ def parse_args(argvs):
     )
     parser_load.set_defaults(func=load, **LOAD_DEFAULTS)
     # required args
-    required_named_args = parser_load.add_mutually_exclusive_group(
-        required=True
-    )
-    required_named_args.add_argument(
-        "-f", "--filepath",
-        help="path to file to upload"
-    )
-    required_named_args.add_argument(
-        "-d", "--directory",
-        help="path to directory of files to be loaded"
-    )
-    # args required only with --directory
     parser_load.add_argument(
-        "-n",
-        "--product_type_name", "--name", "--short_name",
-        help="product type id short_name"
-    )
-    parser_load.add_argument(
-        "-p", "--product_id", "--pid",
-        help="product type id (pid)", type=int
+        "filepath",
+        help="path to file to upload",
     )
     # optional args
+    parser_load.add_argument(*NAME_ARGS, **NAME_KWARGS)
+    parser_load.add_argument(*PID_ARGS, **PID_KWARGS)
     parser_load.add_argument(
         "-t", "--time",
         help="ISO8601-formatted date-time string of product"
@@ -171,13 +197,14 @@ def parse_args(argvs):
         "-m", "--metadata_file",
         help=(
             "File containing metadata for the file being loaded."
-            "This argument can use template variables if used with --directory"
+            " This argument can use template variables. "
             " Template variables are pulled from the arguments passed in."
-            " Example: `--metadata_file /my/path/{filename}.xml` to specify "
-            " That the metadata file has the same name as the data file, but "
-            " is in the `/my/path/` directory. Other template vars: \n"
+            " Example: `--metadata_file /metadir/{basename}.xml` to specify "
+            " That the metadata file has the same name as the data file"
+            " (without file extension), but is in the `/metadir/` directory."
+            "Other template vars: \n"
             " {basename} {filename} {filepath} {time} {date_time} "
-            "{date_time.year} "
+            "{date_time.year} {ext}"
         )
     )
     parser_load.add_argument(  # todo change terminology to "parser"
@@ -232,23 +259,43 @@ def parse_args(argvs):
     # === set up logging behavior
     # =========================================================================
     if (args.verbose == 0):
-        logging.basicConfig(level=logging.WARNING)
+        lvl_console = logging.ERROR
     elif (args.verbose == 1):
-        logging.basicConfig(level=logging.INFO)
+        lvl_console = logging.INFO
+        # stream_handler.setLevel(logging.INFO)
+        # file_handler.setLevel(logging.DEBUG)
     else:  # } (args.verbose == 2){
-        logging.basicConfig(level=logging.DEBUG)
-
+        lvl_console = logging.DEBUG
+        # stream_handler.setLevel(logging.DEBUG)
+        # file_handler.setLevel(logging.DEBUG)
+    # set up console root logger
     # === (optional) create custom logging format(s)
     # https://docs.python.org/3/library/logging.html#logrecord-attributes
-    formatter = logging.Formatter(
-        '%(asctime)s|%(levelname)s\t|%(filename)s:%(lineno)s\t|%(message)s'
+    # long_formatter = logging.Formatter(
+    #     '%(asctime)s|%(levelname)s\t|%(filename)s:%(lineno)s\t|%(message)s'
+    # )
+    short_formatter = logging.Formatter(
+        '%(name)-12s: %(levelname)-8s %(message)s'
     )
 
-    # === (optional) create handlers
+    # === create handlers
     # https://docs.python.org/3/howto/logging.html#useful-handlers
     stream_handler = logging.StreamHandler()
-    stream_handler.setLevel(logging.DEBUG)
-    stream_handler.setFormatter(formatter)
+    stream_handler.setFormatter(short_formatter)
+    stream_handler.setLevel(lvl_console)
+
+    logging.getLogger("imars_etl").addHandler(stream_handler)
+    logging.getLogger("imars_etl").setLevel(lvl_console)
+
+    # disable misbehaving root logger
+    # logging.getLogger("").setLevel(logging.WARNING)
+    # config our loggers
+    logging.getLogger("imars_etl").propagate = False
+    # config lib loggers
+    logging.getLogger("airflow").setLevel(logging.WARNING)
+    logging.getLogger("airflow").propagate = False
+    logging.getLogger("parse").setLevel(logging.WARNING)
+    logging.getLogger("parse").propagate = False
 
     # LOG_DIR = "/var/opt/imars_etl/"
     # if not os.path.exists(LOG_DIR):
@@ -256,19 +303,6 @@ def parse_args(argvs):
     # file_handler = RotatingFileHandler(
     #    LOG_DIR+'imars_etl.log', maxBytes=1e6, backupCount=5
     # )
-    # file_handler.setLevel(logging.DEBUG)
     # file_handler.setFormatter(formatter)
 
-    # === add the handlers (if any) to the logger
-    _handlers = [
-        stream_handler
-        # file_handler
-    ]
-
-    # basicConfig.level must be set to *lowest* of all levels used in handlers
-    logging.basicConfig(
-        handlers=_handlers,
-        level=logging.DEBUG
-    )
-    # =========================================================================
     return args

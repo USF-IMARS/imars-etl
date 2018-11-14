@@ -36,8 +36,8 @@ class Test_parse_filepath(TestCase):
             '-vvv',
             'load',
             '--dry_run',
-            '-f', "16FEB12162518-M1BS-057488585010_01_P003-BROWSE.JPG",
             '--nohash',
+            "16FEB12162518-M1BS-057488585010_01_P003-BROWSE.JPG",
         ])
         res_args = parse_filepath(**vars(test_args))
         self.assertEqual(
@@ -58,8 +58,8 @@ class Test_parse_filepath(TestCase):
             '-vvv',
             'load',
             '--dry_run',
-            '-f', "16FEB12162518-P1BS-057488585010_01_P003_PIXEL_SHAPE.shx",
             '--nohash',
+            "16FEB12162518-P1BS-057488585010_01_P003_PIXEL_SHAPE.shx",
         ])
         res_args = parse_filepath(**vars(test_args))
         self.assertEqual(
@@ -82,9 +82,9 @@ class Test_parse_filepath(TestCase):
             '-vvv',
             'load',
             '--dry_run',
-            '-f', "file_w_date_1997.txt",
             '-n', "test_test_test",
             '--nohash',
+            "file_w_date_1997.txt",
         ])
         res_args = parse_filepath(**vars(test_args))
         self.assertEqual(res_args['date_time'], datetime(1997, 1, 1))
@@ -101,8 +101,8 @@ class Test_parse_filepath(TestCase):
             '-vvv',
             'load',
             '--dry_run',
-            '-f', 'date_2022123.arg_testyTestArg.time_0711.woah',
             '--nohash',
+            'date_2022123.arg_testyTestArg.time_0711.woah',
         ])
         res_args = parse_filepath(**vars(test_args))
         self.assertEqual(res_args['date_time'], datetime(2022, 5, 3, 7, 0, 11))

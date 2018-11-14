@@ -41,9 +41,16 @@ $ imars-etl -vvv extract 'date_time < "2018-01-01" AND date_time > "2018-01-07"'
 ```
 ### load
 ```bash
+# use imars_etl find to load a directory:
+python3 -m imars_etl find -p 14 /srv/imars-objects/big_bend/wv2/2014 \
+    | xargs -n 1 python3 -m imars_etl load
+
+ls /srv/imars-objects/ftp-ingest/wv3_2018_09_17T0336* \
+    | xargs -n 1 python -m imars_etl -v load --nohash --dry_run
+
 # load all wv2 xml files from 2014 and call them area=6 (big_bend)
-python3 -m imars_etl -v load \
-    -d /srv/imars-objects/big_bend/wv2/2014 \
+ls /srv/imars-objects/big_bend/wv2/2014/*
+    | xargs -n 1 python3 -m imars_etl -v load \
     -p 14 \
     -j '{"status_id":3, "area_id":6}' \
     --object_store no_upload \
@@ -53,8 +60,8 @@ python3 -m imars_etl -v load \
     --nohash
 
 # same as above but for ntf files:
-python3 -m imars_etl -v load \
-    -d /srv/imars-objects/big_bend/wv2/2014 \
+ls /srv/imars-objects/big_bend/wv2/2014/*
+    | xargs -n 1 python3 -m imars_etl -v load \
     -p 11 \
     -j '{"status_id":3, "area_id":6}' \
     --object_store no_upload \
@@ -67,27 +74,26 @@ python3 -m imars_etl -v load \
 #     NOTE: use `--dry_run` to practice
 #     NOTE: `area_id:7` in the json must match fl_se
 python -m imars_etl -v load \
--f /srv/imars-objects/ftp-ingest/wv2_2018_10_08T115750_fl_se_058523212_10_0.zip \
--p 6 \
--j '{"status_id":3, "area_id":7}' \
---object_store no_upload \
---dry_run
+    -p 6 \
+    -j '{"status_id":3, "area_id":7}' \
+    --object_store no_upload \
+    --dry_run \
+    /srv/imars-objects/ftp-ingest/wv2_2018_10_08T115750_fl_se_058523212_10_0.zip
 
 # manually enter the time
-$ imars-etl load --area 1 --time "2017-01-02T13:45" --product_id 4 --filepath /path/to/file.hdf
+$ imars-etl load --time "2017-01-02T13:45" --product_id 4 /path/to/file.hdf
 
 # auto-parse info (date) from filename using info from `imars_etl.filepath.data`
-$ imars-etl load --area 1 --product_id 4 --filepath /path/to/file/wv2_2012_02_myChunk.zip
+$ imars-etl load --product_id 4 /path/to/file/wv2_2012_02_myChunk.zip
 
 # use product short_name instead of id:
 you@computer:~/$ imars-etl load --satellite aqua --time 2017-01-02T13:45 --instrument modis /path/to/file.hdf
 
 # load all matching files from a dir
-you@comp:~/$ imars-etl load --ingest_name matts_wv2_ftp_ingest -p 6 --directory /tmp/myDir
+you@comp:~/$ ls /tmp/myDir/ | xargs -n 1 imars-etl load --ingest_name matts_wv2_ftp_ingest -p 6
 
 # load with metadata read from ESA DHUS json file:
-you@comp:~/$ imars-etl load --filepath myfilepath.SEN3 \
-    --metadata_file myfile_meta.json
+you@comp:~/$ imars-etl load --metadata_file myfile_meta.json myfilepath.SEN3
 ```
 
 ## python API

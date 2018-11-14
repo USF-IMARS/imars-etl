@@ -20,4 +20,4 @@ install:
   - pip install .[test]
 # command to run tests
 script:
-  - nosetests
+  - pytest

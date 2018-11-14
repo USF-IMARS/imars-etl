@@ -42,5 +42,4 @@ def id_lookup(
         first=first,
     )[0]
 
-    print(translation)
     return translation

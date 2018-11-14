@@ -3,7 +3,6 @@ parse metadata out of a filepath
 """
 from datetime import datetime
 import logging
-import sys
 import os
 
 from parse import parse
@@ -11,8 +10,6 @@ from parse import parse
 from imars_etl.filepath.get_ingest_format import get_ingest_format
 from imars_etl.filepath.get_ingest_format import get_ingest_formats
 from imars_etl.filepath.get_product_id import get_product_id
-
-logging.getLogger("parse").setLevel(logging.WARN)
 
 
 def parse_filepath(
@@ -28,9 +25,9 @@ def parse_filepath(
     types if args.product_type_name is not given
     parse_filepath but for argparse namespaces
     """
-    logger = logging.getLogger("{}.{}".format(
+    logger = logging.getLogger("imars_etl.{}".format(
         __name__,
-        sys._getframe().f_code.co_name)
+        )
     )
     args_dict = {}
     if (load_format is not None):
@@ -118,9 +115,9 @@ def _parse_from_product_type_and_filename(
     parsed_vars : dict
         dict of vars that were parsed from the given info
     """
-    logger = logging.getLogger("{}.{}".format(
+    logger = logging.getLogger("imars_etl.{}".format(
         __name__,
-        sys._getframe().f_code.co_name
+
     ))
     logger.debug("parsing as {}".format(pattern_name))
     filename = filepath

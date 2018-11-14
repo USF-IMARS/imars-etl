@@ -14,10 +14,10 @@ class Test_unify_metadata(TestCase):
             '-vvv',
             'load',
             '--dry_run',
-            '-f', "/fake/path/file_w_date_2018.txt",
             '-p', '-1',
             '-t', "2018-02-26T13:00",
             '-j', '{"status_id":1,"area_id":1}',
+            "/fake/path/file_w_date_2018.txt",
         ])
         result_arg_dict = unify_metadata(**vars(test_args))
         self.assertDictContainsSubset(
@@ -33,7 +33,7 @@ class Test_unify_metadata(TestCase):
             result_arg_dict
         )
 
-    def Test_unify_metadata_similar_keys_of_different_types(self):
+    def test_unify_metadata_similar_keys_of_different_types(self):
         """
         unify_metadata passes with matching metadata in kwargs & sql
         """
@@ -53,7 +53,7 @@ class Test_unify_metadata(TestCase):
             result_arg_dict
         )
 
-    def Test_unify_identical_date_and_datestr(self):
+    def test_unify_identical_date_and_datestr(self):
         """
         unify_metadata can use date_time from sql string
         """
