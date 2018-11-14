@@ -22,9 +22,9 @@ class HttpHookWrapper(BaseHookWrapper):
         raise NotImplementedError('http loading not (yet) supported')
 
     def extract(self, src_path, target_path_or_file_handle, **kwargs):
-        logger = logging.getLogger("{}.{}".format(
+        logger = logging.getLogger("imars_etl.{}".format(
             __name__,
-            sys._getframe().f_code.co_name)
+            )
         )
         logger.info("fetching URL http://{} / {}".format(
             self.hook.base_url, src_path

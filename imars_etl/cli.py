@@ -2,8 +2,8 @@
 Define CLI interface using argparse.
 
 """
-from argparse import ArgumentParser
 import logging
+from argparse import ArgumentParser
 
 from imars_etl.util.ConstMapAction import ConstMapAction
 from imars_etl.BaseHookHandler import get_hooks_list
@@ -244,16 +244,44 @@ def parse_args(argvs):
     # =========================================================================
     # === set up logging behavior
     # =========================================================================
+    if (args.verbose == 0):
+        lvl_console = logging.WARNING
+    elif (args.verbose == 1):
+        lvl_console = logging.INFO
+        # stream_handler.setLevel(logging.INFO)
+        # file_handler.setLevel(logging.DEBUG)
+    else:  # } (args.verbose == 2){
+        lvl_console = logging.DEBUG
+        # stream_handler.setLevel(logging.DEBUG)
+        # file_handler.setLevel(logging.DEBUG)
+    # set up console root logger
     # === (optional) create custom logging format(s)
     # https://docs.python.org/3/library/logging.html#logrecord-attributes
-    formatter = logging.Formatter(
-        '%(asctime)s|%(levelname)s\t|%(filename)s:%(lineno)s\t|%(message)s'
+    # long_formatter = logging.Formatter(
+    #     '%(asctime)s|%(levelname)s\t|%(filename)s:%(lineno)s\t|%(message)s'
+    # )
+    short_formatter = logging.Formatter(
+        '%(name)-12s: %(levelname)-8s %(message)s'
     )
 
-    # === (optional) create handlers
+    # === create handlers
     # https://docs.python.org/3/howto/logging.html#useful-handlers
     stream_handler = logging.StreamHandler()
-    stream_handler.setFormatter(formatter)
+    stream_handler.setFormatter(short_formatter)
+    stream_handler.setLevel(lvl_console)
+
+    logging.getLogger("imars_etl").addHandler(stream_handler)
+    logging.getLogger("imars_etl").setLevel(lvl_console)
+
+    # disable misbehaving root logger
+    # logging.getLogger("").setLevel(logging.WARNING)
+    # config our loggers
+    logging.getLogger("imars_etl").propagate = False
+    # config lib loggers
+    logging.getLogger("airflow").setLevel(logging.WARNING)
+    logging.getLogger("airflow").propagate = False
+    logging.getLogger("parse").setLevel(logging.WARNING)
+    logging.getLogger("parse").propagate = False
 
     # LOG_DIR = "/var/opt/imars_etl/"
     # if not os.path.exists(LOG_DIR):
@@ -263,26 +291,4 @@ def parse_args(argvs):
     # )
     # file_handler.setFormatter(formatter)
 
-    if (args.verbose == 0):
-        stream_handler.setLevel(logging.WARNING)
-        # file_handler.setLevel(logging.WARNING)
-    elif (args.verbose == 1):
-        stream_handler.setLevel(logging.INFO)
-        # file_handler.setLevel(logging.DEBUG)
-    else:  # } (args.verbose == 2){
-        stream_handler.setLevel(logging.DEBUG)
-        # file_handler.setLevel(logging.DEBUG)
-
-    # === add the handlers (if any) to the logger
-    _handlers = [
-        stream_handler
-        # file_handler
-    ]
-
-    # basicConfig.level must be set to *lowest* of all levels used in handlers
-    logging.basicConfig(
-        handlers=_handlers,
-        level=logging.DEBUG
-    )
-    # =========================================================================
     return args

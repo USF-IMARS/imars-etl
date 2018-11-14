@@ -1,5 +1,4 @@
 import logging
-import sys
 
 from sqlalchemy.orm.exc import NoResultFound
 from airflow import settings
@@ -55,9 +54,9 @@ class BaseHookHandler(object):
         m_kwargs : dict
             kwargs to pass to method `method(**kwargs)`
         """
-        logger = logging.getLogger("{}.{}".format(
+        logger = logging.getLogger("imars_etl.{}".format(
             __name__,
-            sys._getframe().f_code.co_name
+
         ))
         err_msg = ""
         for hook in self.hooks_list:
@@ -95,9 +94,9 @@ BUILT_IN_CONNECTIONS = {
 
 
 def get_hook_list(conn_id):
-    logger = logging.getLogger("{}.{}".format(
+    logger = logging.getLogger("imars_etl.{}".format(
         __name__,
-        sys._getframe().f_code.co_name)
+        )
     )
     logger.info("getting hook for conn_id '{}'".format(conn_id))
 
@@ -128,9 +127,9 @@ def _get_hook(conn_id):
     Get hook object by id string.
     """
     # TODO: separate object_storage & metadata_db hooks
-    logger = logging.getLogger("{}.{}".format(
+    logger = logging.getLogger("imars_etl.{}".format(
         __name__,
-        sys._getframe().f_code.co_name)
+        )
     )
 
     # check for built-in
@@ -165,9 +164,9 @@ def get_hooks_list():
 
 def _get_supplemental_hook(conn):
     """ fills gaps left by airflow.models.Connection.get_hook() """
-    logger = logging.getLogger("{}.{}".format(
+    logger = logging.getLogger("imars_etl.{}".format(
         __name__,
-        sys._getframe().f_code.co_name)
+        )
     )
     if conn.conn_type == 'fs':
         logger.debug('fs hook')

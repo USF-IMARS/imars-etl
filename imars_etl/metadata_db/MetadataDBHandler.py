@@ -103,9 +103,9 @@ class MetadataDBHandler(BaseHookHandler):
             Connection is not autocommit by default so you must commit to
             save changes to the database.
         """
-        logger = logging.getLogger("{}.{}".format(
+        logger = logging.getLogger("imars_etl.{}".format(
             __name__,
-            sys._getframe().f_code.co_name)
+            )
         )
         logger.debug("QUERY: {}".format(sql))
 
@@ -124,9 +124,9 @@ class MetadataDBHandler(BaseHookHandler):
 
 
 def validate_sql_result(result):
-    logger = logging.getLogger("{}.{}".format(
+    logger = logging.getLogger("imars_etl.{}".format(
         __name__,
-        sys._getframe().f_code.co_name)
+        )
     )
 
     if (not result):

@@ -9,9 +9,9 @@ def format_filepath(
     hook=None,
     **kwargs
 ):
-    logger = logging.getLogger("{}.{}".format(
+    logger = logging.getLogger("imars_etl.{}".format(
         __name__,
-        sys._getframe().f_code.co_name)
+        )
     )
     try:
         logger.debug("hook is {}".format(hook))
