@@ -54,5 +54,4 @@ def extract(
         **kwargs
     )
 
-    print(fpath)
     return fpath

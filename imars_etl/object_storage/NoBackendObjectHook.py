@@ -24,6 +24,6 @@ class NoBackendObjectHook(BaseObjectHook):
         return ""
 
     def format_filepath(self, **kwargs):
-        print('formatting...')
-        print('\n\tgiving back filepath: \t {}\n'.format(kwargs['filepath']))
+        # self.logger.debug('formatting...')
+        # self.logger.debug('\n\tgiving back filepath: \t {}\n'.format(kwargs['filepath']))
         return kwargs['filepath']
