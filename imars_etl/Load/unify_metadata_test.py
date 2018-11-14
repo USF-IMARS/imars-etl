@@ -33,7 +33,7 @@ class Test_unify_metadata(TestCase):
             result_arg_dict
         )
 
-    def Test_unify_metadata_similar_keys_of_different_types(self):
+    def test_unify_metadata_similar_keys_of_different_types(self):
         """
         unify_metadata passes with matching metadata in kwargs & sql
         """
@@ -53,7 +53,7 @@ class Test_unify_metadata(TestCase):
             result_arg_dict
         )
 
-    def Test_unify_identical_date_and_datestr(self):
+    def test_unify_identical_date_and_datestr(self):
         """
         unify_metadata can use date_time from sql string
         """
