@@ -16,11 +16,11 @@ class Test_validate_args(TestCase):
             '-vvv',
             'load',
             '--dry_run',
-            '-f', "/fake/path/file_w_date_2018.txt",
             '-p', '-1',
             '-t', "2018-02-26T13:00",
             '-j', '{"status_id":1,"area_id":1}',
-            '--nohash'
+            '--nohash',
+            "/fake/path/file_w_date_2018.txt",
         ])
         print("\n\n{}\n\n".format(vars(test_args)))
         result_arg_dict = validate_args(vars(test_args))
@@ -83,12 +83,11 @@ class Test_validate_args(TestCase):
             '-vvv',
             'load',
             '--dry_run',
-            '-f',
+            '--nohash',
             (
                 "fake_fpath/ftp-ingest/"
                 "wv2_2018_10_08T115750_fl_se_058523212_10_0.zip"
             ),
-            '--nohash'
         ])
         result_arg_dict = validate_args(vars(test_args))
         self.assertDictContainsSubset(

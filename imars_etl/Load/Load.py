@@ -44,11 +44,11 @@ def load(
         ./imars-etl.py -vvv load /home/me/myfile.png '{"area_id":1}'
 
         ./imars-etl.py -vvv load
-            -f /home/tylar/usf-imars.github.io/assets/img/bg.png
             -a 1
             -t 1
-            -d '2018-02-26T13:00'
+            -t '2018-02-26T13:00'
             -j '{"status_id":0}'
+            /home/tylar/usf-imars.github.io/assets/img/bg.png
     """
     args_dict = dict(
         filepath=filepath,

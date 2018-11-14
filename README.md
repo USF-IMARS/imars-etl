@@ -74,11 +74,11 @@ ls /srv/imars-objects/big_bend/wv2/2014/*
 #     NOTE: use `--dry_run` to practice
 #     NOTE: `area_id:7` in the json must match fl_se
 python -m imars_etl -v load \
--f /srv/imars-objects/ftp-ingest/wv2_2018_10_08T115750_fl_se_058523212_10_0.zip \
--p 6 \
--j '{"status_id":3, "area_id":7}' \
---object_store no_upload \
---dry_run
+    -p 6 \
+    -j '{"status_id":3, "area_id":7}' \
+    --object_store no_upload \
+    --dry_run \
+    /srv/imars-objects/ftp-ingest/wv2_2018_10_08T115750_fl_se_058523212_10_0.zip
 
 # manually enter the time
 $ imars-etl load --time "2017-01-02T13:45" --product_id 4 /path/to/file.hdf

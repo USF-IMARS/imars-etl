@@ -168,48 +168,6 @@ class Test_load_api(TestCasePlusSQL):
         "ObjectStorageHandler.load",
         return_value="/tmp/imars-etl-test-fpath"
     )
-    def test_load_dir(self, mock_load):
-        """Load directory vi python API"""
-        FAKE_TEST_DIR = "/fake/dir/of/files/w/parseable/dates"
-        with patch('os.walk') as mockwalk:
-            from imars_etl.api import load
-            mockwalk.return_value = [(
-                FAKE_TEST_DIR,  # root
-                (  # dirs
-                ),
-                (  # files
-                    "file_w_date_1999.txt",
-                    "date_2018333.arg_test_arg-here.time_1311.woah",
-                ),
-            )]
-            res = load(
-                product_type_name='test_fancy_format_test',
-                verbose=3,
-                ingest_key='file_w_date',
-                directory=FAKE_TEST_DIR,
-                dry_run=True,
-                nohash=True,
-            )
-
-            self.assertSQLsEquals(
-                res,
-                [
-                    ['date_time', 'product_id', 'filepath'],
-                ],
-                [
-                    [
-                        '"2018-11-29 13:00:11"',
-                        '-2',
-                        '"{}"'.format(mock_load.return_value)
-                    ]
-                ]
-            )
-
-    @patch(
-        "imars_etl.object_storage.ObjectStorageHandler."
-        "ObjectStorageHandler.load",
-        return_value="/tmp/imars-etl-test-fpath"
-    )
     def test_load_file_w_metadata_file_date(
         self, mock_load
     ):

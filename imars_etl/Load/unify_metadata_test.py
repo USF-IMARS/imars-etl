@@ -14,10 +14,10 @@ class Test_unify_metadata(TestCase):
             '-vvv',
             'load',
             '--dry_run',
-            '-f', "/fake/path/file_w_date_2018.txt",
             '-p', '-1',
             '-t', "2018-02-26T13:00",
             '-j', '{"status_id":1,"area_id":1}',
+            "/fake/path/file_w_date_2018.txt",
         ])
         result_arg_dict = unify_metadata(**vars(test_args))
         self.assertDictContainsSubset(

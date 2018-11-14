@@ -1,3 +1,4 @@
+import os
 import logging
 
 from imars_etl.Load.get_hash import get_hash
@@ -54,10 +55,14 @@ def validate_args(args_dict, DEFAULTS={}):
     # + basename & filename args:
     if args_dict.get('filepath') is not None:
         fpath = args_dict['filepath']
-        fname = fpath.split('/')[-1]
-        fbase = fname.split('.')[0]
+        dirname, fname = os.path.split(fpath)
+        assert fname == fpath.split('/')[-1]
+        fbase, ext = os.path.splitext(fname)
+        assert fbase == fname.split('.')[0]
         args_dict.setdefault('filename', fname)
         args_dict.setdefault('basename', fbase)
+        args_dict.setdefault('directory', dirname)
+        args_dict.setdefault('ext', ext)
     # apply templating to some args:
     if args_dict.get('metadata_file') is not None:
         args_dict['metadata_file'] = \
