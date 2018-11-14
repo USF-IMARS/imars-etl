@@ -23,7 +23,9 @@ from imars_etl.extract import EXTRACT_DEFAULTS
 
 def main(argvs):
     args = parse_args(argvs)
-    return args.func(**vars(args))
+    result = args.func(**vars(args))
+    print(result)
+    return result
 
 
 def parse_args(argvs):
@@ -232,7 +234,7 @@ def parse_args(argvs):
     # === set up logging behavior
     # =========================================================================
     if (args.verbose == 0):
-        lvl_console = logging.WARNING
+        lvl_console = logging.ERROR
     elif (args.verbose == 1):
         lvl_console = logging.INFO
         # stream_handler.setLevel(logging.INFO)
