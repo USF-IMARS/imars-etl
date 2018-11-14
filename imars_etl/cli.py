@@ -25,7 +25,18 @@ from imars_etl.extract import EXTRACT_DEFAULTS
 def main(argvs):
     args = parse_args(argvs)
     result = args.func(**vars(args))
-    print(result)
+
+    if args.func in [extract, id_lookup, select]:
+        # print return value
+        print(result)
+    elif args.func in [find, load]:
+        # do nothing w/ return value
+        pass
+    else:
+        raise NotImplementedError(
+            "unsure how to handle returned value for func {}".format(args.func)
+        )
+
     return result
 
 
