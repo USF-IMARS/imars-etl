@@ -61,7 +61,10 @@ def find(
                 print(fpath)
                 filepath_list.append(fpath)
                 matches += 1
-            except(KeyError, AssertionError):
+            except(SyntaxError, KeyError, AssertionError):
+                # SyntaxError from parser,
+                # KeyError from missing kwargs,
+                # AssertionError from requirements above
                 logger.debug("skipping {}...".format(fpath))
                 unmatches += 1
     logger.info("{} matching files found out of {} searched.".format(
