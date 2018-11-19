@@ -10,6 +10,9 @@ from airflow.contrib.hooks.fs_hook import FSHook
 from imars_etl.object_storage.NoBackendObjectHook \
     import NoBackendObjectHook
 
+logging.getLogger("airflow").setLevel(logging.WARNING)
+logging.getLogger("airflow").propagate = False
+
 
 class BaseHookHandler(object):
     def __init__(self, hook_conn_id, wrapper_classes, built_in_hooks={}):
@@ -98,7 +101,7 @@ def get_hook_list(conn_id):
         __name__,
         )
     )
-    logger.info("getting hook for conn_id '{}'".format(conn_id))
+    logger.debug("getting hook for conn_id '{}'".format(conn_id))
 
     # check for fallback chain
     if conn_id.startswith("fallback_chain."):
@@ -112,7 +115,7 @@ def get_hook_list(conn_id):
             try:
                 hooks.append(_get_hook(c_id))
             except NoResultFound:
-                logger.warning(
+                logger.debug(
                     "Chained connection '{}' not found.".format(c_id)
                 )
         return hooks
