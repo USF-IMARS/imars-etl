@@ -122,8 +122,10 @@ class MetadataDBHandler(BaseHookHandler):
         logger.debug("RESULT: {}".format(result))
         return result
 
-    def _handle_exception(self, i_err, m_args, m_kwargs):
+    def handle_exception(self, i_err, m_args, m_kwargs):
         """
+        @override
+
         skips over IntegrityErrors if duplicates_ok.
         """
         logger = logging.getLogger("imars_etl.{}".format(
