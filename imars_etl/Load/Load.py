@@ -66,26 +66,6 @@ def load(
         raise ValueError("filepath is required.")
 
 
-def _handle_integrity_error(i_err, fpath, duplicates_ok=False, **kwargs):
-    logger = logging.getLogger("imars_etl.{}".format(
-        __name__,
-        )
-    )
-    logger.debug(i_err)
-    errnum, errmsg = i_err.args
-    logger.debug("errnum,={}".format(errnum))
-    logger.debug("errmsg,={}".format(errmsg))
-    DUPLICATE_ENTRY_ERRNO = 1062
-    if (errnum == DUPLICATE_ENTRY_ERRNO and duplicates_ok):
-        logger.warning(
-            "IntegrityError: Duplicate entry for '{}'".format(
-                fpath
-            )
-        )
-    else:
-        raise
-
-
 def _load_file(args_dict):
     """Loads a single file"""
     logger = logging.getLogger("imars_etl.{}".format(
@@ -114,16 +94,13 @@ def _load_file(args_dict):
             args_dict['filepath'], new_filepath
         )
     else:
-        try:
-            MetadataDBHandler(**args_dict).insert_rows(
-                table='file',
-                rows=rows,
-                target_fields=fields,
-                commit_every=1000,
-                replace=False,
-            )
-        except IntegrityError as i_err:
-            _handle_integrity_error(i_err, new_filepath, **args_dict)
+        MetadataDBHandler(**args_dict).insert_rows(
+            table='file',
+            rows=rows,
+            target_fields=fields,
+            commit_every=1000,
+            replace=False,
+        )
 
 
 def _make_sql_row_and_key_lists(**kwargs):

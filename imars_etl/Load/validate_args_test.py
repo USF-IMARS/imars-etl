@@ -24,18 +24,16 @@ class Test_validate_args(TestCase):
         ])
         print("\n\n{}\n\n".format(vars(test_args)))
         result_arg_dict = validate_args(vars(test_args))
-        self.assertDictContainsSubset(
-            {
-                "verbose": 3,
-                "dry_run": True,
-                "filepath": "/fake/path/file_w_date_2018.txt",
-                "product_id": -1,
-                "product_type_name": "test_test_test",
-                "time": "2018-02-26T13:00:00.000000",
-                "date_time": datetime(2018, 2, 26, 13),
-            },
-            result_arg_dict
-        )
+        expected_subset = {
+            "verbose": 3,
+            "dry_run": True,
+            "filepath": "/fake/path/file_w_date_2018.txt",
+            "product_id": -1,
+            "product_type_name": "test_test_test",
+            "time": "2018-02-26T13:00:00.000000",
+            "date_time": datetime(2018, 2, 26, 13),
+        }
+        assert expected_subset.items() <= result_arg_dict.items()
 
     def test_validate_includes_hash(self):
         """
@@ -58,19 +56,17 @@ class Test_validate_args(TestCase):
             'noparse': True,
         }
         result_arg_dict = validate_args(test_args)
-        self.assertDictContainsSubset(
-            {
-                "verbose": 3,
-                "dry_run": True,
-                "filepath": "/usr/local/bin/ipfs",
-                "product_id": -1,
-                "product_type_name": "test_test_test",
-                "time": "2018-02-26T13:00:00.000000",
-                "date_time": datetime(2018, 2, 26, 13),
-                "multihash": FILE_HASH,
-            },
-            result_arg_dict
-        )
+        expected_subset = {
+            "verbose": 3,
+            "dry_run": True,
+            "filepath": "/usr/local/bin/ipfs",
+            "product_id": -1,
+            "product_type_name": "test_test_test",
+            "time": "2018-02-26T13:00:00.000000",
+            "date_time": datetime(2018, 2, 26, 13),
+            "multihash": FILE_HASH,
+        }
+        assert expected_subset.items() <= result_arg_dict.items()
 
     def test_validate_gets_area_id_from_area_name(self):
         """
@@ -90,12 +86,10 @@ class Test_validate_args(TestCase):
             ),
         ])
         result_arg_dict = validate_args(vars(test_args))
-        self.assertDictContainsSubset(
-            {
-                "verbose": 3,
-                "dry_run": True,
-                "area_short_name": "fl_se",
-                "area_id": 7,
-            },
-            result_arg_dict
-        )
+        expected_subset = {
+            "verbose": 3,
+            "dry_run": True,
+            "area_short_name": "fl_se",
+            "area_id": 7,
+        }
+        assert expected_subset.items() <= result_arg_dict.items()

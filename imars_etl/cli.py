@@ -36,8 +36,59 @@ def main(argvs):
         raise NotImplementedError(
             "unsure how to handle returned value for func {}".format(args.func)
         )
-
     return result
+
+
+def config_logger(verbosity=0):
+    # =========================================================================
+    # === set up logging behavior
+    # =========================================================================
+    if (verbosity == 0):
+        lvl_console = logging.ERROR
+    elif (verbosity == 1):
+        lvl_console = logging.INFO
+        # stream_handler.setLevel(logging.INFO)
+        # file_handler.setLevel(logging.DEBUG)
+    else:  # } (args.verbose == 2){
+        lvl_console = logging.DEBUG
+        # stream_handler.setLevel(logging.DEBUG)
+        # file_handler.setLevel(logging.DEBUG)
+    # set up console root logger
+    # === (optional) create custom logging format(s)
+    # https://docs.python.org/3/library/logging.html#logrecord-attributes
+    # long_formatter = logging.Formatter(
+    #     '%(asctime)s|%(levelname)s\t|%(filename)s:%(lineno)s\t|%(message)s'
+    # )
+    short_formatter = logging.Formatter(
+        '%(name)-12s: %(levelname)-8s %(message)s'
+    )
+
+    # === create handlers
+    # https://docs.python.org/3/howto/logging.html#useful-handlers
+    stream_handler = logging.StreamHandler()
+    stream_handler.setFormatter(short_formatter)
+    stream_handler.setLevel(lvl_console)
+
+    logging.getLogger("imars_etl").addHandler(stream_handler)
+    logging.getLogger("imars_etl").setLevel(lvl_console)
+
+    # disable misbehaving root logger
+    # logging.getLogger("").setLevel(logging.WARNING)
+    # config our loggers
+    logging.getLogger("imars_etl").propagate = False
+    # === config lib loggers
+    logging.getLogger("airflow").setLevel(logging.WARNING)
+    logging.getLogger("airflow").propagate = False
+    logging.getLogger("parse").setLevel(logging.WARNING)
+    logging.getLogger("parse").propagate = False
+
+    # LOG_DIR = "/var/opt/imars_etl/"
+    # if not os.path.exists(LOG_DIR):
+    #     os.makedirs(LOG_DIR)
+    # file_handler = RotatingFileHandler(
+    #    LOG_DIR+'imars_etl.log', maxBytes=1e6, backupCount=5
+    # )
+    # file_handler.setFormatter(formatter)
 
 
 def parse_args(argvs):
@@ -255,54 +306,5 @@ def parse_args(argvs):
             "\n\n\tSubcommand is required. See help above."
         )
     # =========================================================================
-    # =========================================================================
-    # === set up logging behavior
-    # =========================================================================
-    if (args.verbose == 0):
-        lvl_console = logging.ERROR
-    elif (args.verbose == 1):
-        lvl_console = logging.INFO
-        # stream_handler.setLevel(logging.INFO)
-        # file_handler.setLevel(logging.DEBUG)
-    else:  # } (args.verbose == 2){
-        lvl_console = logging.DEBUG
-        # stream_handler.setLevel(logging.DEBUG)
-        # file_handler.setLevel(logging.DEBUG)
-    # set up console root logger
-    # === (optional) create custom logging format(s)
-    # https://docs.python.org/3/library/logging.html#logrecord-attributes
-    # long_formatter = logging.Formatter(
-    #     '%(asctime)s|%(levelname)s\t|%(filename)s:%(lineno)s\t|%(message)s'
-    # )
-    short_formatter = logging.Formatter(
-        '%(name)-12s: %(levelname)-8s %(message)s'
-    )
-
-    # === create handlers
-    # https://docs.python.org/3/howto/logging.html#useful-handlers
-    stream_handler = logging.StreamHandler()
-    stream_handler.setFormatter(short_formatter)
-    stream_handler.setLevel(lvl_console)
-
-    logging.getLogger("imars_etl").addHandler(stream_handler)
-    logging.getLogger("imars_etl").setLevel(lvl_console)
-
-    # disable misbehaving root logger
-    # logging.getLogger("").setLevel(logging.WARNING)
-    # config our loggers
-    logging.getLogger("imars_etl").propagate = False
-    # config lib loggers
-    logging.getLogger("airflow").setLevel(logging.WARNING)
-    logging.getLogger("airflow").propagate = False
-    logging.getLogger("parse").setLevel(logging.WARNING)
-    logging.getLogger("parse").propagate = False
-
-    # LOG_DIR = "/var/opt/imars_etl/"
-    # if not os.path.exists(LOG_DIR):
-    #     os.makedirs(LOG_DIR)
-    # file_handler = RotatingFileHandler(
-    #    LOG_DIR+'imars_etl.log', maxBytes=1e6, backupCount=5
-    # )
-    # file_handler.setFormatter(formatter)
-
+    config_logger(args.verbose)
     return args

@@ -1,6 +1,5 @@
 import json
 import logging
-import sys
 
 from imars_etl.exceptions.InputValidationError import InputValidationError
 from imars_etl.Load.metadata_constraints import ensure_constistent_metadata

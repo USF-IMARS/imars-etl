@@ -146,7 +146,7 @@ def _parse_from_product_type_and_filename(
 
     dt = _strptime_parsed_pattern(filename, pattern, params_parsed)
 
-    logger.info("params parsed from fname: \n\t{}".format(params_parsed))
+    logger.debug("params parsed from fname: \n\t{}".format(params_parsed))
     # NOTE: setattr LAST here, else args will get set before we know
     #   that this filename matches the given pattern
     parsed_vars = {}

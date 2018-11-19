@@ -18,9 +18,8 @@ class Test_wv2_xml_parser(TestCase):
         )
         metadata_read = parser.get_metadata()
         print('md: {}'.format(metadata_read))
-        self.assertDictContainsSubset(
-            {
+        expected_subset = {
                 "time": "2014-02-18T16:34:17.926650"
-            },
-            metadata_read
-        )
+        }
+
+        assert expected_subset.items() <= metadata_read.items()

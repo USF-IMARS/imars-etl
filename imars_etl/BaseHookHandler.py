@@ -10,6 +10,9 @@ from airflow.contrib.hooks.fs_hook import FSHook
 from imars_etl.object_storage.NoBackendObjectHook \
     import NoBackendObjectHook
 
+logging.getLogger("airflow").setLevel(logging.WARNING)
+logging.getLogger("airflow").propagate = False
+
 
 class BaseHookHandler(object):
     def __init__(self, hook_conn_id, wrapper_classes, built_in_hooks={}):
@@ -64,19 +67,29 @@ class BaseHookHandler(object):
             try:  # directly
                 return getattr(hook, method)(*m_args, **m_kwargs)
             except Exception as unwr_exc:  # with wrappers
-                err_msg += "\n\t\t(unwrapped) {}:\n\t\t\t{}".format(
-                    hook, unwr_exc
-                )
-                for wrapper in self.wrapper_classes:
-                    try:  # try this wrapper
-                        return getattr(wrapper(hook), method)(
-                            *m_args, **m_kwargs
-                        )
-                    except Exception as wr_exc:  # wrapper did not work
-                        err_msg += "\n\t\t{}( {} ):\n\t\t\t{}".format(
-                            wrapper, hook, wr_exc
-                        )
-                        continue
+                try:
+                    self.handle_exception(unwr_exc, m_args, m_kwargs)
+                    return
+                except:
+                    err_msg += "\n\t\t(unwrapped) {}:\n\t\t\t{}".format(
+                        hook, unwr_exc
+                    )
+                    for wrapper in self.wrapper_classes:
+                        try:  # try this wrapper
+                            return getattr(wrapper(hook), method)(
+                                *m_args, **m_kwargs
+                            )
+                        except Exception as wr_exc:  # wrapper did not work
+                            try:
+                                self.handle_exception(
+                                    wr_exc, m_args, m_kwargs
+                                )
+                                return
+                            except:
+                                err_msg += "\n\t\t{}( {} ):\n\t\t\t{}".format(
+                                    wrapper, hook, wr_exc
+                                )
+                                continue
         else:
             logger.debug("\n\t   hooks:{}\n\twrappers:{}".format(
                 self.hooks_list,
@@ -85,6 +98,16 @@ class BaseHookHandler(object):
             raise RuntimeError(
                 "All hooks failed. Attempts:{}".format(err_msg)
             )
+
+    def handle_exception(self, exc, args_dict):
+        """
+        Re-raises if exception is not ok.
+        Returns None if exception can be safely ignored
+        and requested operation is complete or otherwise not needed.
+
+        Override to catch & ignore exceptions like IntegrityError.
+        """
+        raise
 
 
 BUILT_IN_CONNECTIONS = {
@@ -98,7 +121,7 @@ def get_hook_list(conn_id):
         __name__,
         )
     )
-    logger.info("getting hook for conn_id '{}'".format(conn_id))
+    logger.debug("getting hook for conn_id '{}'".format(conn_id))
 
     # check for fallback chain
     if conn_id.startswith("fallback_chain."):
@@ -112,7 +135,7 @@ def get_hook_list(conn_id):
             try:
                 hooks.append(_get_hook(c_id))
             except NoResultFound:
-                logger.warning(
+                logger.debug(
                     "Chained connection '{}' not found.".format(c_id)
                 )
         return hooks
