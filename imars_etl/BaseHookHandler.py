@@ -67,19 +67,29 @@ class BaseHookHandler(object):
             try:  # directly
                 return getattr(hook, method)(*m_args, **m_kwargs)
             except Exception as unwr_exc:  # with wrappers
-                err_msg += "\n\t\t(unwrapped) {}:\n\t\t\t{}".format(
-                    hook, unwr_exc
-                )
-                for wrapper in self.wrapper_classes:
-                    try:  # try this wrapper
-                        return getattr(wrapper(hook), method)(
-                            *m_args, **m_kwargs
-                        )
-                    except Exception as wr_exc:  # wrapper did not work
-                        err_msg += "\n\t\t{}( {} ):\n\t\t\t{}".format(
-                            wrapper, hook, wr_exc
-                        )
-                        continue
+                try:
+                    self.handle_exception(unwr_exc, m_args, m_kwargs)
+                    return
+                except:
+                    err_msg += "\n\t\t(unwrapped) {}:\n\t\t\t{}".format(
+                        hook, unwr_exc
+                    )
+                    for wrapper in self.wrapper_classes:
+                        try:  # try this wrapper
+                            return getattr(wrapper(hook), method)(
+                                *m_args, **m_kwargs
+                            )
+                        except Exception as wr_exc:  # wrapper did not work
+                            try:
+                                self.handle_exception(
+                                    wr_exc, m_args, m_kwargs
+                                )
+                                return
+                            except:
+                                err_msg += "\n\t\t{}( {} ):\n\t\t\t{}".format(
+                                    wrapper, hook, wr_exc
+                                )
+                                continue
         else:
             logger.debug("\n\t   hooks:{}\n\twrappers:{}".format(
                 self.hooks_list,
@@ -88,6 +98,16 @@ class BaseHookHandler(object):
             raise RuntimeError(
                 "All hooks failed. Attempts:{}".format(err_msg)
             )
+
+    def handle_exception(self, exc, args_dict):
+        """
+        Re-raises if exception is not ok.
+        Returns None if exception can be safely ignored
+        and requested operation is complete or otherwise not needed.
+
+        Override to catch & ignore exceptions like IntegrityError.
+        """
+        raise
 
 
 BUILT_IN_CONNECTIONS = {

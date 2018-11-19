@@ -31,7 +31,6 @@ Backends| HD| NFS| FUSE | S3  | Azure         | MySQL      | MsSQL | SQLite |
 ```
 """
 import logging
-import sys
 
 from imars_etl.BaseHookHandler import BaseHookHandler
 from imars_etl.exceptions.NoMetadataMatchException \
@@ -44,13 +43,14 @@ DEFAULT_METADATA_DB_CONN_ID = "fallback_chain.local_metadb.imars_metadata"
 
 
 class MetadataDBHandler(BaseHookHandler):
-    def __init__(self, **kwargs):
+    def __init__(self, duplicates_ok=False, **kwargs):
         super(MetadataDBHandler, self).__init__(
             hook_conn_id=kwargs.get(
                 'metadata_db', DEFAULT_METADATA_DB_CONN_ID
             ),
             wrapper_classes=METADATA_DB_WRAPPERS
         )
+        self.duplicates_ok = duplicates_ok
 
     def insert_rows(
         self,
@@ -121,6 +121,26 @@ class MetadataDBHandler(BaseHookHandler):
                 raise
         logger.debug("RESULT: {}".format(result))
         return result
+
+    def _handle_exception(self, i_err, m_args, m_kwargs):
+        """
+        skips over IntegrityErrors if duplicates_ok.
+        """
+        logger = logging.getLogger("imars_etl.{}".format(
+            __name__,
+            )
+        )
+        logger.debug(i_err)
+        errnum, errmsg = i_err.args
+        logger.debug("errnum,={}".format(errnum))
+        logger.debug("errmsg,={}".format(errmsg))
+        DUPLICATE_ENTRY_ERRNO = 1062
+        if (errnum == DUPLICATE_ENTRY_ERRNO and self.duplicates_ok):
+            logger.warning(
+                "IntegrityError: Duplicate entry. Ignoring."
+            )
+        else:
+            raise
 
 
 def validate_sql_result(result):
