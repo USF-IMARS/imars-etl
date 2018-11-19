@@ -20,18 +20,16 @@ class Test_unify_metadata(TestCase):
             "/fake/path/file_w_date_2018.txt",
         ])
         result_arg_dict = unify_metadata(**vars(test_args))
-        self.assertDictContainsSubset(
-            {
-                "verbose": 3,
-                "dry_run": True,
-                "filepath": "/fake/path/file_w_date_2018.txt",
-                "product_id": -1,
-                "json": '{"status_id":1,"area_id":1}',
-                "status_id": 1,
-                "area_id": 1
-            },
-            result_arg_dict
-        )
+        expected_subset = {
+            "verbose": 3,
+            "dry_run": True,
+            "filepath": "/fake/path/file_w_date_2018.txt",
+            "product_id": -1,
+            "json": '{"status_id":1,"area_id":1}',
+            "status_id": 1,
+            "area_id": 1
+        }
+        assert expected_subset.items() <= result_arg_dict.items()
 
     def test_unify_metadata_similar_keys_of_different_types(self):
         """
@@ -44,14 +42,12 @@ class Test_unify_metadata(TestCase):
             product_id=-1,
             sql="product_id=-1"
         )
-        self.assertDictContainsSubset(
-            {
-                "verbose": 3,
-                "dry_run": True,
-                "product_id": -1,
-            },
-            result_arg_dict
-        )
+        expected_subset = {
+            "verbose": 3,
+            "dry_run": True,
+            "product_id": -1,
+        }
+        assert expected_subset.items() <= result_arg_dict.items()
 
     def test_unify_identical_date_and_datestr(self):
         """
@@ -77,10 +73,8 @@ class Test_unify_metadata(TestCase):
             date_time=DT,
             json='{"status_id":3,"area_short_name":"gom"}'
         )
-        self.assertDictContainsSubset(
-            {
-                "date_time": DT,
-                "time": TIMESTR,
-            },
-            result_arg_dict
-        )
+        expected_subset = {
+            "date_time": DT,
+            "time": TIMESTR,
+        }
+        assert expected_subset.items() <= result_arg_dict.items()
