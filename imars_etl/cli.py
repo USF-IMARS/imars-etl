@@ -182,6 +182,14 @@ def parse_args(argvs):
         ),
         default="*"
     )
+    parser_select.add_argument(
+        "-p", "--post_where",
+        help=(
+            "Additional argument clauses to follow the \"WHERE\" clause."
+            "eg: 'ORDER BY last_processed DESC LIMIT 1'"
+        ),
+        default=""
+    )
     parser_select.add_argument("--first", **FIRST)
 
     # === id_lookup
