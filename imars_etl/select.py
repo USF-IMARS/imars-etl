@@ -6,6 +6,7 @@ from imars_etl.metadata_db.MetadataDBHandler import DEFAULT_METADATA_DB_CONN_ID
 def select(
     sql='',
     cols='*',
+    post_where='',
     first=False,
     metadata_conn_id=DEFAULT_METADATA_DB_CONN_ID,
     **kwargs
@@ -16,15 +17,21 @@ def select(
     args can be dict or argparse.Namespace
 
     Example usage:
-        imars-etl select -cols 'filepath,date_time' 'area_id=1'
-
+        python -m imars_etl -v select 'area_id=1' \
+            --cols 'filepath,date_time' \
+            --post_where 'ORDER BY last_processed ASC LIMIT 1'
     returns:
     --------
     metadata : dict
         metadata from db
 
     """
-    sql_query = "SELECT {} FROM file WHERE {};".format(cols, sql)
+    assert ';' not in sql  # lazy SQL injection check
+    assert ';' not in cols
+    assert ';' not in post_where
+    sql_query = "SELECT {} FROM file WHERE {} {};".format(
+        cols, sql, post_where
+    )
     # logger.debug(sql_query)
     metadata_db = MetadataDBHandler(
         metadata_db=metadata_conn_id,
