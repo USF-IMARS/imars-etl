@@ -9,7 +9,6 @@ def select(
     post_where='',
     first=False,
     metadata_conn_id=DEFAULT_METADATA_DB_CONN_ID,
-    **kwargs
 ):
     """
     Prints json-formatted metadata for first entry in given args.sql
