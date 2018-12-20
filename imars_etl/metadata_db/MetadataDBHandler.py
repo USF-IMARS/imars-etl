@@ -73,11 +73,13 @@ class MetadataDBHandler(BaseHookHandler):
         )
 
     def get_first(self, sql):
-        return self.try_hooks_n_wrappers(
-            method='get_first',
-            m_args=[sql],
-            m_kwargs={}
-        )
+        return [
+            self.try_hooks_n_wrappers(
+                method='get_first',
+                m_args=[sql],
+                m_kwargs={}
+            )
+        ]
 
     def _get_records(self, sql):
         return self.try_hooks_n_wrappers(
