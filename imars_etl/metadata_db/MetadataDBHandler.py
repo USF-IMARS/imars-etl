@@ -73,11 +73,13 @@ class MetadataDBHandler(BaseHookHandler):
         )
 
     def get_first(self, sql):
-        return self.try_hooks_n_wrappers(
-            method='get_first',
-            m_args=[sql],
-            m_kwargs={}
-        )
+        return [
+            self.try_hooks_n_wrappers(
+                method='get_first',
+                m_args=[sql],
+                m_kwargs={}
+            )
+        ]
 
     def _get_records(self, sql):
         return self.try_hooks_n_wrappers(
@@ -160,7 +162,9 @@ def validate_sql_result(result):
         # TODO: request more info from user?
         logger.error(result)
         raise TooManyMetadataMatchesException(
-            "Too many results found matching given metadata."
+            "Too many results found matching given metadata." +
+            "\n\tlen(result): {}".format(len(result)) +
+            "\n\tresult: {}".format(result)
         )
         # exit(EXIT_STATUS.MULTIPLE_MATCH)
     else:
