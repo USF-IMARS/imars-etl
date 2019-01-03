@@ -216,3 +216,47 @@ class Test_load_api(TestCasePlusSQL):
                     '"{}"'.format(mock_load.return_value)
                 ]
             )
+
+    @patch(
+        "imars_etl.object_storage.ObjectStorageHandler."
+        "ObjectStorageHandler.load",
+        return_value="/tmp/imars-etl-test-fpath"
+    )
+    def test_load_file_w_sql_timezone(
+        self, mock_load
+    ):
+        """
+        API load w/ sql & timezone.
+
+        Adapted from failing s3_chloro_a task on 2019-01:
+        ```
+        Traceback (most recent call last):
+            ...
+          File "/opt/imars_etl/imars_etl/Load/metadata_constraints.py", line 12
+            ('time', ['date_time'], lambda dt: dt.strftime(ISO_8601_FMT)),
+        AttributeError: 'str' object has no attribute 'strftime'
+        ```
+        """
+        DATETIME = "2018-06-22T16:25:25+00:00"
+        FNAME = "processing_s3_chloro_a__florida_20180622T162525000000_l2_file"
+        args = {
+            'filepath': '/srv/imars-objects/airflow_tmp/'+FNAME,
+            'json': '{"area_short_name":"florida"}',
+            'sql': "product_id=49 AND area_id=12 AND date_time='"+DATETIME+"'"
+        }
+        import imars_etl
+        res = imars_etl.load(
+            **args,
+            verbose=3,
+            dry_run=True,
+            nohash=True,
+        )
+        self.assertSQLInsertKeyValuesMatch(
+            res,
+            ['date_time', 'product_id', 'filepath'],
+            [
+                '"{}"'.format(DATETIME[:-6].replace("T", " ")),
+                '49',
+                '"{}"'.format(mock_load.return_value)
+            ]
+        )
