@@ -3,7 +3,7 @@ dict which maps `imars_product_metadata.product.short_name` to expected
    filename patterns. Used to infer metadata from the filepath.
 """
 
-ISO_8601_FMT = "%Y-%m-%dT%H:%M:%SZ"
+from imars_etl.util.timestrings import ISO_8601_FMT
 
 # some const strings to make reading the dict keys below easier
 INGEST_FMTS = "ingest_formats"
@@ -445,6 +445,63 @@ data = {
             "dotis_cron_output": {
                 "path_format":
                     "FGB_A1km_sst_%Y%j_{date_2:06d}_7D_ANOM.png",
+            }
+        }
+    },
+    "chlor_a_s3a_pass": {
+        "//": "sentinel 3",
+        "imars_object_format": {
+            "path": (
+                "{area_short_name}/chlor_a_s3_pass/"
+            ),
+            "basename": "chlor_a_s3_pass_"+ISO_8601_FMT,
+            "product_id": 48
+        },
+        "ingest_formats": {        }
+    },
+    "s3a_ol_1_efr_l2": {
+        "//": "sentinel 3 chlor a level 2",
+        "imars_object_format": {
+            "path": (
+                "{area_short_name}/s3a_ol_1_efr_l2/"
+            ),
+            "basename": "s3a_ol_1_efr_l2_"+ISO_8601_FMT,
+            "product_id": 49
+        },
+        "ingest_formats": {
+            "airflow": {
+                "//": (
+                    "eg: /srv/imars-objects/airflow_tmp/" +
+                    "processing_s3_chloro_a__florida_20180622T162525000000_" +
+                    "l2_file",
+                ),
+                "path_format": (
+                    "processing__s3_chloro_a_{region_shortname}_" +
+                    "%Y%m%dT%H%M%S%f_l2_file"
+                )
+            }
+        }
+    },
+    "s3a_ol_1_efr_l3": {
+        "//": "sentinel 3 chlor a level 3",
+        "imars_object_format": {
+            "path": (
+                "{area_short_name}/s3a_ol_1_efr_l3/"
+            ),
+            "basename": "s3a_ol_1_efr_l3_"+ISO_8601_FMT,
+            "product_id": 50
+        },
+        "ingest_formats": {
+            "airflow": {
+                "//": (
+                    "eg: /srv/imars-objects/airflow_tmp/" +
+                    "processing_s3_chloro_a__florida_20180622T162525000000_" +
+                    "l3_file",
+                ),
+                "path_format": (
+                    "processing__s3_chloro_a_{region_shortname}_" +
+                    "%Y%m%dT%H%M%S%f_l3_file"
+                )
             }
         }
     },
