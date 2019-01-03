@@ -40,5 +40,5 @@ class Test_iso8601strptime(TestCase):
         """
         can parse negative airflow+timezone dt string to datetime
         """
-        DATE_TIME = "2018-01-01T13:13:45-01:30"
-        assert iso8601strptime(DATE_TIME) == datetime(2018, 1, 1, 13, 12, 15)
+        DATE_TIME = "2018-01-01T13:45:01-01:30"
+        assert iso8601strptime(DATE_TIME) == datetime(2018, 1, 1, 12, 15, 1)

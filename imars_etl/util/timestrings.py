@@ -46,8 +46,8 @@ def UTCify(tz_date_str):
     if tz_date_str[-3] == ':' and tz_date_str[-6] in ['-', '+']:
         # shift suffix detected
         sign = tz_date_str[-6]
-        hrs = int(sign + tz_date_str[-5:-4])
-        mins = int(sign + tz_date_str[-2:-1])
+        hrs = int(sign + tz_date_str[-5:-3])
+        mins = int(sign + tz_date_str[-2:])
         shift = timedelta(
             hours=hrs,
             minutes=mins,
