@@ -28,3 +28,17 @@ class Test_iso8601strptime(TestCase):
         """
         DATE_TIME = "2018-06-22T16:25:25+00:00"
         assert iso8601strptime(DATE_TIME) == datetime(2018, 6, 22, 16, 25, 25)
+
+    def test_parse_dt_w_airflow_tz_pos(self):
+        """
+        can parse positive airflow+timezone dt string to datetime
+        """
+        DATE_TIME = "2018-01-01T01:01:01+12:30"
+        assert iso8601strptime(DATE_TIME) == datetime(2018, 1, 1, 13, 31, 1)
+
+    def test_parse_dt_w_airflow_tz_neg(self):
+        """
+        can parse negative airflow+timezone dt string to datetime
+        """
+        DATE_TIME = "2018-01-01T13:13:45-01:30"
+        assert iso8601strptime(DATE_TIME) == datetime(2018, 1, 1, 13, 12, 15)
