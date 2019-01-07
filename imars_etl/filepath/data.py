@@ -457,7 +457,7 @@ data = {
             "basename": "chlor_a_s3_pass_"+ISO_8601_FMT,
             "product_id": 48
         },
-        "ingest_formats": {        }
+        "ingest_formats": {}
     },
     "s3a_ol_1_efr_l2": {
         "//": "sentinel 3 chlor a level 2",

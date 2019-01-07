@@ -118,6 +118,12 @@ load({
 })
 ```
 
+```python
+import imars_etl
+args={'filepath': '/srv/imars-objects/airflow_tmp/processing_s3_chloro_a__florida_20180622T162525000000_l2_file', 'json': '{"area_short_name":"florida"}', 'sql': "product_id=49 AND area_id=12 AND date_time=2018-06-22T16:25:25+00:00"}
+imars_etl.load(**args)
+```
+
 # Object Storage & Metadata connections
 Connections are managed using apache-airflow hooks.
 Connections can be installed using the `airflow connections` command.
