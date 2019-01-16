@@ -42,15 +42,15 @@ $ imars-etl -vvv extract 'date_time < "2018-01-01" AND date_time > "2018-01-07"'
 ### load
 ```bash
 # use imars_etl find to load a directory:
-python3 -m imars_etl find -p 14 /srv/imars-objects/big_bend/wv2/2014 \
-    | xargs -n 1 python3 -m imars_etl load
+imars-etl find -p 14 /srv/imars-objects/big_bend/wv2/2014 \
+    | xargs -n 1 imars-etl load
 
 ls /srv/imars-objects/ftp-ingest/wv3_2018_09_17T0336* \
-    | xargs -n 1 python -m imars_etl -v load --nohash --dry_run
+    | xargs -n 1 imars-etl -v load --nohash --dry_run
 
 # load all wv2 xml files from 2014 and call them area=6 (big_bend)
 ls /srv/imars-objects/big_bend/wv2/2014/*
-    | xargs -n 1 python3 -m imars_etl -v load \
+    | xargs -n 1 imars-etl -v load \
     -p 14 \
     -j '{"status_id":3, "area_id":6}' \
     --object_store no_upload \
@@ -61,7 +61,7 @@ ls /srv/imars-objects/big_bend/wv2/2014/*
 
 # same as above but for ntf files:
 ls /srv/imars-objects/big_bend/wv2/2014/*
-    | xargs -n 1 python3 -m imars_etl -v load \
+    | xargs -n 1 imars-etl -v load \
     -p 11 \
     -j '{"status_id":3, "area_id":6}' \
     --object_store no_upload \
@@ -73,7 +73,7 @@ ls /srv/imars-objects/big_bend/wv2/2014/*
 # practice loading a WV2 .zip file (pid 6) from DigitalGlobe:
 #     NOTE: use `--dry_run` to practice
 #     NOTE: `area_id:7` in the json must match fl_se
-python -m imars_etl -v load \
+imars-etl -v load \
     -p 6 \
     -j '{"status_id":3, "area_id":7}' \
     --object_store no_upload \

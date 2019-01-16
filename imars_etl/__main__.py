@@ -4,6 +4,10 @@ import sys
 
 from imars_etl.cli import main
 
-assert __name__ == "__main__"
 
-main(sys.argv[1:])
+def _main():
+    main(sys.argv[1:])
+
+
+if __name__ == "__main__":
+    _main()
