@@ -1,5 +1,4 @@
 import logging
-import sys
 
 from imars_etl.exceptions.NoMetadataMatchException \
     import NoMetadataMatchException
