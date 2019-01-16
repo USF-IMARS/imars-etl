@@ -2,11 +2,12 @@
 """imars-etl setup.py"""
 
 from setuptools import setup
+from setuptools import find_packages
 import io
 
 # import imars_etl
 # NOTE: can't do that here before dependencies installed, silly.
-VERSION = '0.7.1'  # should match __version__ in imars_etl.__init__.py
+VERSION = '0.7.2'  # should match __version__ in imars_etl.__init__.py
 
 
 def read(*filenames, **kwargs):
@@ -46,13 +47,11 @@ setup(
     tests_require=_tests_require,
     extras_require=_extras_require,
     # NOTE: IPFS command line tool is also required...
-    # entry_points={  # sets up CLI (eg bash) commands
-    #     'console_scripts': [
-    #         'imars-etl = imars-etl',
-    #     ],
-    # },
+    entry_points={  # sets up CLI (eg bash) commands
+        'console_scripts': [
+            'imars-etl = imars_etl.__main__:_main',
+        ],
+    },
     # cmdclass={'test': PyTest},  # custom build commands for test/lint/etc
-    packages=[  # modules that are added to python when this is installed
-        'imars_etl'
-    ]
+    packages=find_packages()  # modules added to python when installed
 )
