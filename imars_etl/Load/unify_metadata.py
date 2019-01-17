@@ -27,6 +27,9 @@ def unify_metadata(**kwargs):
         kwargs.get('filepath') is not None
     ):
         path_metadata = parse_filepath(**kwargs)
+        # TODO (?):
+        # path_metadata = ensure_metadata_types(path_metadata)
+        #   ALSO: use this for other metadata
     else:
         path_metadata = {}
 

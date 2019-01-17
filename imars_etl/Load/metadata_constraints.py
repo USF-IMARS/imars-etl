@@ -1,3 +1,5 @@
+import datetime
+
 from imars_etl.Load import constrain_dict
 from imars_etl.util.timestrings import ISO_8601_FMT
 from imars_etl.util.timestrings import standardize_time_str
@@ -15,6 +17,48 @@ BASIC_METADATA_RELATION_CONSTRAINTS = [
     ('area_id', ['area_short_name'], lambda a_id: id_lookup(a_id, 'area')),
     ('area_short_name', ['area_id'], lambda a_name: id_lookup(a_name, 'area')),
 ]
+
+METADATA_TYPE_CASTS = [
+    # | metadata_key | type test | list of (convert-able test , converter)
+    # convert date_time string to datetime:
+    (
+        'date_time',
+        lambda o: isinstance(o, datetime.datetime),
+        [
+            (lambda o: isinstance(o, str), lambda o: iso8601strptime(o))
+        ]
+    )
+]
+
+
+def ensure_metadata_types(metadat):
+    """
+    Ensures type restrictions are met in given metadata.
+    Tries to convert types where possible.
+    """
+    updated_meta = {}
+    for cast in METADATA_TYPE_CASTS:
+        meta_key = cast[0]
+        updated_meta[meta_key] = _ensure_metadata_type(metadat, *cast)
+    return updated_meta
+
+
+def _ensure_metadata_type(metadat, meta_key, type_test, type_casts):
+    meta_val = metadat.get(meta_key)
+    if meta_val is not None:
+        if type_test(meta_val) is False:
+            # meta_val is bad type, try each converter:
+            for typecast in type_casts:
+                if typecast[0](meta_val):
+                    return typecast[1](meta_val)
+            else:
+                # cannot convert
+                raise TypeError((
+                    "Value '{}' for metadata key '{}'" +
+                    " is an unexpected datatype"
+                ).format(
+                    meta_val, meta_key
+                ))
 
 
 def ensure_constistent_metadata(
