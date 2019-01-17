@@ -36,7 +36,7 @@ def ensure_metadata_types(metadat):
     Ensures type restrictions are met in given metadata.
     Tries to convert types where possible.
     """
-    updated_meta = {}
+    updated_meta = metadat.copy()
     for cast in METADATA_TYPE_CASTS:
         meta_key = cast[0]
         updated_meta[meta_key] = _ensure_metadata_type(metadat, *cast)
@@ -59,6 +59,8 @@ def _ensure_metadata_type(metadat, meta_key, type_test, type_casts):
                 ).format(
                     meta_val, meta_key
                 ))
+        else:
+            return meta_val
 
 
 def ensure_constistent_metadata(

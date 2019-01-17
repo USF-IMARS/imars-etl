@@ -94,10 +94,13 @@ class Test_unify_metadata(TestCase):
                 'date_time="2018-06-22T16:03:16+00:00"'
             ),
             json='{"area_short_name":"florida"}',
-            filepath='processing_s3_chloro_a__florida_20180622T162525000000_l2_file',
-            # load_format='{dag_id}_%Y_{tag}',
+            filepath=(
+                'processing_s3_chloro_a_florida_2018_l2_file'
+            ),
+            product_id=49,
+            load_format='{dag_id}_%Y_{tag}',
         )
         expected_subset = {
-            "date_time": datetime.datetime(2018, 8, 8, 19, 25),
+            "date_time": datetime.datetime(2018, 6, 22, 16, 3, 16),
         }
         assert expected_subset.items() <= result_arg_dict.items()

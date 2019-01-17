@@ -3,6 +3,7 @@ import logging
 
 from imars_etl.exceptions.InputValidationError import InputValidationError
 from imars_etl.Load.metadata_constraints import ensure_constistent_metadata
+from imars_etl.Load.metadata_constraints import ensure_metadata_types
 from imars_etl.filepath.parse_filepath import parse_filepath
 from imars_etl.util.timestrings import iso8601strptime
 
@@ -27,9 +28,7 @@ def unify_metadata(**kwargs):
         kwargs.get('filepath') is not None
     ):
         path_metadata = parse_filepath(**kwargs)
-        # TODO (?):
-        # path_metadata = ensure_metadata_types(path_metadata)
-        #   ALSO: use this for other metadata
+        path_metadata = ensure_metadata_types(path_metadata)
     else:
         path_metadata = {}
 
@@ -39,12 +38,14 @@ def unify_metadata(**kwargs):
             kwargs['metadata_file_driver'],
             kwargs['metadata_file']
         )
+        file_metadata = ensure_metadata_types(file_metadata)
     else:
         file_metadata = {}
 
     # === json metadata
     try:  # add json args to kwargs
         json_metadata = json.loads(kwargs['json'])
+        json_metadata = ensure_metadata_types(json_metadata)
         _dict_union_raise_on_conflict(kwargs, json_metadata)
     except TypeError:
         logger.debug("json str is empty")
@@ -56,6 +57,7 @@ def unify_metadata(**kwargs):
     # === sql metadata
     try:  # add sql args to kwargs
         sql_metadata = sql_str_to_dict(kwargs['sql'])
+        sql_metadata = ensure_metadata_types(sql_metadata)
         _dict_union_raise_on_conflict(kwargs, sql_metadata)
     except TypeError:
         logger.debug("sql str is empty")
