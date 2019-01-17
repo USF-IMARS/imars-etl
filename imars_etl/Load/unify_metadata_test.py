@@ -85,22 +85,19 @@ class Test_unify_metadata(TestCase):
         """
         import datetime
         from imars_etl.Load.unify_metadata import unify_metadata
-        DT = datetime.datetime(2018, 8, 8, 19, 25)
-        TIMESTR = '2018-08-08T19:25'
         result_arg_dict = unify_metadata(
-            verbose=3,
+            verbose=0,
             dry_run=True,
-            product_id=35,
             nohash=True,
             sql=(
-                "product_id=35 AND area_id=1 "
-                "AND date_time='2018-08-08 19:25'"
+                'product_id=49 AND area_id=12 AND '
+                'date_time="2018-06-22T16:03:16+00:00"'
             ),
-            filepath='/processing_modis_aqua_pass_gom_20180808T192500_l2_file',
-            product_type_name='myd0_otis_l2',
-            load_format='{dag_id}_%Y%m%dT%H%M%S_{tag}',
+            json='{"area_short_name":"florida"}',
+            filepath='processing_s3_chloro_a__florida_20180622T162525000000_l2_file',
+            # load_format='{dag_id}_%Y_{tag}',
         )
         expected_subset = {
-            "date_time": DT,
+            "date_time": datetime.datetime(2018, 8, 8, 19, 25),
         }
         assert expected_subset.items() <= result_arg_dict.items()
