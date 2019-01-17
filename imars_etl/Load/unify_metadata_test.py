@@ -78,3 +78,29 @@ class Test_unify_metadata(TestCase):
             "time": TIMESTR,
         }
         assert expected_subset.items() <= result_arg_dict.items()
+
+    def test_unify_sql_str(self):
+        """
+        unify_metadata can typecast sql string to datetime
+        """
+        import datetime
+        from imars_etl.Load.unify_metadata import unify_metadata
+        DT = datetime.datetime(2018, 8, 8, 19, 25)
+        TIMESTR = '2018-08-08T19:25'
+        result_arg_dict = unify_metadata(
+            verbose=3,
+            dry_run=True,
+            product_id=35,
+            nohash=True,
+            sql=(
+                "product_id=35 AND area_id=1 "
+                "AND date_time='2018-08-08 19:25'"
+            ),
+            filepath='/processing_modis_aqua_pass_gom_20180808T192500_l2_file',
+            product_type_name='myd0_otis_l2',
+            load_format='{dag_id}_%Y%m%dT%H%M%S_{tag}',
+        )
+        expected_subset = {
+            "date_time": DT,
+        }
+        assert expected_subset.items() <= result_arg_dict.items()
