@@ -95,10 +95,10 @@ class Test_unify_metadata(TestCase):
             ),
             json='{"area_short_name":"florida"}',
             filepath=(
-                'processing_s3_chloro_a_florida_2018_l2_file'
+                'mapped.tif'
             ),
             product_id=49,
-            load_format='{dag_id}_%Y_{tag}',
+            load_format='{crap}.tif',
         )
         expected_subset = {
             "date_time": datetime.datetime(2018, 6, 22, 16, 3, 16),
