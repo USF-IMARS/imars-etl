@@ -78,3 +78,29 @@ class Test_unify_metadata(TestCase):
             "time": TIMESTR,
         }
         assert expected_subset.items() <= result_arg_dict.items()
+
+    def test_unify_sql_str(self):
+        """
+        unify_metadata can typecast sql string to datetime
+        """
+        import datetime
+        from imars_etl.Load.unify_metadata import unify_metadata
+        result_arg_dict = unify_metadata(
+            verbose=0,
+            dry_run=True,
+            nohash=True,
+            sql=(
+                'product_id=49 AND area_id=12 AND '
+                'date_time="2018-06-22T16:03:16+00:00"'
+            ),
+            json='{"area_short_name":"florida"}',
+            filepath=(
+                'mapped.tif'
+            ),
+            product_id=49,
+            load_format='{crap}.tif',
+        )
+        expected_subset = {
+            "date_time": datetime.datetime(2018, 6, 22, 16, 3, 16),
+        }
+        assert expected_subset.items() <= result_arg_dict.items()

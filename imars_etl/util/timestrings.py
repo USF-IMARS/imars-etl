@@ -43,6 +43,9 @@ def UTCify(tz_date_str):
         __name__,
         )
     )
+    tz_date_str = tz_date_str.strip()
+    tz_date_str = tz_date_str.strip('\"')
+    tz_date_str = tz_date_str.strip('\'')
     if tz_date_str[-3] == ':' and tz_date_str[-6] in ['-', '+']:
         # shift suffix detected
         sign = tz_date_str[-6]

@@ -40,7 +40,7 @@ def validate_args(args_dict, DEFAULTS={}):
             ],
             raise_cannot_constrain=True
         )
-        if not args_dict['duplicates_ok']:
+        if args_dict.get('duplicates_ok', False) is not False:
             hashcheck(**args_dict)
     else:
         logger.debug('skipping file hashing.')
