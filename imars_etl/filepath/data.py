@@ -267,6 +267,12 @@ data = {
                     "_{duration:04d}_{cycle:03d}_{orbit:03d}_{frame:04d}" +
                     "_SVL_O_NR_{base_collection:03d}.SEN3"
                 )
+            },
+            "dhus_abbrev": {
+                "//": "S3 SEN3 file path format from DHUS (shortened)",
+                "path_format": (
+                    "S3A_OL_1_EFR____%Y%m%dT%H%M%S.SEN3"
+                )
             }
         }
     },
