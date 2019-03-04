@@ -10,7 +10,7 @@ Usernames and passwords for connecting to IMaRS systems *might* be hard-coded he
 In this context "load" roughly means "upload my file to the IMaRS data warehouse".
 
 To load a file you must provide the file and all required metadata.
-Requirements are specified by the `file` table schema in [imars_puppet/role/product_metadata.sql](https://github.com/USF-IMARS/imars_puppet/blob/test/modules/role/files/sql/product_metadata.sql).
+Requirements are specified by the `file` table schema in [imars_puppet/.../product_metadata.sql](https://github.com/USF-IMARS/imars_puppet/blob/test/modules/role/files/sql/product_metadata.sql).
 The current minimum metadata are requirements are: 
 * `date_time` : (start) date-time string of the product time granule
 * `product_id` : identifier from the `product` table for this product
@@ -138,12 +138,14 @@ See INSTALL.md
 ## Backends
 Currently only one object storage & metadata db are supported.
 ### Object Storage
-The primary object storage method is a custom-coded NFS+autofs kludge managed via puppet.
+The primary object storage method is a custom-coded NFS+autofs kludge managed via puppet called imars-objects.
+More detail in [IMaRS-docs/.../imars-objects/](https://github.com/USF-IMARS/IMaRS-docs/tree/master/docs/management_data/imars-objects)
 
 Object storage in a cloud provider or distrubuted file system is on the todo list; IPFS would be my first choice. 
 
 ### Metadata DB
 The primary metadata db is a mysql db living on imars-sql-hydra and managed by puppet.
+More detail at [IMaRS-docs/.../imars_product_metadata.md](https://github.com/USF-IMARS/IMaRS-docs/blob/master/docs/management_data/imars_product_metadata.md).
 
 Expansion into other metdataDBs could potentially create problems of duplicate or conflicting records.
 However, the addition of ingest-only databases like NASA's CMR could be a very powerful way to access off-site files.
