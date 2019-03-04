@@ -247,6 +247,12 @@ data = {
             "product_id": 36
         },
         "ingest_formats": {
+            "dhus_abbrev": {
+                "//": "S3 SEN3 file path format from DHUS (shortened)",
+                "path_format": (
+                    "S3{sat_id}_OL_1_EFR____%Y%m%dT%H%M%S.zip"
+                )
+            },
             "slstr": {
                 "//": [
                     "https://sentinel.esa.int/web/sentinel/user-guides" +
@@ -259,19 +265,15 @@ data = {
                     '("Svalbard Satellite Core Ground Station")',
                     "--------------------------------------------------",
                     'additionally, note that instance ID for s3a EFR files',
-                    ' is formatted with "frames" metadata'
+                    ' is formatted with "frames" metadata',
+                    ' proc_location : [SVL, LN1]', 
+                    ' sat_id : [S3A, S3B]'
                 ],
                 "path_format": (
-                    "S3A_OL_1_EFR____%Y%m%dT%H%M%S" +
-                    "_{end_date:08d}T{end_t:06d}_{ing_date:08d}T{ing_t:06d}" +
-                    "_{duration:04d}_{cycle:03d}_{orbit:03d}_{frame:04d}" +
-                    "_SVL_O_NR_{base_collection:03d}.SEN3"
-                )
-            },
-            "dhus_abbrev": {
-                "//": "S3 SEN3 file path format from DHUS (shortened)",
-                "path_format": (
-                    "S3A_OL_1_EFR____%Y%m%dT%H%M%S.SEN3"
+                    "S3{sat_id}_OL_1_EFR____%Y%m%dT%H%M%S" +
+                    "_{end_date:08d}T{end_t:06d}_{ing_date:08d}T{ing_t:06d}_" +
+                    "{duration:04d}_{cycle:03d}_{orbit:03d}_{frame:04d}_{proc_location}_O_N{r_or_t}" +
+                    "_{base_collection:03d}.zip"
                 )
             }
         }
@@ -342,39 +344,6 @@ data = {
                 "path_format": (
                     "proc_wv2_classification_na_%Y%m%dT%H%M%S_output/" +
                     "{:1d}_{loc}_DT_nofilt_{id_num}.tif"
-                )
-            }
-        }
-    },
-    "zip_s3a_ol_1_efr": {
-        "//": "s3 zip ingests",
-        "imars_object_format": {
-            "path": "{area_short_name}/zip_s3a_ol_1_efr",
-            "basename": "S3A_OL_1_EFR____%Y%m%dT%H%M%S.zip",
-            "product_id": 41
-        },
-        "ingest_formats": {
-            "slstr": {
-                "//": [
-                    "https://sentinel.esa.int/web/sentinel/user-guides" +
-                    "/sentinel-3-slstr/naming-convention",
-                    "--------------------------------------------------",
-                    "`path_format` below assumes the following : ",
-                    '  * "timeliness" is "NR", meaning Near-Real_Time (NRT)',
-                    '  * "platform" is "O" (operational)',
-                    '  * "generating centre" is "SVL" ' +
-                    '("Svalbard Satellite Core Ground Station")',
-                    "--------------------------------------------------",
-                    'additionally, note that instance ID for s3a EFR files',
-                    ' is formatted with "frames" metadata',
-                    ' proc_location : [SVL, LN1]', 
-                    ' sat_id : [S3A, S3B]'
-                ],
-                "path_format": (
-                    "S3{sat_id}_OL_1_EFR____%Y%m%dT%H%M%S" +
-                    "_{end_date:08d}T{end_t:06d}_{ing_date:08d}T{ing_t:06d}_" +
-                    "{duration:04d}_{cycle:03d}_{orbit:03d}_{frame:04d}_{proc_location}_O_NR" +
-                    "_{base_collection:03d}.zip"
                 )
             }
         }
