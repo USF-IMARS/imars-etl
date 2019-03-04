@@ -8,12 +8,19 @@ Usernames and passwords for connecting to IMaRS systems *might* be hard-coded he
 # Overview
 ## Load
 In this context "load" roughly means "upload my file to the IMaRS data warehouse".
-To load a file you must also provide all required metadata.
+
+To load a file you must provide the file and all required metadata.
+Requirements are specified by the `file` table schema in [imars_puppet/role/product_metadata.sql](https://github.com/USF-IMARS/imars_puppet/blob/test/modules/role/files/sql/product_metadata.sql).
+The current minimum metadata are requirements are: 
+* `date_time` : (start) date-time string of the product time granule
+* `product_id` : identifier from the `product` table for this product
+* `area_id` : identifier from the `area` table for this product
 
 ## Extract
 In this context "extract" roughly means "download a file from IMaRS data warehouse".
 To extract a file you must provide metadata to describe the file.
 If your request returns multiple files, the script will prompt you for more information.
+SQL queries can currently be tested in our blazer web GUI at [imars-physalis:3000](http://imars-physalis.marine.usf.edu:3000/).
 
 # Usage
 The "extract" and "load" commands are used to "download" and "upload" files and corresponding metadata.
@@ -124,7 +131,26 @@ args={'filepath': '/srv/imars-objects/airflow_tmp/processing_s3_chloro_a__florid
 imars_etl.load(**args)
 ```
 
-# Object Storage & Metadata connections
+# Installation
+See INSTALL.md
+
+# Technical Details
+## Backends
+Currently only one object storage & metadata db are supported.
+### Object Storage
+The primary object storage method is a custom-coded NFS+autofs kludge managed via puppet.
+
+Object storage in a cloud provider or distrubuted file system is on the todo list; IPFS would be my first choice. 
+
+### Metadata DB
+The primary metadata db is a mysql db living on imars-sql-hydra and managed by puppet.
+
+Expansion into other metdataDBs could potentially create problems of duplicate or conflicting records.
+However, the addition of ingest-only databases like NASA's CMR could be a very powerful way to access off-site files.
+
+Complications of a multi-db metdata search are explored a bit in [this gist](https://gist.github.com/7yl4r/966222ce6a8557ab79b079ff17433960).
+
+## Object Storage & Metadata connections
 Connections are managed using apache-airflow hooks.
 Connections can be installed using the `airflow connections` command.
 Within the code connections are wrapped in a few ways to unify backend
@@ -156,5 +182,3 @@ Backends| HD| NFS| FUSE | S3  | Azure         | MySQL      | MsSQL | SQLite |
         |---------------+-----+---------------+------------+-------+--------+
 ```
 
-# Installation
-See INSTALL.md
