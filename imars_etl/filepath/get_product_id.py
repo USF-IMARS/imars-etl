@@ -1,6 +1,7 @@
-from imars_etl.filepath.formatter_hardcoded.data import data
+from imars_etl.filepath.formatter_hardcoded.get_product_id import \
+    get_product_id as hardcoded_get_product_id
 
 
 def get_product_id(product_type_name):
     """Get product id from given name"""
-    return data[product_type_name]["imars_object_format"]["product_id"]
+    return hardcoded_get_product_id(product_type_name)

@@ -1,4 +1,7 @@
-from imars_etl.filepath.formatter_hardcoded.data import data
+from imars_etl.filepath.formatter_hardcoded.get_ingest_format import \
+    get_ingest_format as hardcoded_get_ingest_format
+from imars_etl.filepath.formatter_hardcoded.get_ingest_format import \
+    get_ingest_formats as hardcoded_get_ingest_formats
 
 
 def get_ingest_formats():
@@ -11,12 +14,7 @@ def get_ingest_formats():
         "att_.from_zip_ingest": "%y%b%d%H%M%S-M1BS-{idNum}_P{passNumber}.ATT",
     }
     """
-    res = {}
-    for product_id in data:
-        for ingest_id in data[product_id]["ingest_formats"]:
-            res[
-                "{}.{}".format(product_id, ingest_id)
-            ] = get_ingest_format(product_id, ingest_id)
+    res = hardcoded_get_ingest_formats()
     return res
 
 
@@ -30,23 +28,4 @@ def get_ingest_format(short_name, ingest_name=None):
         name of the ingest_key used. Only useful if ingest_name=None,
         else it just passes through unaltered.
     """
-    if ingest_name is not None:
-        try:  # use the one given fmt string
-            ingests = data[short_name]["ingest_formats"]
-            return ingests[ingest_name]["path_format"]
-        except KeyError as k_err:
-            raise KeyError("no ingest_key '{}' in product {}".format(
-                ingest_name,
-                short_name
-            ))
-    elif len(data[short_name]["ingest_formats"]) == 1:
-        # if there is only 1 ingest_format then we must use that one
-        ingest_key = list(data[short_name]["ingest_formats"].keys())[0]
-        return data[short_name]["ingest_formats"][ingest_key]['path_format']
-    else:
-        # we don't know what ingest_format to use
-        raise KeyError(
-            "--ingest_key must be given for product '{}'".format(
-                short_name
-            )
-        )
+    return hardcoded_get_ingest_format(short_name, ingest_name)

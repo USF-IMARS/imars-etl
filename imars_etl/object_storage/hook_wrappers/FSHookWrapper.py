@@ -6,12 +6,12 @@ import errno
 import logging
 import os
 import shutil
-import sys
 
 from imars_etl.object_storage.hook_wrappers.BaseHookWrapper \
     import BaseHookWrapper
 
-from imars_etl.filepath.formatter_hardcoded.data import data
+from imars_etl.filepath.formatter_hardcoded.get_imars_object_paths import \
+    get_imars_object_paths as hardcoded_get_imars_object_paths
 
 
 class FSHookWrapper(BaseHookWrapper):
@@ -156,7 +156,4 @@ class FSHookWrapper(BaseHookWrapper):
             }
         }
         """
-        res = {}
-        for product_id in data:
-            res[product_id] = data[product_id]["imars_object_format"]
-        return res
+        return hardcoded_get_imars_object_paths()
