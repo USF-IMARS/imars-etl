@@ -11,7 +11,7 @@ import sys
 from imars_etl.object_storage.hook_wrappers.BaseHookWrapper \
     import BaseHookWrapper
 
-from imars_etl.filepath.data import data
+from imars_etl.filepath.formatter_hardcoded.data import data
 
 
 class FSHookWrapper(BaseHookWrapper):
