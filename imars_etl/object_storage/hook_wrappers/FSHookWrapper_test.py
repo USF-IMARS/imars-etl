@@ -85,7 +85,8 @@ class Test_format_filepath(TestCase):
         args = {
             "date_time": datetime(2015, 5, 25, 15, 55),
             "product_type_name": "test_number_format_test",
-            "test_num": 3
+            "test_num": 3,
+            "test_num2": 33
         }
         result = FSHookWrapper(self.fake_fs_hook).format_filepath(
             **args
@@ -93,5 +94,5 @@ class Test_format_filepath(TestCase):
         self.assertEqual(
             result,
             "/fake_path/_fancy_003_/2015/" +
-            "num_is_0003_time_is_15.fancy_file"
+            "num_is_0033_time_is_15.fancy_file"
         )

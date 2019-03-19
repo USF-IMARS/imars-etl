@@ -179,7 +179,7 @@ data = {
         },
         "imars_object_format": {
             "path": "_fancy_{test_num:0>3d}_/%Y",
-            "basename": "num_is_{test_num:0>4d}_time_is_%H.fancy_file",
+            "basename": "num_is_{test_num2:0>4d}_time_is_%H.fancy_file",
             "product_id": -3
         },
     },
@@ -266,7 +266,7 @@ data = {
                     "--------------------------------------------------",
                     'additionally, note that instance ID for s3a EFR files',
                     ' is formatted with "frames" metadata',
-                    ' proc_location : [SVL, LN1]', 
+                    ' proc_location : [SVL, LN1]',
                     ' sat_id : [S3A, S3B]'
                 ],
                 "path_format": (

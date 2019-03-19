@@ -13,6 +13,7 @@ from imars_etl.filepath.get_product_id import get_product_id
 
 
 def parse_filepath(
+    metadb_handle,
     load_format=None,
     filepath=None,
     product_type_name=None,
@@ -54,7 +55,7 @@ def parse_filepath(
             product_type_name
         )
     else:  # try all patterns
-        for pattern_name, pattern in get_ingest_formats().items():
+        for pattern_name, pattern in get_ingest_formats(metadb_handle).items():
             try:
                 product_type_name = pattern_name.split(".")[0]
                 args_parsed = _parse_from_product_type_and_filename(

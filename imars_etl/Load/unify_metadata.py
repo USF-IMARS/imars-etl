@@ -6,6 +6,7 @@ from imars_etl.Load.metadata_constraints import ensure_constistent_metadata
 from imars_etl.Load.metadata_constraints import ensure_metadata_types
 from imars_etl.filepath.parse_filepath import parse_filepath
 from imars_etl.util.timestrings import iso8601strptime
+from imars_etl.metadata_db.MetadataDBHandler import MetadataDBHandler
 
 
 def unify_metadata(**kwargs):
@@ -27,7 +28,10 @@ def unify_metadata(**kwargs):
         kwargs.get('noparse', False) is False and
         kwargs.get('filepath') is not None
     ):
-        path_metadata = parse_filepath(**kwargs)
+        path_metadata = parse_filepath(
+            metadb_handle=MetadataDBHandler(**kwargs),
+            **kwargs
+        )
         path_metadata = ensure_metadata_types(path_metadata)
     else:
         path_metadata = {}
