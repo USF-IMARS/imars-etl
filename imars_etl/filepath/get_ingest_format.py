@@ -47,11 +47,16 @@ def get_ingest_formats(metadb_handle, include_test_formats=True):
     if include_test_formats:
         res_dict.update({
             'test_test_test.file_w_date': 'file_w_date_%Y.txt',
-            # 'test_test_test.imars_object_format': 'test_test_test/simple_file_with_no_args.txt',
-            'test_fancy_format_test.file_w_date': 'date_%Y%j.arg_{test_arg}.time_%H%S.woah',
-            # 'test_fancy_format_test.imars_object_format': '_fancy_{test_arg}_/%Y-%j/arg_is_{test_arg}_time_is_%H%S.fancy_file',
-            'test_number_format_test.file_w_formatted_nums': 'date_%Y.num_{test_num:3d}.time_%H.dude',
-            # 'test_number_format_test.imars_object_format': '_fancy_{test_num:0>3d}_/%Y/num_is_{test_num2:0>4d}_time_is_%H.fancy_file',
+            # 'test_test_test.imars_object_format':
+            #    'test_test_test/simple_file_with_no_args.txt',
+            'test_fancy_format_test.file_w_date':
+                'date_%Y%j.arg_{test_arg}.time_%H%S.woah',
+            # 'test_fancy_format_test.imars_object_format':
+            #    '_fancy_{test_arg}_/%Y-%j/arg_is_{test_arg}_time_is_%H%S.fancy_file',
+            'test_number_format_test.file_w_formatted_nums':
+                'date_%Y.num_{test_num:3d}.time_%H.dude',
+            # 'test_number_format_test.imars_object_format':
+            #    '_fancy_{test_num:0>3d}_/%Y/num_is_{test_num2:0>4d}_time_is_%H.fancy_file',
         })
     return res_dict
 
