@@ -2,11 +2,10 @@
 create a filepath from metadata
 """
 import logging
-import sys
 
 
 def format_filepath(
-    hook=None,
+    object_storage_hook=None,
     **kwargs
 ):
     logger = logging.getLogger("imars_etl.{}".format(
@@ -14,8 +13,8 @@ def format_filepath(
         )
     )
     try:
-        logger.debug("hook is {}".format(hook))
-        return hook.format_filepath(**kwargs)
+        logger.debug("hook is {}".format(object_storage_hook))
+        return object_storage_hook.format_filepath(**kwargs)
     except AttributeError:
         logger.debug('hook has no format_filepath method')
         raise
