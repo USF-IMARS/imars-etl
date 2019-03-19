@@ -19,10 +19,10 @@ from imars_etl.object_storage.hook_wrappers.FSHookWrapper \
     import FSHookWrapper
 
 
-class Test_format_filepath_template(TestCase):
+class Test_get_product_filepath_template(TestCase):
     def test_format_filename_template(self):
         """Create basic file format template with 100% knowledge"""
-        result = FSHookWrapper._format_filepath_template(
+        result = FSHookWrapper._get_product_filepath_template(
             "test_fancy_format_test",
             -2,
             forced_basename=None
@@ -35,7 +35,7 @@ class Test_format_filepath_template(TestCase):
 
     def test_format_filename_w_product_id(self):
         """Can create file format template with only product_id"""
-        result = FSHookWrapper._format_filepath_template(
+        result = FSHookWrapper._get_product_filepath_template(
             None,
             -2,
             forced_basename=None
@@ -48,7 +48,7 @@ class Test_format_filepath_template(TestCase):
 
     def test_format_filename_w_prod_name(self):
         """Can create file format template with only product_type_name"""
-        result = FSHookWrapper._format_filepath_template(
+        result = FSHookWrapper._get_product_filepath_template(
             "test_fancy_format_test",
             None,
             forced_basename=None
@@ -62,7 +62,7 @@ class Test_format_filepath_template(TestCase):
     def test_format_filename_w_nothing(self):
         """File format template with no product info raises err"""
         with self.assertRaises(ValueError):
-            FSHookWrapper._format_filepath_template(
+            FSHookWrapper._get_product_filepath_template(
                 None,
                 None,
                 forced_basename=None
