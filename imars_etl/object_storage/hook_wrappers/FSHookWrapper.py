@@ -10,9 +10,8 @@ import shutil
 from imars_etl.object_storage.hook_wrappers.BaseHookWrapper \
     import BaseHookWrapper
 
-from imars_etl.filepath.formatter_hardcoded.get_product_filepath_template \
-    import get_product_filepath_template \
-    as hardcoded_get_product_filepath_template
+from imars_etl.filepath.get_product_filepath_template \
+    import get_product_filepath_template
 
 
 class FSHookWrapper(BaseHookWrapper):
@@ -65,7 +64,7 @@ class FSHookWrapper(BaseHookWrapper):
         product_id = kwargs.get("product_id")
         forced_basename = kwargs.get("forced_basename")
 
-        fullpath = self._get_product_filepath_template(
+        fullpath = get_product_filepath_template(
             product_type_name=product_type_name,
             product_id=product_id,
             forced_basename=forced_basename
@@ -86,14 +85,3 @@ class FSHookWrapper(BaseHookWrapper):
                 " pass this argument manually using --json "
             )
             raise k_err
-
-    @staticmethod
-    def _get_product_filepath_template(
-        product_type_name=None,
-        product_id=None,
-        forced_basename=None
-    ):
-        """returns filepath template string for given product type & id"""
-        return hardcoded_get_product_filepath_template(
-            product_type_name, product_id, forced_basename
-        )
