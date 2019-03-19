@@ -1,8 +1,5 @@
 import logging
-import sys
 import numbers
-
-from pymysql.err import IntegrityError
 
 from imars_etl.drivers_metadata.get_metadata_driver_from_key\
     import get_metadata_driver_from_key
