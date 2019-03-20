@@ -14,7 +14,8 @@ LOAD_DEFAULTS = {  # defaults here instead of fn def for cli argparse usage
     'noparse': False,
     'object_store': DEFAULT_OBJ_STORE_CONN_ID,
     'metadata_db': DEFAULT_METADATA_DB_CONN_ID,
-    'sql': ''
+    'sql': '',
+    'dry_run': False,
 }
 
 VALID_FILE_TABLE_COLNAMES = [  # TODO: get this from db
@@ -29,7 +30,11 @@ def load(**kwargs):
     )
 
 
-def _load(filepath, *args, **kwargs):
+def _load(
+    filepath, *args,
+    object_storage_handle, metadata_db_handle,
+    dry_run, **kwargs
+):
     """
     Args can be a dict or argparse.Namespace
 
@@ -43,8 +48,13 @@ def _load(filepath, *args, **kwargs):
             -j '{"status_id":0}'
             /home/tylar/usf-imars.github.io/assets/img/bg.png
     """
+    assert len(args) == 0
     args_dict = dict(
-        filepath=filepath, **kwargs
+        filepath=filepath,
+        object_storage_handle=object_storage_handle,
+        metadata_db_handle=metadata_db_handle,
+        dry_run=dry_run,
+        **kwargs
     )
 
     logger = logging.getLogger("imars_etl.{}".format(
@@ -55,24 +65,24 @@ def _load(filepath, *args, **kwargs):
         filepath.split('/')[-1]
     ))
 
-    new_filepath = args_dict['object_storage_handle'].load(**args_dict)
+    new_filepath = object_storage_handle.load(**args_dict)
 
     fields, rows = _make_sql_row_and_key_lists(**args_dict)
     for row_i, row in enumerate(rows):
         for i, element in enumerate(row):
             try:
                 rows[row_i][i] = element.replace(
-                    args_dict['filepath'], new_filepath
+                    filepath, new_filepath
                 )
             except (AttributeError, TypeError):  # element not a string
                 pass
-    if args_dict.get('dry_run', False):  # test mode returns the sql string
+    if dry_run:  # test mode returns the sql string
         logger.debug('oh, just a test')
         return _make_sql_insert(**args_dict).replace(
-            args_dict['filepath'], new_filepath
+            filepath, new_filepath
         )
     else:
-        args_dict['metadata_db_handle'].insert_rows(
+        metadata_db_handle.insert_rows(
             table='file',
             rows=rows,
             target_fields=fields,
