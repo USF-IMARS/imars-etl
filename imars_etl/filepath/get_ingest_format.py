@@ -15,10 +15,17 @@ def _prefill_fmt_str(fmt_str, params):
     )
 
 
+def get_ingest_format(**kwargs):
+    return get_ingest_formats(
+        **kwargs, check_result=True
+    )
+
+
 def get_ingest_formats(
     metadb_handle,
-    short_name=None, ingest_name=None,
+    short_name=None, ingest_name=None, product_id=None,
     include_test_formats=True,
+    first=False, check_result=False
 ):
     """
     Returns a dict of all ingest formats.
@@ -33,22 +40,34 @@ def get_ingest_formats(
     from imars_etl.filepath.formatter_hardcoded.get_ingest_format import \
         get_ingest_formats
     """
-    if short_name is None and ingest_name is None:
+    if short_name is None and ingest_name is None and product_id is None:
         where_clause = ""
-    elif short_name is not None and ingest_name is None:
-        where_clause = " WHERE product.short_name='{}' ".format(short_name)
-    elif short_name is None and ingest_name is not None:
-        where_clause = " WHERE path_format.short_name='{}' ".format(
-            ingest_name
-        )
     else:
-        assert short_name is not None
-        assert ingest_name is not None
-        where_clause = (
-            " WHERE product.short_name='{}' AND path_format.short_name='{}' "
-        ).format(
-            short_name, ingest_name
-        )
+        where_clause = " WHERE "
+        n_clauses = 0
+        if short_name is not None:
+            where_clause += " product.short_name='{}' ".format(short_name)
+            n_clauses += 1
+        if ingest_name is not None:
+            if n_clauses > 0:
+                andy = "AND"
+            else:
+                andy = ""
+            where_clause += " {} path_format.short_name='{}' ".format(
+                andy,
+                ingest_name
+            )
+            n_clauses += 1
+        if product_id is not None:
+            if n_clauses > 0:
+                andy = "AND"
+            else:
+                andy = ""
+            where_clause += " {} product.product_id={} ".format(
+                andy,
+                int(product_id)
+            )
+            n_clauses += 1
     res = metadb_handle.get_records(
         sql="""
         SELECT product.short_name,path_format.short_name,params,format_string
@@ -60,7 +79,7 @@ def get_ingest_formats(
         {}
         ORDER BY priority DESC;
         """.format(where_clause),
-        first=False, check_result=False
+        first=first, check_result=check_result
     )
     res_dict = {}
     for (prod_name, path_name, params, fmt_str) in res:
