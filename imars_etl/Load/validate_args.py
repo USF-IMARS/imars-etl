@@ -9,6 +9,14 @@ from imars_etl.Load.unify_metadata import unify_metadata
 from imars_etl.Load.unify_metadata import _rm_dict_none_values
 from imars_etl.util.timestrings import standardize_time_str
 
+from imars_etl.object_storage.ObjectStorageHandler import ObjectStorageHandler
+from imars_etl.metadata_db.MetadataDBHandler import MetadataDBHandler
+
+
+def _get_handles(**kwargs):
+    """returns object storage & metadata handles to given args"""
+    return ObjectStorageHandler(**kwargs), MetadataDBHandler(**kwargs)
+
 
 def validate_args(args_dict, DEFAULTS={}):
     """
