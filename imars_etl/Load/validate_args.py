@@ -19,7 +19,7 @@ def _get_handles(**kwargs):
 
 
 # TODO: move usage of this func into parse_args() ?
-def validate_args(args_dict, DEFAULTS={}):
+def validate_args(kwargs_dict, DEFAULTS={}):
     """
     Returns properly formatted & complete arguments.
     Makes attempts to guess at filling in missing args.
@@ -29,15 +29,9 @@ def validate_args(args_dict, DEFAULTS={}):
         )
     )
 
-    # TODO: rm this default weirdness:
-    keys_with_defaults = [
-        'object_store',
-        'metadata_conn_id',
-        'nohash'
-    ]
-    for key in keys_with_defaults:
-        if args_dict.get(key) is None:
-            args_dict[key] = DEFAULTS.get(key)
+    args_dict = DEFAULTS.copy()
+    args_dict.update(kwargs_dict)
+
     # remove keys with None values
     args_dict = _rm_dict_none_values(args_dict)
 
