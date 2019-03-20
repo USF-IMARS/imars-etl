@@ -38,24 +38,10 @@ def parse_filepath(
             'manually set custom load_format',
             product_type_name
         )
-    elif (product_type_name is not None):
-        ing_key = ingest_key
-        if (ing_key is None):
-            ing_fmt = get_ingest_format(product_type_name)
-        else:
-            ing_fmt = get_ingest_format(
-                product_type_name,
-                ingest_key
-            )
-
-        args_parsed = _parse_from_product_type_and_filename(
-            filepath,
-            ing_fmt,
-            '{}.{}'.format(product_type_name, ing_key),
-            product_type_name
-        )
-    else:  # try all patterns
-        for pattern_name, pattern in get_ingest_formats(metadb_handle).items():
+    else:  # try all patterns (limiting by product name & ingest key if given)
+        for pattern_name, pattern in get_ingest_formats(
+            metadb_handle, short_name=product_type_name, ingest_name=ingest_key
+        ).items():
             try:
                 product_type_name = pattern_name.split(".")[0]
                 args_parsed = _parse_from_product_type_and_filename(
