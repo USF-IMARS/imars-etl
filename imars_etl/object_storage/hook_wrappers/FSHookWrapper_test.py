@@ -24,7 +24,6 @@ class Test_format_filepath(TestCase):
         get_path=lambda: "/fake_path/"
     )
 
-    # TODO: test mismatched pid & product_name throws err?
     def test_format_filepath_p_name(self):
         """Create filepath w/ minimal args (product_name)"""
         args = {
@@ -32,20 +31,12 @@ class Test_format_filepath(TestCase):
             "product_type_name": "test_test_test"
         }
         result = FSHookWrapper(self.fake_fs_hook).format_filepath(
-            **args
-        )
-        self.assertEqual(
-            result,
-            "/fake_path/test_test_test/simple_file_with_no_args.txt"
-        )
-
-    def test_format_filepath_pid(self):
-        """Create filepath w/ minimal args (product_id)"""
-        args = {
-            "date_time": datetime(2015, 5, 25, 15, 55),
-            "product_id": -1
-        }
-        result = FSHookWrapper(self.fake_fs_hook).format_filepath(
+            MagicMock(
+                get_records=lambda **kwargs: [[
+                    'test_test_test', 'imars_object_format', '{}',
+                    'test_test_test/simple_file_with_no_args.txt'
+                ]]
+            ),
             **args
         )
         self.assertEqual(
@@ -57,6 +48,15 @@ class Test_format_filepath(TestCase):
         """Raise on fancy filepath missing required arg in path"""
         with self.assertRaises(KeyError):
             FSHookWrapper(self.fake_fs_hook).format_filepath(
+                MagicMock(
+                    get_records=lambda **kwargs: [[
+                        'test_fancy_format_test', 'imars_object_format', '{}',
+                        (
+                            '_fancy_{test_arg}_/%Y-%j/'
+                            'arg_is_{test_arg}_time_is_%H%S.fancy_file'
+                        )
+                    ]]
+                ),
                 **{
                     "date_time": datetime(2015, 5, 25, 15, 55),
                     "product_id": -2
@@ -72,6 +72,15 @@ class Test_format_filepath(TestCase):
             "test_arg": "myTestArg"
         }
         result = FSHookWrapper(self.fake_fs_hook).format_filepath(
+            MagicMock(
+                get_records=lambda **kwargs: [[
+                    'test_fancy_format_test', 'imars_object_format', '{}',
+                    (
+                        '_fancy_{test_arg}_/%Y-%j/'
+                        'arg_is_{test_arg}_time_is_%H%S.fancy_file'
+                    )
+                ]]
+            ),
             **args
         )
         self.assertEqual(
@@ -89,6 +98,15 @@ class Test_format_filepath(TestCase):
             "test_num2": 33
         }
         result = FSHookWrapper(self.fake_fs_hook).format_filepath(
+            MagicMock(
+                get_records=lambda **kwargs: [[
+                    'test_test_test', 'imars_object_format', '{}',
+                    (
+                        '_fancy_{test_num:0>3d}_/%Y/'
+                        'num_is_{test_num2:0>4d}_time_is_%H.fancy_file'
+                    )
+                ]]
+            ),
             **args
         )
         self.assertEqual(
