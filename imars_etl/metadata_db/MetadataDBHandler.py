@@ -43,11 +43,12 @@ DEFAULT_METADATA_DB_CONN_ID = "fallback_chain.local_metadb.imars_metadata"
 
 
 class MetadataDBHandler(BaseHookHandler):
-    def __init__(self, duplicates_ok=False, **kwargs):
+    def __init__(
+        self, duplicates_ok=False, metadata_db=DEFAULT_METADATA_DB_CONN_ID,
+        **kwargs
+    ):
         super(MetadataDBHandler, self).__init__(
-            hook_conn_id=kwargs.get(
-                'metadata_db', DEFAULT_METADATA_DB_CONN_ID
-            ),
+            hook_conn_id=metadata_db,
             wrapper_classes=METADATA_DB_WRAPPERS
         )
         self.duplicates_ok = duplicates_ok

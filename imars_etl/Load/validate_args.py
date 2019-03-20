@@ -18,6 +18,7 @@ def _get_handles(**kwargs):
     return ObjectStorageHandler(**kwargs), MetadataDBHandler(**kwargs)
 
 
+# TODO: move usage of this func into parse_args() ?
 def validate_args(args_dict, DEFAULTS={}):
     """
     Returns properly formatted & complete arguments.
@@ -27,6 +28,8 @@ def validate_args(args_dict, DEFAULTS={}):
         __name__,
         )
     )
+
+    # TODO: rm this default weirdness:
     keys_with_defaults = [
         'object_store',
         'metadata_conn_id',
@@ -35,9 +38,13 @@ def validate_args(args_dict, DEFAULTS={}):
     for key in keys_with_defaults:
         if args_dict.get(key) is None:
             args_dict[key] = DEFAULTS.get(key)
-
-    # remove keys with None values?
+    # remove keys with None values
     args_dict = _rm_dict_none_values(args_dict)
+
+    (
+        args_dict['object_storage_handle'],
+        args_dict['metadata_db_handle']
+    ) = _get_handles(**args_dict)
 
     if args_dict.get('nohash', False) is False:
         logger.debug('ensuring hash in metadata...')

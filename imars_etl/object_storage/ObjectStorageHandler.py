@@ -46,9 +46,9 @@ DEFAULT_OBJ_STORE_CONN_ID = (
 
 
 class ObjectStorageHandler(BaseHookHandler):
-    def __init__(self, **kwargs):
+    def __init__(self, object_store=DEFAULT_OBJ_STORE_CONN_ID, **kwargs):
         super(ObjectStorageHandler, self).__init__(
-            hook_conn_id=kwargs.get('object_store', DEFAULT_OBJ_STORE_CONN_ID),
+            hook_conn_id=object_store,
             wrapper_classes=OBJECT_WRAPPERS,
         )
 

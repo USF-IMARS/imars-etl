@@ -4,7 +4,6 @@ import numbers
 from imars_etl.drivers_metadata.get_metadata_driver_from_key\
     import get_metadata_driver_from_key
 from imars_etl.Load.validate_args import validate_args
-from imars_etl.Load.validate_args import _get_handles
 from imars_etl.object_storage.ObjectStorageHandler \
     import DEFAULT_OBJ_STORE_CONN_ID
 from imars_etl.metadata_db.MetadataDBHandler import DEFAULT_METADATA_DB_CONN_ID
@@ -71,10 +70,9 @@ def _load_file(args_dict):
     logger.info("------- loading file {} ----------------\n".format(
         args_dict.get('filepath', '???').split('/')[-1]
     ))
-    object_storage, metadata_db = _get_handles(**args_dict)
     args_dict = validate_args(args_dict, DEFAULTS=LOAD_DEFAULTS)
 
-    new_filepath = object_storage.load(**args_dict)
+    new_filepath = args_dict['object_storage_handle'].load(**args_dict)
 
     fields, rows = _make_sql_row_and_key_lists(**args_dict)
     for row_i, row in enumerate(rows):
@@ -91,7 +89,7 @@ def _load_file(args_dict):
             args_dict['filepath'], new_filepath
         )
     else:
-        metadata_db.insert_rows(
+        args_dict['metadata_db_handle'].insert_rows(
             table='file',
             rows=rows,
             target_fields=fields,
