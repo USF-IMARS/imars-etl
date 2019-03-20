@@ -1,7 +1,7 @@
 from unittest import TestCase
 
 # dependencies:
-from imars_etl.filepath.get_product_filepath_template \
+from imars_etl.filepath.formatter_hardcoded.get_product_filepath_template \
     import get_product_filepath_template
 
 
