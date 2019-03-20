@@ -9,7 +9,6 @@ import shutil
 
 from imars_etl.object_storage.hook_wrappers.BaseHookWrapper \
     import BaseHookWrapper
-
 from imars_etl.filepath.get_product_filepath_template \
     import get_product_filepath_template
 
@@ -60,16 +59,27 @@ class FSHookWrapper(BaseHookWrapper):
             )
         )
 
-        product_type_name = kwargs.get("product_type_name")
-        product_id = kwargs.get("product_id")
-        forced_basename = kwargs.get("forced_basename")
-
+        # TODO:
+        # fullpath = get_ingest_formats(
+        #     MetadataDBHandler(**kwargs),
+        #     short_name=kwargs.get("product_type_name"),
+        #     product_id=kwargs.get("product_id"),
+        #     ingest_name=kwargs.get("ingest_key"),
+        #     include_test_formats=False,
+        #     first=True
+        # )
+        # forced_basename = kwargs.get("forced_basename")
+        # if forced_basename is not None:  # for testing only
+        #     fullpath = os.path.join(forced_basename, fullpath)
+        # else:
+        #     fullpath = os.path.join(self.hook.get_path(), fullpath)
         fullpath = get_product_filepath_template(
-            product_type_name=product_type_name,
-            product_id=product_id,
-            forced_basename=forced_basename
+            product_type_name=kwargs.get("product_type_name"),
+            product_id=kwargs.get("product_id"),
+            forced_basename=kwargs.get("forced_basename")
         )
-        fullpath = self.hook.get_path() + fullpath
+        fullpath = os.path.join(self.hook.get_path(), fullpath)
+
         logger.info("formatting FS path \n>>'{}'".format(fullpath))
         args_dict = dict(
             **kwargs
