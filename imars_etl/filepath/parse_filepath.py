@@ -7,7 +7,7 @@ import os
 
 from parse import parse
 
-from imars_etl.filepath.get_ingest_format import get_ingest_formats
+from imars_etl.filepath.get_filepath_formats import get_filepath_formats
 
 
 def parse_filepath(
@@ -39,7 +39,7 @@ def parse_filepath(
             testing=testing
         )
     else:  # try all patterns (limiting by product name & ingest key if given)
-        for pattern_name, pattern in get_ingest_formats(
+        for pattern_name, pattern in get_filepath_formats(
             metadb_handle, short_name=product_type_name, ingest_name=ingest_key
         ).items():
             try:

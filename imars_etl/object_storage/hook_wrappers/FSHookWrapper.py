@@ -12,8 +12,8 @@ import shutil
 
 from imars_etl.object_storage.hook_wrappers.BaseHookWrapper \
     import BaseHookWrapper
-from imars_etl.filepath.get_ingest_format \
-    import get_ingest_formats
+from imars_etl.filepath.get_filepath_formats \
+    import get_filepath_formats
 
 
 class FSHookWrapper(BaseHookWrapper):
@@ -80,7 +80,7 @@ class FSHookWrapper(BaseHookWrapper):
         )
 
         # get the format with the highest priority rank
-        format_key, fullpath = get_ingest_formats(
+        format_key, fullpath = get_filepath_formats(
             metadata_db_handle,
             short_name=product_type_name,
             product_id=product_id,

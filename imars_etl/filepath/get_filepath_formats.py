@@ -40,12 +40,12 @@ def _get_test_formats_records():
 
 
 def get_ingest_format(**kwargs):
-    return get_ingest_formats(
+    return get_filepath_formats(
         **kwargs, check_result=True
     )
 
 
-def get_ingest_formats(
+def get_filepath_formats(
     metadb_handle,
     short_name=None, ingest_name=None, product_id=None,
     include_test_formats=True,
