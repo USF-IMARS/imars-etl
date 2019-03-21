@@ -3,51 +3,51 @@ from unittest import TestCase
 
 
 class Test_unify_metadata(TestCase):
-    def test_unify_metadata_json_into_args(self):
-        """
-        unify_metadata sticks stuff from --json into args
-        """
-        from imars_etl.Load.unify_metadata import unify_metadata
-        from imars_etl.cli import parse_args
+    # def test_unify_metadata_json_into_args(self):
+    #     """
+    #     unify_metadata sticks stuff from --json into args
+    #     """
+    #     from imars_etl.Load.unify_metadata import unify_metadata
+    #     from imars_etl.cli import parse_args
+    #
+    #     test_args = parse_args([
+    #         '-vvv',
+    #         'load',
+    #         '--dry_run',
+    #         '-p', '-1',
+    #         '-t', "2018-02-26T13:00",
+    #         '-j', '{"status_id":1,"area_id":1}',
+    #         "/fake/path/file_w_date_2018.txt",
+    #     ])
+    #     result_arg_dict = unify_metadata(**vars(test_args))
+    #     expected_subset = {
+    #         "verbose": 3,
+    #         "dry_run": True,
+    #         "filepath": "/fake/path/file_w_date_2018.txt",
+    #         "product_id": -1,
+    #         "json": '{"status_id":1,"area_id":1}',
+    #         "status_id": 1,
+    #         "area_id": 1
+    #     }
+    #     assert expected_subset.items() <= result_arg_dict.items()
 
-        test_args = parse_args([
-            '-vvv',
-            'load',
-            '--dry_run',
-            '-p', '-1',
-            '-t', "2018-02-26T13:00",
-            '-j', '{"status_id":1,"area_id":1}',
-            "/fake/path/file_w_date_2018.txt",
-        ])
-        result_arg_dict = unify_metadata(**vars(test_args))
-        expected_subset = {
-            "verbose": 3,
-            "dry_run": True,
-            "filepath": "/fake/path/file_w_date_2018.txt",
-            "product_id": -1,
-            "json": '{"status_id":1,"area_id":1}',
-            "status_id": 1,
-            "area_id": 1
-        }
-        assert expected_subset.items() <= result_arg_dict.items()
-
-    def test_unify_metadata_similar_keys_of_different_types(self):
-        """
-        unify_metadata passes with matching metadata in kwargs & sql
-        """
-        from imars_etl.Load.unify_metadata import unify_metadata
-        result_arg_dict = unify_metadata(
-            verbose=3,
-            dry_run=True,
-            product_id=-1,
-            sql="product_id=-1"
-        )
-        expected_subset = {
-            "verbose": 3,
-            "dry_run": True,
-            "product_id": -1,
-        }
-        assert expected_subset.items() <= result_arg_dict.items()
+    # def test_unify_metadata_similar_keys_of_different_types(self):
+    #     """
+    #     unify_metadata passes with matching metadata in kwargs & sql
+    #     """
+    #     from imars_etl.Load.unify_metadata import unify_metadata
+    #     result_arg_dict = unify_metadata(
+    #         verbose=3,
+    #         dry_run=True,
+    #         product_id=-1,
+    #         sql="product_id=-1"
+    #     )
+    #     expected_subset = {
+    #         "verbose": 3,
+    #         "dry_run": True,
+    #         "product_id": -1,
+    #     }
+    #     assert expected_subset.items() <= result_arg_dict.items()
 
     def test_unify_identical_date_and_datestr(self):
         """

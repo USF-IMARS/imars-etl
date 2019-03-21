@@ -15,82 +15,82 @@ class Test_load_cli(TestCasePlusSQL):
     # tests:
     #########################
     # === bash CLI (passes ArgParse objects)
-    @patch(
-        "imars_etl.object_storage.ObjectStorageHandler."
-        "ObjectStorageHandler.load"
-    )
-    def test_load_basic(self, mock_load):
-        """
-        CLI basic load cmd:
-            imars_etl.py load
-                --dry_run
-                -p -1
-                -p '2018-02-26T13:00'
-                -j '{"status_id":1, "area_id":1}'
-                /fake/path/file_w_date_2018.txt
-        """
-        from imars_etl.cli import main
-        mock_load.return_value = "/tmp/imars-etl-test-fpath"
-
-        test_args = [
-            '-vvv',
-            'load',
-            '--dry_run',
-            '-p', '-1',
-            '-t', "2018-02-26 13:00:00",
-            '-j', '{"status_id":1,"area_id":1}',
-            '--nohash',
-            "/fake/path/file_w_date_2018.txt",
-        ]
-        self.assertSQLInsertKeyValuesMatch(
-            main(test_args),
-            ['status_id', 'date_time', 'area_id', 'product_id', 'filepath'],
-            [
-                '1',
-                '"2018-02-26 13:00:00"',
-                '1',
-                '-1',
-                '"{}"'.format(mock_load.return_value)
-            ]
-        )
-
-    def test_load_basic_custom_obj_store(self):
-        """
-        CLI using `no_upload` `object_store` passes path through unchanged
-            imars_etl.py load
-                --dry_run
-                --object_store no_upload
-                -p -1
-                -p '2018-02-26T13:00'
-                -j '{"status_id":1, "area_id":1}'
-                /fake/path/file_w_date_2018.txt
-        """
-        from imars_etl.cli import main
-
-        FPATH = "/fake/path/file_w_date_2018.txt"
-
-        test_args = [
-            '-vvv',
-            'load',
-            '--dry_run',
-            '--object_store', 'no_upload',
-            '-p', '-1',
-            '-t', "2018-02-26T13:00",
-            '-j', '{"status_id":1,"area_id":1}',
-            '--nohash',
-            FPATH,
-        ]
-        self.assertSQLInsertKeyValuesMatch(
-            main(test_args),
-            ['status_id', 'date_time', 'area_id', 'product_id', 'filepath'],
-            [
-                '1',
-                '"2018-02-26 13:00:00"',
-                '1',
-                '-1',
-                '"{}"'.format(FPATH)
-            ]
-        )
+    # @patch(
+    #     "imars_etl.object_storage.ObjectStorageHandler."
+    #     "ObjectStorageHandler.load"
+    # )
+    # def test_load_basic(self, mock_load):
+    #     """
+    #     CLI basic load cmd:
+    #         imars_etl.py load
+    #             --dry_run
+    #             -p -1
+    #             -p '2018-02-26T13:00'
+    #             -j '{"status_id":1, "area_id":1}'
+    #             /fake/path/file_w_date_2018.txt
+    #     """
+    #     from imars_etl.cli import main
+    #     mock_load.return_value = "/tmp/imars-etl-test-fpath"
+    #
+    #     test_args = [
+    #         '-vvv',
+    #         'load',
+    #         '--dry_run',
+    #         '-p', '-1',
+    #         '-t', "2018-02-26 13:00:00",
+    #         '-j', '{"status_id":1,"area_id":1}',
+    #         '--nohash',
+    #         "/fake/path/file_w_date_2018.txt",
+    #     ]
+    #     self.assertSQLInsertKeyValuesMatch(
+    #         main(test_args),
+    #         ['status_id', 'date_time', 'area_id', 'product_id', 'filepath'],
+    #         [
+    #             '1',
+    #             '"2018-02-26 13:00:00"',
+    #             '1',
+    #             '-1',
+    #             '"{}"'.format(mock_load.return_value)
+    #         ]
+    #     )
+    #
+    # def test_load_basic_custom_obj_store(self):
+    #     """
+    #     CLI using `no_upload` `object_store` passes path through unchanged
+    #         imars_etl.py load
+    #             --dry_run
+    #             --object_store no_upload
+    #             -p -1
+    #             -p '2018-02-26T13:00'
+    #             -j '{"status_id":1, "area_id":1}'
+    #             /fake/path/file_w_date_2018.txt
+    #     """
+    #     from imars_etl.cli import main
+    #
+    #     FPATH = "/fake/path/file_w_date_2018.txt"
+    #
+    #     test_args = [
+    #         '-vvv',
+    #         'load',
+    #         '--dry_run',
+    #         '--object_store', 'no_upload',
+    #         '-p', '-1',
+    #         '-t', "2018-02-26T13:00",
+    #         '-j', '{"status_id":1,"area_id":1}',
+    #         '--nohash',
+    #         FPATH,
+    #     ]
+    #     self.assertSQLInsertKeyValuesMatch(
+    #         main(test_args),
+    #         ['status_id', 'date_time', 'area_id', 'product_id', 'filepath'],
+    #         [
+    #             '1',
+    #             '"2018-02-26 13:00:00"',
+    #             '1',
+    #             '-1',
+    #             '"{}"'.format(FPATH)
+    #         ]
+    #     )
 
     def test_load_missing_date_unguessable(self):
         """
@@ -186,82 +186,82 @@ class Test_load_cli(TestCasePlusSQL):
             ]
         )
 
-    @patch(
-        "imars_etl.object_storage.ObjectStorageHandler."
-        "ObjectStorageHandler.load",
-        return_value="/tmp/imars-etl-test-fpath"
-    )
-    def test_custom_input_args_in_json(self, mock_load):
-        """
-        imars_etl.load w/ args passed in --json
-        """
-        from imars_etl.cli import main
-        test_args = [
-            '-vvv',
-            'load',
-            '--dry_run',
-            '-n', "test_fancy_format_test",
-            '-i', "file_w_nothing",
-            '-t', "2018-01-01T08:08",
-            '--json', '{"test_arg":"tssst"}',
-            '--nohash',
-            "fake_filepath.bs",
-        ]
-        res = main(test_args)
-        self.assertSQLInsertKeyValuesMatch(
-            res,
-            ['date_time', 'product_id', 'filepath'],
-            [
-                '"2018-01-01 08:08:00"',
-                '-2',
-                '"{}"'.format(mock_load.return_value)
-            ]
-        )
-
-    @patch(
-        "imars_etl.object_storage.ObjectStorageHandler."
-        "ObjectStorageHandler.load",
-        return_value="/tmp/imars-etl-test-fpath"
-    )
-    def test_load_file_and_metadata_file(
-        self, mock_load
-    ):
-        """
-        CLI load file w/ metadata file & json using default (DHUS) parser
-        """
-        FAKE_UUID = '68ebc577-178e-4d9c-b16a-3bf8f1394939'
-        DATETIME = "2018-01-01T08:08:00"
-        mocked_open = mock.mock_open(
-            read_data='[{"uuid":"' + FAKE_UUID + '"}]'
-        )
-        with patch(
-            'imars_etl.drivers_metadata.dhus_json.open',
-            mocked_open, create=True
-        ):
-
-            from imars_etl.cli import main
-
-            test_args = [
-                '-vvv',
-                'load',
-                '--dry_run',
-                '-m', "/fake/metadata/filepath.json",
-                '-n', "test_fancy_format_test",
-                '-i', "file_w_nothing",
-                '-t', DATETIME,
-                '--json', '{"test_arg":"tssst"}',
-                '--nohash',
-                "/fake/file/path/fake_filepath.bs",
-            ]
-
-            res = main(test_args)
-            self.assertSQLInsertKeyValuesMatch(
-                res,
-                ['date_time', 'product_id', 'uuid', 'filepath'],
-                [
-                    '"{}"'.format(DATETIME.replace("T", " ")),
-                    '-2',
-                    '"{}"'.format(FAKE_UUID),
-                    '"{}"'.format(mock_load.return_value)
-                ]
-            )
+    # @patch(
+    #     "imars_etl.object_storage.ObjectStorageHandler."
+    #     "ObjectStorageHandler.load",
+    #     return_value="/tmp/imars-etl-test-fpath"
+    # )
+    # def test_custom_input_args_in_json(self, mock_load):
+    #     """
+    #     imars_etl.load w/ args passed in --json
+    #     """
+    #     from imars_etl.cli import main
+    #     test_args = [
+    #         '-vvv',
+    #         'load',
+    #         '--dry_run',
+    #         '-n', "test_fancy_format_test",
+    #         '-i', "file_w_nothing",
+    #         '-t', "2018-01-01T08:08",
+    #         '--json', '{"test_arg":"tssst"}',
+    #         '--nohash',
+    #         "fake_filepath.bs",
+    #     ]
+    #     res = main(test_args)
+    #     self.assertSQLInsertKeyValuesMatch(
+    #         res,
+    #         ['date_time', 'product_id', 'filepath'],
+    #         [
+    #             '"2018-01-01 08:08:00"',
+    #             '-2',
+    #             '"{}"'.format(mock_load.return_value)
+    #         ]
+    #     )
+    #
+    # @patch(
+    #     "imars_etl.object_storage.ObjectStorageHandler."
+    #     "ObjectStorageHandler.load",
+    #     return_value="/tmp/imars-etl-test-fpath"
+    # )
+    # def test_load_file_and_metadata_file(
+    #     self, mock_load
+    # ):
+    #     """
+    #     CLI load file w/ metadata file & json using default (DHUS) parser
+    #     """
+    #     FAKE_UUID = '68ebc577-178e-4d9c-b16a-3bf8f1394939'
+    #     DATETIME = "2018-01-01T08:08:00"
+    #     mocked_open = mock.mock_open(
+    #         read_data='[{"uuid":"' + FAKE_UUID + '"}]'
+    #     )
+    #     with patch(
+    #         'imars_etl.drivers_metadata.dhus_json.open',
+    #         mocked_open, create=True
+    #     ):
+    #
+    #         from imars_etl.cli import main
+    #
+    #         test_args = [
+    #             '-vvv',
+    #             'load',
+    #             '--dry_run',
+    #             '-m', "/fake/metadata/filepath.json",
+    #             '-n', "test_fancy_format_test",
+    #             '-i', "file_w_nothing",
+    #             '-t', DATETIME,
+    #             '--json', '{"test_arg":"tssst"}',
+    #             '--nohash',
+    #             "/fake/file/path/fake_filepath.bs",
+    #         ]
+    #
+    #         res = main(test_args)
+    #         self.assertSQLInsertKeyValuesMatch(
+    #             res,
+    #             ['date_time', 'product_id', 'uuid', 'filepath'],
+    #             [
+    #                 '"{}"'.format(DATETIME.replace("T", " ")),
+    #                 '-2',
+    #                 '"{}"'.format(FAKE_UUID),
+    #                 '"{}"'.format(mock_load.return_value)
+    #             ]
+    #         )
