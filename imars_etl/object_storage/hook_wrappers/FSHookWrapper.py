@@ -1,6 +1,9 @@
 """
 Provides wrapper for airflow.contrib.hooks.FSHook-like object storage
 hooks.
+
+The format_filepath method will use the filepath format with the highest
+priority ranking in `imars_product_metadata.product_format.priority`.
 """
 import errno
 import logging
@@ -76,7 +79,7 @@ class FSHookWrapper(BaseHookWrapper):
             )
         )
 
-        # TODO:
+        # get the format with the highest priority rank
         format_key, fullpath = get_ingest_formats(
             metadata_db_handle,
             short_name=product_type_name,
