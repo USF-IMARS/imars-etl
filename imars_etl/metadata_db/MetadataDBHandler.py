@@ -150,7 +150,7 @@ class MetadataDBHandler(BaseHookHandler):
 
 
 def validate_sql_result(result):
-    if (not result):
+    if (not result or result is None):
         raise NoMetadataMatchException(
             "Zero files found matching given metadata."
         )
