@@ -3,9 +3,9 @@ Provides wrapper for airflow.hooks.http_hook-like object storage
 hooks.
 """
 import logging
-import sys
 
-from imars_etl.filepath.format_filepath import format_filepath
+from imars_etl.object_storage.hook_wrappers.format_filepath \
+    import format_filepath
 from imars_etl.object_storage.hook_wrappers.BaseHookWrapper \
     import BaseHookWrapper
 

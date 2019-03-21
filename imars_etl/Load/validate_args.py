@@ -9,8 +9,17 @@ from imars_etl.Load.unify_metadata import unify_metadata
 from imars_etl.Load.unify_metadata import _rm_dict_none_values
 from imars_etl.util.timestrings import standardize_time_str
 
+from imars_etl.object_storage.ObjectStorageHandler import ObjectStorageHandler
+from imars_etl.metadata_db.MetadataDBHandler import MetadataDBHandler
 
-def validate_args(args_dict, DEFAULTS={}):
+
+def _get_handles(**kwargs):
+    """returns object storage & metadata handles to given args"""
+    return ObjectStorageHandler(**kwargs), MetadataDBHandler(**kwargs)
+
+
+# TODO: move usage of this func into parse_args() ?
+def validate_args(kwargs_dict, DEFAULTS={}):
     """
     Returns properly formatted & complete arguments.
     Makes attempts to guess at filling in missing args.
@@ -19,17 +28,17 @@ def validate_args(args_dict, DEFAULTS={}):
         __name__,
         )
     )
-    keys_with_defaults = [
-        'object_store',
-        'metadata_conn_id',
-        'nohash'
-    ]
-    for key in keys_with_defaults:
-        if args_dict.get(key) is None:
-            args_dict[key] = DEFAULTS.get(key)
 
-    # remove keys with None values?
+    args_dict = DEFAULTS.copy()
+    args_dict.update(kwargs_dict)
+
+    # remove keys with None values
     args_dict = _rm_dict_none_values(args_dict)
+
+    (
+        args_dict['object_storage_handle'],
+        args_dict['metadata_db_handle']
+    ) = _get_handles(**args_dict)
 
     if args_dict.get('nohash', False) is False:
         logger.debug('ensuring hash in metadata...')

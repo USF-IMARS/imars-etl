@@ -2,7 +2,8 @@
 Provides wrapper for airflow.contrib.hooks.AzureDataLake-like object storage
 hooks.
 """
-from imars_etl.filepath.format_filepath import format_filepath
+from imars_etl.object_storage.hook_wrappers.format_filepath \
+    import format_filepath
 from imars_etl.object_storage.hook_wrappers.BaseHookWrapper \
     import BaseHookWrapper
 

@@ -43,11 +43,12 @@ DEFAULT_METADATA_DB_CONN_ID = "fallback_chain.local_metadb.imars_metadata"
 
 
 class MetadataDBHandler(BaseHookHandler):
-    def __init__(self, duplicates_ok=False, **kwargs):
+    def __init__(
+        self, duplicates_ok=False, metadata_db=DEFAULT_METADATA_DB_CONN_ID,
+        **kwargs
+    ):
         super(MetadataDBHandler, self).__init__(
-            hook_conn_id=kwargs.get(
-                'metadata_db', DEFAULT_METADATA_DB_CONN_ID
-            ),
+            hook_conn_id=metadata_db,
             wrapper_classes=METADATA_DB_WRAPPERS
         )
         self.duplicates_ok = duplicates_ok
@@ -120,6 +121,7 @@ class MetadataDBHandler(BaseHookHandler):
             result = validate_sql_result(result)
         except (NoMetadataMatchException, TooManyMetadataMatchesException):
             if check_result is True:
+                logger.error(result)
                 raise
         logger.debug("RESULT: {}".format(result))
         return result
@@ -148,19 +150,13 @@ class MetadataDBHandler(BaseHookHandler):
 
 
 def validate_sql_result(result):
-    logger = logging.getLogger("imars_etl.{}".format(
-        __name__,
-        )
-    )
-
-    if (not result):
+    if (not result or result is None):
         raise NoMetadataMatchException(
             "Zero files found matching given metadata."
         )
         # exit(EXIT_STATUS.NO_MATCHING_FILES)
     elif (len(result) > 1):
         # TODO: request more info from user?
-        logger.error(result)
         raise TooManyMetadataMatchesException(
             "Too many results found matching given metadata." +
             "\n\tlen(result): {}".format(len(result)) +

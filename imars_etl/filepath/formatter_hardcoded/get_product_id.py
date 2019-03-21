@@ -1,4 +1,4 @@
-from imars_etl.filepath.data import data
+from imars_etl.filepath.formatter_hardcoded.data import data
 
 
 def get_product_id(product_type_name):

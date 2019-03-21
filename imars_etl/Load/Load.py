@@ -1,26 +1,21 @@
 import logging
-import sys
 import numbers
-
-from pymysql.err import IntegrityError
 
 from imars_etl.drivers_metadata.get_metadata_driver_from_key\
     import get_metadata_driver_from_key
 from imars_etl.Load.validate_args import validate_args
-from imars_etl.object_storage.ObjectStorageHandler import ObjectStorageHandler
 from imars_etl.object_storage.ObjectStorageHandler \
     import DEFAULT_OBJ_STORE_CONN_ID
-from imars_etl.metadata_db.MetadataDBHandler import MetadataDBHandler
 from imars_etl.metadata_db.MetadataDBHandler import DEFAULT_METADATA_DB_CONN_ID
 
-LOAD_DEFAULTS = {
-    'output_path': None,
-    'metadata_file': None,
+LOAD_DEFAULTS = {  # defaults here instead of fn def for cli argparse usage
     'metadata_file_driver': get_metadata_driver_from_key('dhus_json'),
     'nohash': False,
     'noparse': False,
     'object_store': DEFAULT_OBJ_STORE_CONN_ID,
     'metadata_db': DEFAULT_METADATA_DB_CONN_ID,
+    'sql': '',
+    'dry_run': False,
 }
 
 VALID_FILE_TABLE_COLNAMES = [  # TODO: get this from db
@@ -29,13 +24,16 @@ VALID_FILE_TABLE_COLNAMES = [  # TODO: get this from db
 ]
 
 
-def load(
-    filepath=None,
-    metadata_file_driver=LOAD_DEFAULTS['metadata_file_driver'],
-    object_store=LOAD_DEFAULTS['object_store'],
-    metadata_db=LOAD_DEFAULTS['metadata_db'],
-    sql="",
-    **kwargs
+def load(**kwargs):
+    return _load(
+        **validate_args(kwargs, DEFAULTS=LOAD_DEFAULTS)
+    )
+
+
+def _load(
+    filepath, *args,
+    object_storage_handle, metadata_db_handle,
+    dry_run, **kwargs
 ):
     """
     Args can be a dict or argparse.Namespace
@@ -50,51 +48,41 @@ def load(
             -j '{"status_id":0}'
             /home/tylar/usf-imars.github.io/assets/img/bg.png
     """
+    assert len(args) == 0
     args_dict = dict(
         filepath=filepath,
-        metadata_file_driver=metadata_file_driver,
-        object_store=object_store,
-        metadata_db=metadata_db,
-        sql=sql,
+        object_storage_handle=object_storage_handle,
+        metadata_db_handle=metadata_db_handle,
+        dry_run=dry_run,
         **kwargs
     )
-    if filepath is not None:
-        return _load_file(args_dict)  # TODO: ideally we would splat these.
-    else:
-        # NOTE: this should be thrown by the arparse arg group before getting
-        #   here, but we throw here for the python API.
-        raise ValueError("filepath is required.")
 
-
-def _load_file(args_dict):
-    """Loads a single file"""
     logger = logging.getLogger("imars_etl.{}".format(
         __name__,
         )
     )
     logger.info("------- loading file {} ----------------\n".format(
-        args_dict.get('filepath', '???').split('/')[-1]
+        filepath.split('/')[-1]
     ))
-    args_dict = validate_args(args_dict, DEFAULTS=LOAD_DEFAULTS)
 
-    new_filepath = ObjectStorageHandler(**args_dict).load(**args_dict)
+    new_filepath = object_storage_handle.load(**args_dict)
 
     fields, rows = _make_sql_row_and_key_lists(**args_dict)
     for row_i, row in enumerate(rows):
         for i, element in enumerate(row):
             try:
                 rows[row_i][i] = element.replace(
-                    args_dict['filepath'], new_filepath
+                    filepath, new_filepath
                 )
             except (AttributeError, TypeError):  # element not a string
                 pass
-    if args_dict.get('dry_run', False):  # test mode returns the sql string
+    if dry_run:  # test mode returns the sql string
         logger.debug('oh, just a test')
         return _make_sql_insert(**args_dict).replace(
-            args_dict['filepath'], new_filepath
+            filepath, new_filepath
         )
     else:
-        MetadataDBHandler(**args_dict).insert_rows(
+        metadata_db_handle.insert_rows(
             table='file',
             rows=rows,
             target_fields=fields,

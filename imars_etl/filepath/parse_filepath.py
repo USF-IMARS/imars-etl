@@ -7,16 +7,16 @@ import os
 
 from parse import parse
 
-from imars_etl.filepath.get_ingest_format import get_ingest_format
-from imars_etl.filepath.get_ingest_format import get_ingest_formats
-from imars_etl.filepath.get_product_id import get_product_id
+from imars_etl.filepath.get_filepath_formats import get_filepath_formats
 
 
 def parse_filepath(
+    metadb_handle,
     load_format=None,
     filepath=None,
     product_type_name=None,
     ingest_key=None,
+    testing=False,
     **kwargs
 ):
     """
@@ -35,33 +35,21 @@ def parse_filepath(
             filepath,
             load_format,
             'manually set custom load_format',
-            product_type_name
+            product_type_name,
+            testing=testing
         )
-    elif (product_type_name is not None):
-        ing_key = ingest_key
-        if (ing_key is None):
-            ing_fmt = get_ingest_format(product_type_name)
-        else:
-            ing_fmt = get_ingest_format(
-                product_type_name,
-                ingest_key
-            )
-
-        args_parsed = _parse_from_product_type_and_filename(
-            filepath,
-            ing_fmt,
-            '{}.{}'.format(product_type_name, ing_key),
-            product_type_name
-        )
-    else:  # try all patterns
-        for pattern_name, pattern in get_ingest_formats().items():
+    else:  # try all patterns (limiting by product name & ingest key if given)
+        for pattern_name, pattern in get_filepath_formats(
+            metadb_handle, short_name=product_type_name, ingest_name=ingest_key
+        ).items():
             try:
                 product_type_name = pattern_name.split(".")[0]
                 args_parsed = _parse_from_product_type_and_filename(
                     filepath,
                     pattern,
                     pattern_name,
-                    product_type_name
+                    product_type_name,
+                    testing=testing
                 )
                 break
             except SyntaxError as s_err:  # filepath does not match
@@ -102,7 +90,8 @@ def _strptime_parsed_pattern(input_str, format_str, params):
 
 
 def _parse_from_product_type_and_filename(
-    filepath, pattern, pattern_name, product_type_name
+    filepath, pattern, pattern_name, product_type_name,
+    testing=False
 ):
     """
     Uses given pattern to parse args.filepath and fill any other arguments
@@ -161,7 +150,6 @@ def _parse_from_product_type_and_filename(
     parsed_vars['time'] = dt.isoformat()
     logger.debug('date extracted: {}'.format(parsed_vars['time']))
     parsed_vars['product_type_name'] = product_type_name
-    parsed_vars['product_id'] = get_product_id(product_type_name)
 
     return parsed_vars
 

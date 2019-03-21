@@ -8,8 +8,9 @@ from datetime import datetime
 # dependencies:
 from imars_etl.filepath.parse_filepath import parse_filepath
 from imars_etl.filepath.parse_filepath import _strptime_parsed_pattern
-from imars_etl.filepath.get_product_id import get_product_id
 from imars_etl.cli import parse_args
+# TODO: mock MetadataDBHandler (using formatter_hardcoded)?:
+from imars_etl.metadata_db.MetadataDBHandler import MetadataDBHandler
 
 
 class Test__strptime_parsed_pattern(TestCase):
@@ -31,26 +32,26 @@ class Test_parse_filepath(TestCase):
     #########################
     # === parse_filepath
     def test_parse_filename_browse_jpg(self):
-        """parse_filepath on jpg_wv2_m1bs *-BROWSE.jpg"""
+        """parse_filepath on xml_wv2_m1bs *.XML"""
         test_args = parse_args([
             '-vvv',
             'load',
             '--dry_run',
             '--nohash',
-            "16FEB12162518-M1BS-057488585010_01_P003-BROWSE.JPG",
+            "16FEB12162518-M1BS-057488585010_01_P003.XML",
         ])
-        res_args = parse_filepath(**vars(test_args))
+        res_args = parse_filepath(
+            MetadataDBHandler(**vars(test_args)),
+            testing=True,
+            **vars(test_args),
+        )
         self.assertEqual(
             res_args['date_time'],
             datetime(2016, 2, 12, 16, 25, 18)
         )
         self.assertEqual(res_args['idNumber'], "057488585010_01")
         self.assertEqual(res_args['passNumber'], "003")
-        self.assertEqual(res_args['product_type_name'], "jpg_wv2_m1bs")
-        self.assertEqual(
-            res_args['product_id'],
-            get_product_id("jpg_wv2_m1bs")
-        )
+        self.assertEqual(res_args['product_type_name'], "xml_wv2_m1bs")
 
     def test_parse_filename_shx_wv2_p1bs(self):
         """parse_filepath on shx_wv2_p1bs *_PIXEL_SHAPE.shx"""
@@ -61,7 +62,11 @@ class Test_parse_filepath(TestCase):
             '--nohash',
             "16FEB12162518-P1BS-057488585010_01_P003_PIXEL_SHAPE.shx",
         ])
-        res_args = parse_filepath(**vars(test_args))
+        res_args = parse_filepath(
+            MetadataDBHandler(**vars(test_args)),
+            testing=True,
+            **vars(test_args)
+        )
         self.assertEqual(
             res_args['date_time'],
             datetime(2016, 2, 12, 16, 25, 18)
@@ -69,10 +74,6 @@ class Test_parse_filepath(TestCase):
         self.assertEqual(res_args['idNumber'], "057488585010_01")
         self.assertEqual(res_args['passNumber'], "003")
         self.assertEqual(res_args['product_type_name'], "shx_wv2_p1bs")
-        self.assertEqual(
-            res_args['product_id'],
-            get_product_id("shx_wv2_p1bs")
-        )
 
     def test_guess_ingest_key(self):
         """
@@ -86,12 +87,12 @@ class Test_parse_filepath(TestCase):
             '--nohash',
             "file_w_date_1997.txt",
         ])
-        res_args = parse_filepath(**vars(test_args))
-        self.assertEqual(res_args['date_time'], datetime(1997, 1, 1))
-        self.assertEqual(
-            res_args['product_id'],
-            get_product_id("test_test_test")
+        res_args = parse_filepath(
+            MetadataDBHandler(**vars(test_args)),
+            testing=True,
+            **vars(test_args)
         )
+        self.assertEqual(res_args['date_time'], datetime(1997, 1, 1))
         # this fails... but I don't think we really care.
         # self.assertEqual(res_args.ingest_key, "file_w_date")
 
@@ -104,6 +105,10 @@ class Test_parse_filepath(TestCase):
             '--nohash',
             'date_2022123.arg_testyTestArg.time_0711.woah',
         ])
-        res_args = parse_filepath(**vars(test_args))
+        res_args = parse_filepath(
+            MetadataDBHandler(**vars(test_args)),
+            testing=True,
+            **vars(test_args)
+        )
         self.assertEqual(res_args['date_time'], datetime(2022, 5, 3, 7, 0, 11))
         self.assertEqual(res_args['test_arg'], "testyTestArg")
