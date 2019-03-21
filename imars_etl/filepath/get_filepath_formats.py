@@ -87,7 +87,7 @@ def get_filepath_formats(
                 andy = "AND"
             else:
                 andy = ""
-            where_clause += " {} product.product_id={} ".format(
+            where_clause += " {} product.id={} ".format(
                 andy,
                 int(product_id)
             )

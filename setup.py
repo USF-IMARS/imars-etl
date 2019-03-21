@@ -7,7 +7,7 @@ import io
 
 # import imars_etl
 # NOTE: can't do that here before dependencies installed, silly.
-VERSION = '0.8.1'  # should match __version__ in imars_etl.__init__.py
+VERSION = '0.8.2'  # should match __version__ in imars_etl.__init__.py
 
 
 def read(*filenames, **kwargs):
