@@ -5,6 +5,7 @@ Define CLI interface using argparse.
 import logging
 from argparse import ArgumentParser
 
+import imars_etl
 from imars_etl.util.ConstMapAction import ConstMapAction
 from imars_etl.BaseHookHandler import get_hooks_list
 from imars_etl.object_storage.ObjectStorageHandler \
@@ -24,7 +25,11 @@ from imars_etl.extract import EXTRACT_DEFAULTS
 
 def main(argvs):
     args = parse_args(argvs)
-    result = args.func(**vars(args))
+    if args.version:
+        print("v{}".format(imars_etl.__version__))
+        exit()
+    else:
+        result = args.func(**vars(args))
 
     if args.func in [extract, id_lookup, select]:
         # print return value
@@ -104,6 +109,11 @@ def parse_args(argvs):
         help="increase output verbosity",
         action="count",
         default=0
+    )
+    parser.add_argument(
+        "-V", "--version",
+        help="print version & exit",
+        action="store_true"
     )
     # other examples:
     # parser.add_argument("source", help="directory to copy from")
@@ -306,13 +316,16 @@ def parse_args(argvs):
     try:
         args.func
     except AttributeError:
-        SEP = "\n-----------------------------------------------------------\n"
-        print(SEP)
-        parser.print_help()
-        print(SEP)
-        raise ValueError(
-            "\n\n\tSubcommand is required. See help above."
-        )
+        try:
+            args.version
+        except AttributeError:
+            SEP = "\n-------------------------------------------------------\n"
+            print(SEP)
+            parser.print_help()
+            print(SEP)
+            raise ValueError(
+                "\n\n\tSubcommand is required. See help above."
+            )
     # =========================================================================
     config_logger(args.verbose)
     return args
