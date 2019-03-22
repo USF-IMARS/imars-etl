@@ -35,7 +35,8 @@ def main(argvs):
         imars_etl.__version__
     )
     logger.info(HELLO)
-    logger.info('='*len(HELLO) + '\n')
+    logger.info('=' * len(HELLO))
+    # # log test:
     # logger.critical('c')
     # logger.warn('w')
     # logger.info('i')

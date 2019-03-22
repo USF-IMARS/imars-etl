@@ -15,6 +15,7 @@ def parse_filepath(
     load_format=None,
     filepath=None,
     product_type_name=None,
+    product_id=None,
     ingest_key=None,
     testing=False,
     **kwargs
@@ -29,6 +30,13 @@ def parse_filepath(
         __name__,
         )
     )
+    logger.trace((
+        "parse_filepath(\n\tfmt={},\n\tfpath={},\n\tpname={},\n\ting_k={},"
+        "\n\tpid={}\n)"
+        ).format(
+            load_format, filepath, product_type_name, ingest_key, product_id
+        )
+    )
     args_dict = {}
     if (load_format is not None):
         args_parsed = _parse_from_product_type_and_filename(
@@ -40,7 +48,9 @@ def parse_filepath(
         )
     else:  # try all patterns (limiting by product name & ingest key if given)
         for pattern_name, pattern in get_filepath_formats(
-            metadb_handle, short_name=product_type_name, ingest_name=ingest_key
+            metadb_handle, short_name=product_type_name,
+            ingest_name=ingest_key,
+            product_id=product_id
         ).items():
             try:
                 product_type_name = pattern_name.split(".")[0]

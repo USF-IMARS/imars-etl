@@ -69,6 +69,9 @@ def get_filepath_formats(
     logger = logging.getLogger("imars_etl.{}".format(
         __name__,
     ))
+    logger.trace('get_filepath_formats({},{},{})'.format(
+        short_name, ingest_name, product_id
+    ))
 
     if short_name is None and ingest_name is None and product_id is None:
         where_clause = ""

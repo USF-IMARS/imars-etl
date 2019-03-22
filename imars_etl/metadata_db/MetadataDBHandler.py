@@ -110,7 +110,7 @@ class MetadataDBHandler(BaseHookHandler):
             __name__,
             )
         )
-        logger.info("MetaDB SQL query: {}".format(sql))
+        logger.info("MetaDB SQL query:\n```sql\n{}\n```".format(sql))
 
         if first is True:
             result = self.get_first(sql)
