@@ -110,7 +110,7 @@ class MetadataDBHandler(BaseHookHandler):
             __name__,
             )
         )
-        logger.debug("QUERY: {}".format(sql))
+        logger.info("MetaDB SQL query: {}".format(sql))
 
         if first is True:
             result = self.get_first(sql)
@@ -123,7 +123,7 @@ class MetadataDBHandler(BaseHookHandler):
             if check_result is True:
                 logger.error(result)
                 raise
-        logger.debug("RESULT: {}".format(result))
+        logger.trace("RESULT: {}".format(result))
         return result
 
     def handle_exception(self, i_err, m_args, m_kwargs):

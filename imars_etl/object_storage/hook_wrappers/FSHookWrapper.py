@@ -26,8 +26,7 @@ class FSHookWrapper(BaseHookWrapper):
     def load(self, filepath, dry_run=False, **kwargs):
         logger = logging.getLogger("imars_etl.{}".format(
             __name__,
-            )
-        )
+        ))
         # logger.debug('_load(args)| args=\n\t{}'.format(args))
         ul_target = self.format_filepath(
             filepath=filepath, dry_run=dry_run, **kwargs

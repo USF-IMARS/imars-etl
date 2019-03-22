@@ -1,4 +1,6 @@
 import json
+import logging
+from pprint import pformat
 
 
 def _prefill_fmt_str(fmt_str, params):
@@ -64,6 +66,10 @@ def get_filepath_formats(
     from imars_etl.filepath.formatter_hardcoded.get_ingest_format import \
         get_ingest_formats
     """
+    logger = logging.getLogger("imars_etl.{}".format(
+        __name__,
+    ))
+
     if short_name is None and ingest_name is None and product_id is None:
         where_clause = ""
     else:
@@ -97,9 +103,9 @@ def get_filepath_formats(
         SELECT product.short_name,path_format.short_name,params,format_string
         FROM product_formats
             INNER JOIN path_format
-                ON path_format.id = product_formats.path_format_id
+                ON path_format.id=product_formats.path_format_id
             INNER JOIN product
-                ON product.id = product_formats.product_id
+                ON product.id=product_formats.product_id
         {}
         ORDER BY priority DESC;
         """.format(where_clause),
@@ -112,7 +118,10 @@ def get_filepath_formats(
             fmt_str,
             params
         )
-    print(res_dict.keys())
+    # if Logger.isEnabledFor(logging.INFO):
+    logger.debug("matching formats:\n{}".format(
+        pformat(list(res_dict.keys())), width=1, indent=2)
+    )
     if include_test_formats:
         res_dict.update(_get_test_formats_dict())
     return res_dict

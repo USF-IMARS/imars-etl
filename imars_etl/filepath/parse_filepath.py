@@ -53,7 +53,7 @@ def parse_filepath(
                 )
                 break
             except SyntaxError as s_err:  # filepath does not match
-                logger.debug("nope. caught error: \n>>>{}".format(s_err))
+                logger.trace("nope. caught error: \n>>>{}".format(s_err))
                 product_type_name = None
         else:
             logger.warning("could not match filepath to any known patterns.")
@@ -108,16 +108,16 @@ def _parse_from_product_type_and_filename(
         __name__,
 
     ))
-    logger.debug("parsing as {}".format(pattern_name))
+    logger.info("attempt parse as {}...".format(pattern_name))
     filename = filepath
     # switch to basepath if path info not part of pattern
-    logger.debug('fname: \n\t{}'.format(filename))
-    logger.debug('pattern: \n\t{}'.format(pattern))
+    # logger.trace('fname: \n\t{}'.format(filename))
+    # logger.trace('pattern: \n\t{}'.format(pattern))
     if "/" in filename and "/" not in pattern:
         filename = os.path.basename(filename)
 
     # logger.debug('trying pattern "{}"'.format(pattern))
-    logger.debug("\n{}\n\t=?=\n{}".format(filename, pattern))
+    logger.trace("\n{}\n\t=?=\n{}".format(filename, pattern))
     # logger.debug('args:\n{}'.format(args))
 
     path_fmt_str = _replace_strftime_dirs(pattern)

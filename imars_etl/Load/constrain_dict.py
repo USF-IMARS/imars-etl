@@ -25,7 +25,7 @@ def relation(
         if raise_cannot_constrain:
             raise AssertionError("all inputs not in da dict mon")
         else:
-            logger.debug(
+            logger.trace(
                 "skipping constraint on {}. missing 1+ of keys {}".format(
                     outkey, inkeys
                 )

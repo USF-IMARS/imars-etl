@@ -18,7 +18,7 @@ def unify_metadata(**kwargs):
         __name__,
         )
     )
-    logger.debug('input metadata:\n{}\n'.format(kwargs))
+    logger.trace('input metadata:\n{}\n'.format(kwargs))
 
     # logger.debug("constrain input meta...")
     kwargs = ensure_constistent_metadata(kwargs)
