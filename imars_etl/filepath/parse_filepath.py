@@ -83,6 +83,64 @@ def _replace_strftime_dirs(in_string):
     return in_string
 
 
+def _parse_multidirective(
+    input_str, fmt_str, directive, prefix="0"
+):
+    logger = logging.getLogger("imars_etl.{}".format(
+        __name__,
+        )
+    )
+    logger.setLevel(5)
+    this_d_str = "{{n{}_{}".format(prefix, _STRFTIME_MAP[directive][1:])
+    this_d_key = this_d_str.split('{')[1].split(":")[0]
+    this_d_fmt = this_d_str.split('}')[0].split(":")[1]
+    logger.trace("parsing dt '{}'...".format(this_d_str))
+    new_fmt_str = fmt_str.replace(
+        directive,
+        this_d_str,
+        1
+    )
+    if new_fmt_str.count(directive) > 0:
+        next_prefix = int(prefix)+1
+        return _parse_multidirective(
+            input_str, new_fmt_str, directive, prefix=next_prefix
+        )
+    else:
+        logger.trace(
+            "parse strings:\n\t{}\n\t{}".format(new_fmt_str, input_str)
+        )
+        parsed_params = parse(new_fmt_str, input_str)
+        # TODO: assert that all parsed_params are equal
+        logger.trace(parsed_params)
+        read_value = parsed_params[this_d_key]
+        new_str = fmt_str.replace(
+            directive, ('{:' + this_d_fmt + '}').format(int(read_value))
+        )
+    return read_value, new_str
+
+
+def _strptime_safe(input_str, fmt_str):
+    """
+    Wraps strptime to handle duplicate datetime directives.
+    eg: "error: redefinition of group name..."
+    """
+    fmt_str.replace("\%", "_P_")
+    directives = [str[0] for str in fmt_str.split('%')[1:]]
+    for dir in _STRFTIME_MAP.keys():
+        dir = dir[1:]
+        d_count = directives.count(dir)
+        if d_count > 1:  # if duplicate
+            read_value, new_str = _parse_multidirective(
+                input_str, fmt_str, directive="%{}".format(dir)
+            )
+            fmt_str = fmt_str.replace(
+                "%{}".format(dir),
+                str(read_value),
+                d_count - 1
+            )
+    return datetime.strptime(input_str, fmt_str)
+
+
 def _strptime_parsed_pattern(input_str, format_str, params):
     """
     Extracts datetime from given input_str matching given format_str.
@@ -97,7 +155,7 @@ def _strptime_parsed_pattern(input_str, format_str, params):
     """
     # fill fmt string with all parameters (except strptime dirs)
     filled_fmt_str = format_str.format(**params)
-    return datetime.strptime(input_str, filled_fmt_str)
+    return _strptime_safe(input_str, filled_fmt_str)
 
 
 def _parse_from_product_type_and_filename(
