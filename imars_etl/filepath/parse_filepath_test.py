@@ -8,9 +8,26 @@ from datetime import datetime
 # dependencies:
 from imars_etl.filepath.parse_filepath import parse_filepath
 from imars_etl.filepath.parse_filepath import _strptime_parsed_pattern
+from imars_etl.filepath.parse_filepath import _parse_multidirective
 from imars_etl.cli import parse_args
 # TODO: mock MetadataDBHandler (using formatter_hardcoded)?:
 from imars_etl.metadata_db.MetadataDBHandler import MetadataDBHandler
+
+
+class Test_parse_multidirective(TestCase):
+    def test_multidirective_wv2(self):
+        fmtstr = (
+            "/srv/imars-objects/extra_data/WV02/2013.01/"
+            "WV02_%Y%m%d%H%M%S_0000000000000000_%y%b%d%H%M%S"
+            "-M1BS-059048321010_01_P001.xml"
+        )
+        inpstr = (
+            "/srv/imars-objects/extra_data/WV02/2013.01/"
+            "WV02_20130123163628_0000000000000000_13Jan23163628-"
+            "M1BS-059048321010_01_P001.xml"
+        )
+        read_value, new_str = _parse_multidirective(inpstr, fmtstr, "%M")
+        self.assertEqual(read_value, 36)
 
 
 class Test__strptime_parsed_pattern(TestCase):
