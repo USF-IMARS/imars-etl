@@ -14,6 +14,7 @@ BASIC_METADATA_RELATION_CONSTRAINTS = [
         'product_type_name', ['product_id'],
         lambda p_id: id_lookup(p_id, 'product')
     ),
+    ('product_short_name', ['product_type_name'], lambda ptn: ptn),
     (
         'product_id', ['product_type_name'],
         lambda p_name: id_lookup(p_name, 'product')

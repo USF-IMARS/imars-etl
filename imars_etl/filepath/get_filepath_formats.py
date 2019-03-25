@@ -101,7 +101,7 @@ def get_filepath_formats(
                 int(product_id)
             )
             n_clauses += 1
-    res = metadb_handle.get_records(
+    result = metadb_handle.get_records(
         sql="""
         SELECT product.short_name,path_format.short_name,params,format_string
         FROM product_formats
@@ -114,13 +114,21 @@ def get_filepath_formats(
         """.format(where_clause),
         first=first, check_result=check_result
     )
+    # if first:
+    #     result = [result]
+    logger.error(result)
+    if len(result) > 0 and len(result[0]) != 4:
+        raise AssertionError("misshapen results!?!")
     res_dict = {}
-    for (prod_name, path_name, params, fmt_str) in res:
+    for res in result:
+        logger.trace("(prod_name, path_name, params, fmt_str)={}".format(res))
+        (prod_name, path_name, params, fmt_str) = res
         # NOTE: path_name AKA ingest_key
         res_dict["{}.{}".format(prod_name, path_name)] = _prefill_fmt_str(
             fmt_str,
             params
         )
+
     # if Logger.isEnabledFor(logging.INFO):
     logger.debug("matching formats:\n{}".format(
         pformat(list(res_dict.keys())), width=1, indent=2)

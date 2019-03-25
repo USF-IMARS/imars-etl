@@ -8,6 +8,7 @@ import os
 from parse import parse
 
 from imars_etl.filepath.get_filepath_formats import get_filepath_formats
+from imars_etl.filepath.parse_to_fmt_sanitize import parse_to_fmt_sanitize
 
 
 def parse_filepath(
@@ -177,9 +178,7 @@ def _strptime_parsed_pattern(input_str, format_str, params):
     input_str : str
         same raw input string as passed to parse()
     """
-    # rm format specs supported by parse() but not format()
-    #   avoids "ValueError: Unknown format code ... for object of type..."
-    format_str = format_str.replace(":w}", "}")
+    format_str = parse_to_fmt_sanitize(format_str)
     # fill fmt string with all parameters (except strptime dirs)
     filled_fmt_str = format_str.format(**params)
     return _strptime_safe(input_str, filled_fmt_str)
