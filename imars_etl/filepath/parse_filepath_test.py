@@ -155,7 +155,7 @@ class Test_parse_filepath(TestCase):
             '--dry_run',
             '--nohash',
             '--load_format',
-            '{area_short_name}/{product_short_name}/WV02_%Y%m%d%H%M%S'
+            '{area_short_name:w}/{product_short_name:w}/WV02_%Y%m%d%H%M%S'
             '_000_%y%b%d%H%M%S-M1BS-{idNumber}_P{passNumber}.xml',
             '/srv/imars-objects/gom/wv_test_prod/WV02_20130123163628_'
             '000_13Jan23163628-M1BS-059048321010_01_P001.xml',
@@ -170,5 +170,5 @@ class Test_parse_filepath(TestCase):
         )
         self.assertEqual(res_args['area_short_name'], "gom")
         self.assertEqual(res_args['product_short_name'], "wv_test_prod")
-        self.assertEqual(res_args['idNumber'], "059048321010")
+        self.assertEqual(res_args['idNumber'], "059048321010_01")
         self.assertEqual(res_args['passNumber'], "001")

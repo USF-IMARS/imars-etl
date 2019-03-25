@@ -176,6 +176,9 @@ def _strptime_parsed_pattern(input_str, format_str, params):
     input_str : str
         same raw input string as passed to parse()
     """
+    # rm format specs supported by parse() but not format()
+    #   avoids "ValueError: Unknown format code ... for object of type..."
+    format_str = format_str.replace(":w}", "}")
     # fill fmt string with all parameters (except strptime dirs)
     filled_fmt_str = format_str.format(**params)
     return _strptime_safe(input_str, filled_fmt_str)
@@ -205,8 +208,14 @@ def _parse_from_product_type_and_filename(
     # switch to basepath if path info not part of pattern
     # logger.trace('fname: \n\t{}'.format(filename))
     # logger.trace('pattern: \n\t{}'.format(pattern))
-    if "/" in filename and "/" not in pattern:
-        filename = os.path.basename(filename)
+    if "/" in filename:
+        if "/" not in pattern:
+            filename = os.path.basename(filename)
+        elif pattern.startswith("/"):
+            assert filename.startswith("/")  # must use absolute path
+        else:
+            # prepend variable to capture path
+            pattern = "/{working_dir}/" + pattern
 
     # logger.debug('trying pattern "{}"'.format(pattern))
     logger.trace("\n{}\n\t=?=\n{}".format(filename, pattern))
