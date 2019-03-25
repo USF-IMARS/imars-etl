@@ -147,3 +147,28 @@ class Test_parse_filepath(TestCase):
         )
         self.assertEqual(res_args['date_time'], datetime(2022, 5, 3, 7, 0, 11))
         self.assertEqual(res_args['test_arg'], "testyTestArg")
+
+    def test_parse_abs_path(self):
+        test_args = parse_args([
+            # '-vvv',
+            'load',
+            '--dry_run',
+            '--nohash',
+            '--load_format',
+            '{area_short_name}/{product_short_name}/WV02_%Y%m%d%H%M%S'
+            '_000_%y%b%d%H%M%S-M1BS-{idNumber}_P{passNumber}.xml',
+            '/srv/imars-objects/gom/wv_test_prod/WV02_20130123163628_'
+            '000_13Jan23163628-M1BS-059048321010_01_P001.xml',
+        ])
+        res_args = parse_filepath(
+            MetadataDBHandler(dry_run=True),
+            testing=True,
+            **vars(test_args)
+        )
+        self.assertEqual(
+            res_args['date_time'], datetime(2013, 1, 23, 16, 36, 28)
+        )
+        self.assertEqual(res_args['area_short_name'], "gom")
+        self.assertEqual(res_args['product_short_name'], "wv_test_prod")
+        self.assertEqual(res_args['idNumber'], "059048321010")
+        self.assertEqual(res_args['passNumber'], "001")
