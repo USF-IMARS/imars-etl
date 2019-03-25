@@ -25,13 +25,23 @@ class Test__strptime_parsed_pattern(TestCase):
             )
         )
 
-    def test_strptime_with_duplicate_directive(TestCase):
+    def test_strptime_with_duplicate_directive(self):
         """strptime wrapper handles duplicate datetime directive"""
-        _strptime_parsed_pattern(
+        dt = _strptime_parsed_pattern(
             input_str="test_11_test2_11",
             format_str="test_%d_test2_%d",
             params={}
         )
+        self.assertEqual(dt, datetime.strptime('11', '%d'))
+
+    def test_strptime_with_duplicate_directive_conflict(self):
+        """strptime wrapper raises on conflicting duplicate directives"""
+        with self.assertRaises(ValueError):
+            _strptime_parsed_pattern(
+                input_str="test_11_test2_22",
+                format_str="test_%d_test2_%d",
+                params={}
+            )
 
 
 class Test_parse_filepath(TestCase):

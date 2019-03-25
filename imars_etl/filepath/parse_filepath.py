@@ -90,7 +90,6 @@ def _parse_multidirective(
         __name__,
         )
     )
-    logger.setLevel(5)
     this_d_str = "{{n{}_{}".format(prefix, _STRFTIME_MAP[directive][1:])
     this_d_key = this_d_str.split('{')[1].split(":")[0]
     this_d_fmt = this_d_str.split('}')[0].split(":")[1]
@@ -124,12 +123,20 @@ def _strptime_safe(input_str, fmt_str):
     Wraps strptime to handle duplicate datetime directives.
     eg: "error: redefinition of group name..."
     """
+    logger = logging.getLogger("imars_etl.{}".format(
+        __name__,
+        )
+    )
     fmt_str.replace("\%", "_P_")
     directives = [str[0] for str in fmt_str.split('%')[1:]]
     for dir in _STRFTIME_MAP.keys():
         dir = dir[1:]
         d_count = directives.count(dir)
         if d_count > 1:  # if duplicate
+            logger.info(
+                "Duplicate strptime directive detected."
+                "Assuming all values equal; will throw ValueError if not."
+            )
             read_value, new_str = _parse_multidirective(
                 input_str, fmt_str, directive="%{}".format(dir)
             )
