@@ -20,7 +20,7 @@ LOAD_DEFAULTS = {  # defaults here instead of fn def for cli argparse usage
 
 VALID_FILE_TABLE_COLNAMES = [  # TODO: get this from db
     'filepath', 'date_time', 'product_id', 'is_day_pass',
-    'area_id', 'status_id', 'uuid', 'multihash'
+    'area_id', 'status_id', 'uuid', 'multihash', 'provenance'
 ]
 
 
