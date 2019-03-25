@@ -85,6 +85,7 @@ def _replace_strftime_dirs(in_string):
 
 def _strptime_parsed_pattern(input_str, format_str, params):
     """
+    Extracts datetime from given input_str matching given format_str.
     Parameters
     ----------
     params : dict

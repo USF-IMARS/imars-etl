@@ -25,6 +25,14 @@ class Test__strptime_parsed_pattern(TestCase):
             )
         )
 
+    def test_strptime_with_duplicate_directive(TestCase):
+        """strptime wrapper handles duplicate datetime directive"""
+        _strptime_parsed_pattern(
+            input_str="test_1_test2_11",
+            format_str="test_%d_test2_%d",
+            params={}
+        )
+
 
 class Test_parse_filepath(TestCase):
 
