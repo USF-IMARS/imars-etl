@@ -78,6 +78,16 @@ class MyLogger(getLoggerClass()):
 setLoggerClass(MyLogger)
 
 
+def run_once(f):
+    def wrapper(*args, **kwargs):
+        if not wrapper.has_run:
+            wrapper.has_run = True
+            return f(*args, **kwargs)
+    wrapper.has_run = False
+    return wrapper
+
+
+@run_once
 def config_logger(verbosity=0):
     # =========================================================================
     # === set up logging behavior

@@ -9,5 +9,5 @@ from imars_etl.id_lookup import id_lookup  # noqa F401
 from imars_etl.select import select  # noqa F401
 from imars_etl.find import find  # noqa F401
 
-# from imars_etl.cli import config_logger
-# config_logger()  # TODO: figure out how to do this w/o duplicating
+from imars_etl.cli import config_logger
+config_logger()

@@ -35,6 +35,7 @@ def _id_lookup(
     table=None,
     first=False,
     metadata_conn_id=DEFAULT_METADATA_DB_CONN_ID,
+    **kwargs
 ):
     assert value is not None
     assert table is not None
