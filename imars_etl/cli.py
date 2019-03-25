@@ -3,6 +3,7 @@ Define CLI interface using argparse.
 
 """
 import logging
+from logging import getLoggerClass, addLevelName, setLoggerClass, NOTSET
 from argparse import ArgumentParser
 
 import imars_etl
@@ -25,6 +26,23 @@ from imars_etl.extract import EXTRACT_DEFAULTS
 
 def main(argvs):
     args = parse_args(argvs)
+    config_logger(args.verbose)
+
+    logger = logging.getLogger("imars_etl.{}".format(
+        __name__,
+    ))
+    HELLO = '=== IMaRS Extract-Transform-Load Tool v{} ==='.format(
+        imars_etl.__version__
+    )
+    logger.info(HELLO)
+    logger.info('=' * len(HELLO))
+    # # log test:
+    # logger.critical('c')
+    # logger.warn('w')
+    # logger.info('i')
+    # logger.debug('d')
+    # logger.trace('t')
+    # exit()
     if args.version:
         print("v{}".format(imars_etl.__version__))
         exit()
@@ -44,18 +62,33 @@ def main(argvs):
     return result
 
 
+TRACE = 5
+
+
+class MyLogger(getLoggerClass()):
+    def __init__(self, name, level=NOTSET):
+        super().__init__(name, level)
+
+        addLevelName(TRACE, "TRACE")
+
+    def trace(self, msg, *args, **kwargs):
+        if self.isEnabledFor(TRACE):
+            self._log(TRACE, msg, args, **kwargs)
+
+setLoggerClass(MyLogger)
+
+
 def config_logger(verbosity=0):
     # =========================================================================
     # === set up logging behavior
     # =========================================================================
     if (verbosity == 0):
-        lvl_console = logging.ERROR
-    elif (verbosity == 1):
         lvl_console = logging.INFO
-        # stream_handler.setLevel(logging.INFO)
-        # file_handler.setLevel(logging.DEBUG)
-    else:  # } (args.verbose == 2){
+    elif (verbosity == 1):
         lvl_console = logging.DEBUG
+    else:
+        assert verbosity >= 2
+        lvl_console = TRACE
         # stream_handler.setLevel(logging.DEBUG)
         # file_handler.setLevel(logging.DEBUG)
     # set up console root logger
@@ -327,5 +360,4 @@ def parse_args(argvs):
                 "\n\n\tSubcommand is required. See help above."
             )
     # =========================================================================
-    config_logger(args.verbose)
     return args

@@ -8,6 +8,7 @@ import os
 from parse import parse
 
 from imars_etl.filepath.get_filepath_formats import get_filepath_formats
+from imars_etl.filepath.parse_to_fmt_sanitize import parse_to_fmt_sanitize
 
 
 def parse_filepath(
@@ -15,6 +16,7 @@ def parse_filepath(
     load_format=None,
     filepath=None,
     product_type_name=None,
+    product_id=None,
     ingest_key=None,
     testing=False,
     **kwargs
@@ -29,6 +31,13 @@ def parse_filepath(
         __name__,
         )
     )
+    logger.trace((
+        "parse_filepath(\n\tfmt={},\n\tfpath={},\n\tpname={},\n\ting_k={},"
+        "\n\tpid={}\n)"
+        ).format(
+            load_format, filepath, product_type_name, ingest_key, product_id
+        )
+    )
     args_dict = {}
     if (load_format is not None):
         args_parsed = _parse_from_product_type_and_filename(
@@ -40,7 +49,9 @@ def parse_filepath(
         )
     else:  # try all patterns (limiting by product name & ingest key if given)
         for pattern_name, pattern in get_filepath_formats(
-            metadb_handle, short_name=product_type_name, ingest_name=ingest_key
+            metadb_handle, short_name=product_type_name,
+            ingest_name=ingest_key,
+            product_id=product_id
         ).items():
             try:
                 product_type_name = pattern_name.split(".")[0]
@@ -53,7 +64,7 @@ def parse_filepath(
                 )
                 break
             except SyntaxError as s_err:  # filepath does not match
-                logger.debug("nope. caught error: \n>>>{}".format(s_err))
+                logger.trace("nope. caught error: \n>>>{}".format(s_err))
                 product_type_name = None
         else:
             logger.warning("could not match filepath to any known patterns.")
@@ -73,8 +84,91 @@ def _replace_strftime_dirs(in_string):
     return in_string
 
 
+def _parse_multidirective(
+    input_str, fmt_str, directive
+):
+    logger = logging.getLogger("imars_etl.{}".format(
+        __name__,
+        )
+    )
+    logger.setLevel(5)
+    n_duplicates = fmt_str.count(directive) - 1
+
+    this_d_key = _STRFTIME_MAP[directive].split(
+        ":"
+    )[0].replace('{', '').replace('}', '')
+
+    this_d_fmt = _STRFTIME_MAP[directive].split("}")[0].split(":")
+    if len(this_d_fmt) == 2:
+        this_d_fmt = this_d_fmt[1]
+    else:
+        this_d_fmt = ""
+
+    logger.trace("parsing {}-duplicated dt '{}'...".format(
+        n_duplicates, this_d_key
+    ))
+    dedirred_new_fmt_str = _replace_strftime_dirs(fmt_str)
+    logger.trace(
+        "parse '{}' from strings:\n\t{}\n\t{}".format(
+            directive,
+            dedirred_new_fmt_str, input_str
+        )
+    )
+    parsed_params = parse(dedirred_new_fmt_str, input_str)
+    # assert that all parsed_params are equal
+    if parsed_params is None:
+        raise ValueError(
+            "Failed to parse filepath with multiple strptime directives. "
+            "Possible conflicting values found for same directive."
+        )
+    logger.trace(parsed_params)
+    read_value = parsed_params[this_d_key]
+
+    new_str = fmt_str.replace(  # fill all values except last one
+        directive,
+        ('{:' + this_d_fmt + '}').format(int(read_value)),
+        n_duplicates
+    )
+    return read_value, new_str
+
+
+def _strptime_safe(input_str, fmt_str):
+    """
+    Wraps strptime to handle duplicate datetime directives.
+    eg: "error: redefinition of group name..."
+    """
+    logger = logging.getLogger("imars_etl.{}".format(
+        __name__,
+        )
+    )
+    # TODO: do we need to handle escapes:
+    # fmt_str = fmt_str.replace("\%", "_P_")
+    # fmt_str = fmt_str.replace("%%", "_PP_")
+    directives = [str[0] for str in fmt_str.split('%')[1:]]
+    new_str = fmt_str
+    for dir, d_fmt in _STRFTIME_MAP.items():
+        d_varname = d_fmt[1:].split("}")[0].split(":")[0]
+        dir = dir[1:]
+        d_count = directives.count(dir)
+        if d_count > 1:  # if duplicate
+            logger.info(
+                "Duplicate strptime directive detected."
+                "Assuming all values equal; will throw ValueError if not."
+            )
+            read_value, new_str = _parse_multidirective(
+                input_str, fmt_str, directive="%{}".format(dir)
+            )
+            fmt_str = fmt_str.replace(
+                "%{}".format(dir),
+                d_fmt.format(**{d_varname: read_value}),
+                d_count - 1
+            )
+    return datetime.strptime(input_str, fmt_str)
+
+
 def _strptime_parsed_pattern(input_str, format_str, params):
     """
+    Extracts datetime from given input_str matching given format_str.
     Parameters
     ----------
     params : dict
@@ -84,9 +178,10 @@ def _strptime_parsed_pattern(input_str, format_str, params):
     input_str : str
         same raw input string as passed to parse()
     """
+    format_str = parse_to_fmt_sanitize(format_str)
     # fill fmt string with all parameters (except strptime dirs)
     filled_fmt_str = format_str.format(**params)
-    return datetime.strptime(input_str, filled_fmt_str)
+    return _strptime_safe(input_str, filled_fmt_str)
 
 
 def _parse_from_product_type_and_filename(
@@ -108,16 +203,22 @@ def _parse_from_product_type_and_filename(
         __name__,
 
     ))
-    logger.debug("parsing as {}".format(pattern_name))
+    logger.info("attempt parse as {}...".format(pattern_name))
     filename = filepath
     # switch to basepath if path info not part of pattern
-    logger.debug('fname: \n\t{}'.format(filename))
-    logger.debug('pattern: \n\t{}'.format(pattern))
-    if "/" in filename and "/" not in pattern:
-        filename = os.path.basename(filename)
+    # logger.trace('fname: \n\t{}'.format(filename))
+    # logger.trace('pattern: \n\t{}'.format(pattern))
+    if "/" in filename:
+        if "/" not in pattern:
+            filename = os.path.basename(filename)
+        elif pattern.startswith("/"):
+            assert filename.startswith("/")  # must use absolute path
+        else:
+            # prepend variable to capture path
+            pattern = "/{working_dir}/" + pattern
 
     # logger.debug('trying pattern "{}"'.format(pattern))
-    logger.debug("\n{}\n\t=?=\n{}".format(filename, pattern))
+    logger.trace("\n{}\n\t=?=\n{}".format(filename, pattern))
     # logger.debug('args:\n{}'.format(args))
 
     path_fmt_str = _replace_strftime_dirs(pattern)
@@ -168,41 +269,41 @@ _STRFTIME_MAP = {
     "%a": "{dt_a:3w}",  # Weekday as locale's abbreviated name.   |  Mon
     "%A": "{dt_A:w}day",  # Weekday as locale's full name.   |  Monday
     # Weekday as a decimal number, where 0 is Sunday and 6 is Saturday.   |  1
-    "%w": "{dt_w:1d}",
+    "%w": "{dt_w:01d}",
     # Day of the month as a zero-padded decimal number.   |  30
-    "%d": "{dt_d:2d}",
+    "%d": "{dt_d:02d}",
     # Day of the month as a decimal number. (Platform specific)   |  30
     "%-d": "{dt_dd:d}",
     "%b": "{dt_b:3w}",  # Month as locale's abbreviated name.   |  Sep
     "%B": "{dt_B:w}",  # Month as locale's full name.   |  September
-    "%m": "{dt_m:2d}",  # Month as a zero-padded decimal number.   |  09
+    "%m": "{dt_m:02d}",  # Month as a zero-padded decimal number.   |  09
     # Month as a decimal number. (Platform specific)   |  9
     "%-m": "{dt_mm:d}",
     # Year without century as a zero-padded decimal number.   |  13
-    "%y": "{dt_y:2d}",
-    "%Y": "{dt_Y:4d}",  # Year with century as a decimal number.   |  2013
+    "%y": "{dt_y:02d}",
+    "%Y": "{dt_Y:04d}",  # Year with century as a decimal number.   |  2013
     # Hour (24-hour clock) as a zero-padded decimal number.   |  07
-    "%H": "{dt_H:2d}",
+    "%H": "{dt_H:02d}",
     # Hour (24-hour clock) as a decimal number. (Platform specific)   |  7
     "%-H": "{dt_HH:d}",
     # Hour (12-hour clock) as a zero-padded decimal number.   |  07
-    "%I": "{dt_I:2d}",
+    "%I": "{dt_I:02d}",
     # Hour (12-hour clock) as a decimal number. (Platform specific)   |  7
     "%-I": "{dt_II:}",
     "%p": "{dt_p:2w}",  # Locale's equivalent of either AM or PM.   |  AM
-    "%M": "{dt_M:2d}",  # Minute as a zero-padded decimal number.   |  06
+    "%M": "{dt_M:02d}",  # Minute as a zero-padded decimal number.   |  06
     # Minute as a decimal number. (Platform specific)   |  6
     "%-M": "{dt_MM:d}",
-    "%S": "{dt_S:2d}",  # Second as a zero-padded decimal number.   |  05
+    "%S": "{dt_S:02d}",  # Second as a zero-padded decimal number.   |  05
     # Second as a decimal number. (Platform specific)   |  5
     "%-S": "{dt_SS:d}",
     # Microsecond as a decimal number, zero-padded on the left.   |  000000
-    "%f": "{dt_f:6d}",
+    "%f": "{dt_f:06d}",
     # UTC offset in the form +HHMM or -HHMM (empty string if object is naive).
     "%z": "{dt_z:4w}",
     "%Z": "{dt_Z:w}",  # Time zone name (empty string if the object is naive).
     # Day of the year as a zero-padded decimal number.   |  273
-    "%j": "{dt_j:3d}",
+    "%j": "{dt_j:03d}",
     # Day of the year as a decimal number. (Platform specific)   |  273
     "%-j": "{dt_jj:d}",
     # Week number of the year (Sunday as the first day of the week)
@@ -212,7 +313,7 @@ _STRFTIME_MAP = {
     # Week number of the year (Monday as the first day of the week)
     # as a decimal number. All days in a new year preceding the first
     # Monday are considered to be in week 0.   |  39
-    "%W": "{dt_W:2d}",
+    "%W": "{dt_W:02d}",
     # Locale's appropriate date and time representation.
     # |  Mon Sep 30 07:06:05 2013
     "%c": "{dt_c}",

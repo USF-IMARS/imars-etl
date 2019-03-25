@@ -1,5 +1,6 @@
 import json
 import logging
+from pprint import pformat
 
 from imars_etl.exceptions.InputValidationError import InputValidationError
 from imars_etl.Load.metadata_constraints import ensure_constistent_metadata
@@ -18,23 +19,10 @@ def unify_metadata(**kwargs):
         __name__,
         )
     )
-    logger.debug('input metadata:\n{}\n'.format(kwargs))
+    logger.trace('unify_metadata args:\n{}\n'.format(pformat(kwargs)))
 
     # logger.debug("constrain input meta...")
     kwargs = ensure_constistent_metadata(kwargs)
-    # === filepath metadata
-    # TODO: should be `kwargs.get('noparse', LOAD_DEFAULTS['noparse'])`
-    if (
-        kwargs.get('noparse', False) is False and
-        kwargs.get('filepath') is not None
-    ):
-        path_metadata = parse_filepath(
-            metadb_handle=MetadataDBHandler(**kwargs),
-            **kwargs
-        )
-        path_metadata = ensure_metadata_types(path_metadata)
-    else:
-        path_metadata = {}
 
     # === file metadata
     if kwargs.get('metadata_file') is not None:
@@ -70,8 +58,6 @@ def unify_metadata(**kwargs):
         logger.debug("kwargs['sql'] is None")
         sql_metadata = {}
 
-    logger.debug("constrain path meta...")
-    path_metadata = ensure_constistent_metadata(path_metadata)
     logger.debug("constrain file meta...")
     file_metadata = ensure_constistent_metadata(file_metadata)
     logger.debug("constrain json meta...")
@@ -81,11 +67,31 @@ def unify_metadata(**kwargs):
 
     final_meta = _union_dicts_raise_on_conflict(
         kwargs,
-        path_metadata,
         file_metadata,
         json_metadata,
         sql_metadata
     )
+
+    # === filepath metadata
+    # TODO: should be `kwargs.get('noparse', LOAD_DEFAULTS['noparse'])`
+    if (
+        kwargs.get('noparse', False) is False and
+        kwargs.get('filepath') is not None
+    ):
+        path_metadata = parse_filepath(
+            metadb_handle=MetadataDBHandler(**kwargs),
+            **final_meta
+        )
+        path_metadata = ensure_metadata_types(path_metadata)
+    else:
+        path_metadata = {}
+    logger.debug("constrain path meta...")
+    path_metadata = ensure_constistent_metadata(path_metadata)
+    final_meta = _union_dicts_raise_on_conflict(
+        final_meta,
+        path_metadata,
+    )
+
     final_meta = _rm_dict_none_values(final_meta)
 
     input_set = set(kwargs.items())

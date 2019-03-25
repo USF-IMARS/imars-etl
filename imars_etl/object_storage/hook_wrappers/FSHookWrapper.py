@@ -14,6 +14,7 @@ from imars_etl.object_storage.hook_wrappers.BaseHookWrapper \
     import BaseHookWrapper
 from imars_etl.filepath.get_filepath_formats \
     import get_filepath_formats
+from imars_etl.filepath.parse_to_fmt_sanitize import parse_to_fmt_sanitize
 
 
 class FSHookWrapper(BaseHookWrapper):
@@ -26,8 +27,8 @@ class FSHookWrapper(BaseHookWrapper):
     def load(self, filepath, dry_run=False, **kwargs):
         logger = logging.getLogger("imars_etl.{}".format(
             __name__,
-            )
-        )
+        ))
+        logger.trace("load()")
         # logger.debug('_load(args)| args=\n\t{}'.format(args))
         ul_target = self.format_filepath(
             filepath=filepath, dry_run=dry_run, **kwargs
@@ -78,7 +79,7 @@ class FSHookWrapper(BaseHookWrapper):
             __name__,
             )
         )
-
+        logger.trace('fmt_fpath()')
         # get the format with the highest priority rank
         format_key, fullpath = get_filepath_formats(
             metadata_db_handle,
@@ -89,8 +90,10 @@ class FSHookWrapper(BaseHookWrapper):
             first=True
         ).popitem()
         if forced_basename is not None:  # for testing only
+            logger.trace('forcing basename="{}"'.format(forced_basename))
             fullpath = os.path.join(forced_basename, fullpath)
         else:
+            logger.trace('hook path "{}"'.format(self.hook.get_path()))
             fullpath = os.path.join(self.hook.get_path(), fullpath)
         # fullpath = get_product_filepath_template(
         #     product_type_name=kwargs.get("product_type_name"),
@@ -100,6 +103,7 @@ class FSHookWrapper(BaseHookWrapper):
         # fullpath = os.path.join(self.hook.get_path(), fullpath)
 
         logger.info("formatting FS path \n>>'{}'".format(fullpath))
+        fullpath = parse_to_fmt_sanitize(fullpath)
         try:
             return date_time.strftime(
                 (fullpath).format(**args_dict)

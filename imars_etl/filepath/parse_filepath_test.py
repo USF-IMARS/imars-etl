@@ -8,9 +8,42 @@ from datetime import datetime
 # dependencies:
 from imars_etl.filepath.parse_filepath import parse_filepath
 from imars_etl.filepath.parse_filepath import _strptime_parsed_pattern
+from imars_etl.filepath.parse_filepath import _parse_multidirective
+from imars_etl.filepath.parse_filepath import _strptime_safe
 from imars_etl.cli import parse_args
 # TODO: mock MetadataDBHandler (using formatter_hardcoded)?:
 from imars_etl.metadata_db.MetadataDBHandler import MetadataDBHandler
+
+
+class Test_parse_multidirective(TestCase):
+    def test_multidirective_wv2(self):
+        fmtstr = (
+            "/srv/imars-objects/extra_data/WV02/2013.01/"
+            "WV02_%Y%m%d%H%M%S_0000000000000000_%y%b%d%H%M%S"
+            "-M1BS-059048321010_01_P001.xml"
+        )
+        inpstr = (
+            "/srv/imars-objects/extra_data/WV02/2013.01/"
+            "WV02_20130123163628_0000000000000000_13Jan23163628-"
+            "M1BS-059048321010_01_P001.xml"
+        )
+        read_value, new_str = _parse_multidirective(inpstr, fmtstr, "%M")
+        self.assertEqual(read_value, 36)
+
+
+class Test_strptime_safe(TestCase):
+    def test_multidirective_zfill(self):
+        fmtstr = (
+            "/%Y.%m/WV02_%Y%m_000_%y%d%H%M%S.xml"
+        )
+        inpstr = (
+            "/2013.01/WV02_201301_000_1323163628.xml"
+        )
+
+        self.assertEqual(
+            _strptime_safe(inpstr, fmtstr),
+            datetime(2013, 1, 23, 16, 36, 28)
+        )
 
 
 class Test__strptime_parsed_pattern(TestCase):
@@ -24,6 +57,24 @@ class Test__strptime_parsed_pattern(TestCase):
                 order_id=int("058438305")
             )
         )
+
+    def test_strptime_with_duplicate_directive(self):
+        """strptime wrapper handles duplicate datetime directive"""
+        dt = _strptime_parsed_pattern(
+            input_str="test_11_test2_11",
+            format_str="test_%d_test2_%d",
+            params={}
+        )
+        self.assertEqual(dt, datetime.strptime('11', '%d'))
+
+    def test_strptime_with_duplicate_directive_conflict(self):
+        """strptime wrapper raises on conflicting duplicate directives"""
+        with self.assertRaises(ValueError):
+            _strptime_parsed_pattern(
+                input_str="test_11_test2_22",
+                format_str="test_%d_test2_%d",
+                params={}
+            )
 
 
 class Test_parse_filepath(TestCase):
@@ -112,3 +163,28 @@ class Test_parse_filepath(TestCase):
         )
         self.assertEqual(res_args['date_time'], datetime(2022, 5, 3, 7, 0, 11))
         self.assertEqual(res_args['test_arg'], "testyTestArg")
+
+    def test_parse_abs_path(self):
+        test_args = parse_args([
+            # '-vvv',
+            'load',
+            '--dry_run',
+            '--nohash',
+            '--load_format',
+            '{area_short_name:w}/{product_short_name:w}/WV02_%Y%m%d%H%M%S'
+            '_000_%y%b%d%H%M%S-M1BS-{idNumber}_P{passNumber}.xml',
+            '/srv/imars-objects/gom/wv_test_prod/WV02_20130123163628_'
+            '000_13Jan23163628-M1BS-059048321010_01_P001.xml',
+        ])
+        res_args = parse_filepath(
+            MetadataDBHandler(dry_run=True),
+            testing=True,
+            **vars(test_args)
+        )
+        self.assertEqual(
+            res_args['date_time'], datetime(2013, 1, 23, 16, 36, 28)
+        )
+        self.assertEqual(res_args['area_short_name'], "gom")
+        self.assertEqual(res_args['product_short_name'], "wv_test_prod")
+        self.assertEqual(res_args['idNumber'], "059048321010_01")
+        self.assertEqual(res_args['passNumber'], "001")

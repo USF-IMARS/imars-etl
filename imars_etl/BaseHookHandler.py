@@ -89,6 +89,18 @@ class BaseHookHandler(object):
                                 err_msg += "\n\t\t{}( {} ):\n\t\t\t{}".format(
                                     wrapper, hook, wr_exc
                                 )
+                                # logger.error(err_msg)
+                                # import pdb; pdb.set_trace()
+
+                                # BR = "\n" + "X"*80
+                                # logger.trace(
+                                #     "{}( {} ) Trace:".format(wrapper, hook) +
+                                #     BR
+                                # )
+                                # logger.trace(
+                                #     traceback.print_stack()
+                                # )
+                                # logger.trace(BR)
                                 continue
         else:
             logger.debug("\n\t   hooks:{}\n\twrappers:{}".format(
