@@ -1,6 +1,12 @@
+# 0.8.1 - 0.8.5
+* various fixes to make 0.8.0 usable. 0.8.0-0.8.5 completely broken.
+
+# 0.8.0
+* change using metadata db for filepath info (#33)
+
 # 0.7.2
 * bugfix: duplicate hashes now properly ignored if `--duplicates_ok`
-* s3 pids 48-50 added to data.py 
+* s3 pids 48-50 added to data.py
 
 # 0.7.1
 * date_time strings with timezone shift suffix in form +00:00 now handled
