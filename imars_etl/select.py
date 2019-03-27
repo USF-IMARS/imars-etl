@@ -10,6 +10,7 @@ def select(
     post_where='',
     first=False,
     metadata_conn_id=DEFAULT_METADATA_DB_CONN_ID,
+    verbose=0,
 ):
     """
     Prints json-formatted metadata for first entry in given args.sql
@@ -26,7 +27,7 @@ def select(
         metadata from db
 
     """
-    config_logger()
+    config_logger(verbose)
     assert ';' not in sql  # lazy SQL injection check
     assert ';' not in cols
     assert ';' not in post_where

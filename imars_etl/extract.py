@@ -17,13 +17,14 @@ def extract(
     first=False,
     metadata_conn_id=DEFAULT_METADATA_DB_CONN_ID,
     object_store=DEFAULT_OBJ_STORE_CONN_ID,
+    verbose=0,
     **kwargs
 ):
     """
     Example usage:
     ./imars-etl.py -vvv extract 'area_id=1'
     """
-    config_logger()
+    config_logger(verbose)
     full_sql_str = "SELECT filepath FROM file WHERE {}".format(sql)
 
     metadata_db = MetadataDBHandler(

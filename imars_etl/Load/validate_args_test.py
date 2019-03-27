@@ -2,8 +2,11 @@
 """
 
 # std modules:
-from datetime import datetime
 from unittest import TestCase
+
+from imars_etl.config_logger import config_logger
+
+config_logger(1)
 
 
 class Test_validate_args(TestCase):
@@ -74,7 +77,6 @@ class Test_validate_args(TestCase):
         """
         from imars_etl.Load.Load import validate_args
         from imars_etl.cli import parse_args
-
         test_args = parse_args([
             '-vvv',
             'load',

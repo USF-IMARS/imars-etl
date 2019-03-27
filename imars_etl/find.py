@@ -9,6 +9,7 @@ from imars_etl.config_logger import config_logger
 
 def find(
     directory,
+    verbose=0,
     **kwargs
 ):
     """
@@ -22,7 +23,7 @@ def find(
     Example usage:
         imars_etl.find(  TODO  )
     """
-    config_logger()
+    config_logger(verbose)
     logger = logging.getLogger("{}.{}".format(
         __name__,
         sys._getframe().f_code.co_name)

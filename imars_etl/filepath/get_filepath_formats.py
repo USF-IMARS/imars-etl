@@ -3,9 +3,18 @@ import logging
 from pprint import pformat
 import re
 
+from imars_etl.filepath.parse_to_fmt_sanitize import parse_to_fmt_sanitize
+from imars_etl.filepath.parse_to_fmt_sanitize import restore_parse_fmts
+
 
 def _prefill_fmt_str(fmt_str, params):
+    logger = logging.getLogger("imars_etl.{}".format(
+        __name__,
+    ))
     param_dict = json.loads(params)  # parse prefill params
+    logger.trace("fmt_str  : {}".format(fmt_str))
+    fmt_str = parse_to_fmt_sanitize(fmt_str, preserve_parse_fmts=True)
+    logger.trace("sanitized: {}".format(fmt_str))
     # double up on braces
     fmt_str = fmt_str.replace("{", "{{").replace("}", "}}")
     # remove double braces for prefilled args
@@ -19,9 +28,13 @@ def _prefill_fmt_str(fmt_str, params):
             prefill_param_key + r"\1\2",
             fmt_str
         )
-    return fmt_str.format(
+    prefilled_str = fmt_str.format(
         **param_dict
     )
+    logger.trace("prefilled: {}".format(prefilled_str))
+    restored_str = restore_parse_fmts(prefilled_str)
+    logger.trace("restored : {}".format(restored_str))
+    return restored_str
 
 
 def _get_test_formats_dict():
