@@ -7,6 +7,7 @@ from imars_etl.Load.validate_args import validate_args
 from imars_etl.object_storage.ObjectStorageHandler \
     import DEFAULT_OBJ_STORE_CONN_ID
 from imars_etl.metadata_db.MetadataDBHandler import DEFAULT_METADATA_DB_CONN_ID
+from imars_etl.config_logger import config_logger
 
 LOAD_DEFAULTS = {  # defaults here instead of fn def for cli argparse usage
     'metadata_file_driver': get_metadata_driver_from_key('dhus_json'),
@@ -25,6 +26,7 @@ VALID_FILE_TABLE_COLNAMES = [  # TODO: get this from db
 
 
 def load(**kwargs):
+    config_logger()
     return _load(
         **validate_args(kwargs, DEFAULTS=LOAD_DEFAULTS)
     )

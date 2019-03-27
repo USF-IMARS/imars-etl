@@ -6,6 +6,7 @@ from imars_etl.filepath.formatter_hardcoded.get_product_id \
     import get_product_id
 from imars_etl.filepath.formatter_hardcoded.get_product_name \
     import get_product_name
+from imars_etl.config_logger import config_logger
 
 
 def id_lookup(
@@ -22,6 +23,7 @@ def id_lookup(
     --------------
     id_lookup(value=3, table='area')
     """
+    config_logger()
     if not testing:
         return _id_lookup(value=value, table=table, first=first, **kwargs)
     else:

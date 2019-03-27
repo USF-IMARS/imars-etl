@@ -1,6 +1,7 @@
 
 from imars_etl.metadata_db.MetadataDBHandler import MetadataDBHandler
 from imars_etl.metadata_db.MetadataDBHandler import DEFAULT_METADATA_DB_CONN_ID
+from imars_etl.config_logger import config_logger
 
 
 def select(
@@ -25,6 +26,7 @@ def select(
         metadata from db
 
     """
+    config_logger()
     assert ';' not in sql  # lazy SQL injection check
     assert ';' not in cols
     assert ';' not in post_where

@@ -116,7 +116,7 @@ def get_filepath_formats(
     )
     # if first:
     #     result = [result]
-    logger.error(result)
+    logger.debug(result)
     if len(result) > 0 and len(result[0]) != 4:
         raise AssertionError("misshapen results!?!")
     res_dict = {}
