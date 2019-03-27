@@ -1,3 +1,6 @@
+# 0.8.6
+* bugfix: CLI --verbose log config ignored
+
 # 0.8.1 - 0.8.5
 * various fixes to make 0.8.0 usable. 0.8.0-0.8.5 completely broken.
 
