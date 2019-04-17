@@ -1,5 +1,7 @@
 # 0.8.7
 * bugfix: duplicate hashes ignored (was not fixed in 0.7.2?)
+* bugfix: now supports format spec options (eg {myvar:1d}) in fmt strings
+* fix(?) weird logger discrepancies between CLI & API
 
 # 0.8.6
 * bugfix: CLI --verbose log config ignored
