@@ -13,7 +13,7 @@ def id_lookup(
     value=None,
     table=None,
     first=False,
-    testing=False, **kwargs
+    testing=False, verbose=0, **kwargs
 ):
     """
     Translates between numeric id numbers & short names for tables like
@@ -23,7 +23,7 @@ def id_lookup(
     --------------
     id_lookup(value=3, table='area')
     """
-    config_logger()
+    config_logger(verbose)
     if not testing:
         return _id_lookup(value=value, table=table, first=first, **kwargs)
     else:
