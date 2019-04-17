@@ -1,3 +1,6 @@
+# 0.8.7
+* bugfix: duplicate hashes ignored (was not fixed in 0.7.2?)
+
 # 0.8.6
 * bugfix: CLI --verbose log config ignored
 

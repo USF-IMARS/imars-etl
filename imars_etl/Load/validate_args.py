@@ -40,7 +40,7 @@ def validate_args(kwargs_dict, DEFAULTS={}):
         args_dict['metadata_db_handle']
     ) = _get_handles(**args_dict)
 
-    if args_dict.get('nohash', False) is False:
+    if not args_dict.get('nohash', False):
         logger.debug('ensuring hash in metadata...')
         args_dict = _ensure_constistent_metadata(
             args_dict,
@@ -49,7 +49,7 @@ def validate_args(kwargs_dict, DEFAULTS={}):
             ],
             raise_cannot_constrain=True
         )
-        if args_dict.get('duplicates_ok', False) is not False:
+        if not args_dict.get('duplicates_ok', False):
             hashcheck(**args_dict)
     else:
         logger.debug('skipping file hashing.')
