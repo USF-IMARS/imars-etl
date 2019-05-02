@@ -130,7 +130,7 @@ def get_filepath_formats(
             INNER JOIN product
                 ON product.id=product_formats.product_id
         {}
-        ORDER BY priority DESC;
+        ORDER BY priority DESC
         """.format(where_clause),
         first=first, check_result=check_result
     )
