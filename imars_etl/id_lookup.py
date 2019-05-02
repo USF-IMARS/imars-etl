@@ -1,3 +1,4 @@
+from functools import lru_cache
 
 from imars_etl.metadata_db.MetadataDBHandler import DEFAULT_METADATA_DB_CONN_ID
 from imars_etl.metadata_db.MetadataDBHandler import MetadataDBHandler
@@ -25,19 +26,19 @@ def id_lookup(
     """
     config_logger(verbose)
     if not testing:
-        return _id_lookup(value=value, table=table, first=first, **kwargs)
+        return _id_lookup(value=value, table=table, first=first)
     else:
         return _test_id_lookup(
             value=value, table=table, first=first, **kwargs
         )
 
 
+@lru_cache(maxsize=None)
 def _id_lookup(
     value=None,
     table=None,
     first=False,
     metadata_conn_id=DEFAULT_METADATA_DB_CONN_ID,
-    **kwargs
 ):
     assert value is not None
     assert table is not None

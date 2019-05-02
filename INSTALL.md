@@ -1,3 +1,7 @@
+# Requirements:
+1. python 3.2+
+    * for `functools.lru_cache`. It may be possible to use older py by installing `functools32`.
+
 # Installation steps (short version):
 1. non-pypi dependencies
     1. IPFS
