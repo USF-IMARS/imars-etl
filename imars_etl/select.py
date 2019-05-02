@@ -31,7 +31,7 @@ def select(
     assert ';' not in sql  # lazy SQL injection check
     assert ';' not in cols
     assert ';' not in post_where
-    sql_query = "SELECT {} FROM file WHERE {} {};".format(
+    sql_query = "SELECT {} FROM file WHERE {} {}".format(
         cols, sql, post_where
     )
     # logger.debug(sql_query)
