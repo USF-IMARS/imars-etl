@@ -1,3 +1,6 @@
+# 0.8.8
+* add `lru_cache`ing to reduce loads on metadata db
+
 # 0.8.7
 * bugfix: duplicate hashes ignored (was not fixed in 0.7.2?)
 * bugfix: now supports format spec options (eg {myvar:1d}) in fmt strings
