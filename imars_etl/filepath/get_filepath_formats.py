@@ -2,6 +2,7 @@ import json
 import logging
 from pprint import pformat
 import re
+from functools import lru_cache
 
 from imars_etl.filepath.parse_to_fmt_sanitize import parse_to_fmt_sanitize
 from imars_etl.filepath.parse_to_fmt_sanitize import restore_parse_fmts
@@ -67,6 +68,7 @@ def get_ingest_format(**kwargs):
     )
 
 
+@lru_cache(maxsize=None)
 def get_filepath_formats(
     metadb_handle,
     short_name=None, ingest_name=None, product_id=None,
