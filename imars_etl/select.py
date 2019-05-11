@@ -1,4 +1,3 @@
-
 from imars_etl.metadata_db.MetadataDBHandler import MetadataDBHandler
 from imars_etl.metadata_db.MetadataDBHandler import DEFAULT_METADATA_DB_CONN_ID
 from imars_etl.config_logger import config_logger
@@ -28,12 +27,27 @@ def select(
 
     """
     config_logger(verbose)
+
     assert ';' not in sql  # lazy SQL injection check
     assert ';' not in cols
     assert ';' not in post_where
-    sql_query = "SELECT {} FROM file WHERE {} {}".format(
-        cols, sql, post_where
-    )
+
+    # updated select() allows more direct usage of SQL:
+    V2_KEYWORDS = ['WHERE', 'LIMIT', 'GROUP BY', 'JOIN']
+    if any(k in sql.upper().split() for k in V2_KEYWORDS):
+        if post_where != '':
+            raise ValueError(
+                "Cannot use post_where when sql contains:\n\t{}".format(
+                    V2_KEYWORDS
+                )
+            )
+        sql_query = "SELECT {} FROM file {}".format(
+            cols, sql
+        )
+    else:  # fallback to old (v0.8.8) select() syntax
+        sql_query = "SELECT {} FROM file WHERE {} {}".format(
+            cols, sql, post_where
+        )
     # logger.debug(sql_query)
     metadata_db = MetadataDBHandler(
         metadata_db=metadata_conn_id,
