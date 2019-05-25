@@ -159,8 +159,7 @@ def validate_sql_result(result):
         # TODO: request more info from user?
         raise TooManyMetadataMatchesException(
             "Too many results found matching given metadata." +
-            "\n\tlen(result): {}".format(len(result)) +
-            "\n\tresult: {}".format(result)
+            "\n\tlen(result): {}".format(len(result))
         )
         # exit(EXIT_STATUS.MULTIPLE_MATCH)
     else:
