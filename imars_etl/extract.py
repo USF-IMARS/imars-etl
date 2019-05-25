@@ -48,6 +48,7 @@ def extract(
         sql=sql,
         output_path=output_path,
         first=first,
+        link=link,
         metadata_conn_id=metadata_conn_id,
         object_store=object_store,
         **kwargs
@@ -58,6 +59,7 @@ def extract(
         src_path,
         target_path=output_path,
         first=False,
+        link=link,
         **kwargs
     )
 
