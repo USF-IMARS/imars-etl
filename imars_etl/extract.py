@@ -18,6 +18,7 @@ def extract(
     metadata_conn_id=DEFAULT_METADATA_DB_CONN_ID,
     object_store=DEFAULT_OBJ_STORE_CONN_ID,
     verbose=0,
+    link=False,
     **kwargs
 ):
     """
@@ -39,6 +40,9 @@ def extract(
 
     if output_path is None:
         output_path = "./" + os.path.basename(src_path)
+
+    if link:
+        raise NotImplementedError("symlink creation NYI.")
 
     object_storage = ObjectStorageHandler(
         sql=sql,
