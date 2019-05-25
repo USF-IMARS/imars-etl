@@ -31,10 +31,29 @@ def extract(
     metadata_db = MetadataDBHandler(
         metadata_db=metadata_conn_id,
     )
-    result = metadata_db.get_records(
-        full_sql_str,
-        first=first,
-    )
+    try:
+        result = metadata_db.get_records(
+            full_sql_str,
+            first=first,
+        )
+    except TooManyMetadataMatchesException:
+        # === handle acceptable duplicate multihash entries (issue #41)
+        if first=True:  # shouldn't get here if first=True anyway
+            raise
+        multihash_sql = full_sql_str.replace(
+            "SELECT filepath FROM file ",
+            "SELECT multihash FROM file "
+        )
+        multihashes = metadata_db.get_records(
+            multihash_sql,
+            check_result=False
+        )
+        # if all list elements are equal
+        if multihashes.count(multihashes[0]) == len(multihashes):
+            result = metadata_db.get_records(
+                full_sql_str,
+                first=True,
+            )
 
     src_path = result[0]
 

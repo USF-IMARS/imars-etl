@@ -2,6 +2,7 @@
 * + boilerplate for `extract --link`
 * more `lru_cache` usage
 * `select` allows more SQL commands
+* now (theoretically) ignoring duplicate files when same multihashes (#41)
 
 # 0.8.8
 * add `lru_cache`ing to reduce loads on metadata db
