@@ -6,6 +6,8 @@ from imars_etl.object_storage.ObjectStorageHandler \
 from imars_etl.metadata_db.MetadataDBHandler import MetadataDBHandler
 from imars_etl.metadata_db.MetadataDBHandler import DEFAULT_METADATA_DB_CONN_ID
 from imars_etl.config_logger import config_logger
+from imars_etl.exceptions.TooManyMetadataMatchesException \
+    import TooManyMetadataMatchesException
 
 EXTRACT_DEFAULTS = {
 }
@@ -38,7 +40,7 @@ def extract(
         )
     except TooManyMetadataMatchesException:
         # === handle acceptable duplicate multihash entries (issue #41)
-        if first=True:  # shouldn't get here if first=True anyway
+        if first:  # shouldn't get here if first == True anyway
             raise
         multihash_sql = full_sql_str.replace(
             "SELECT filepath FROM file ",
