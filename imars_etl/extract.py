@@ -6,6 +6,8 @@ from imars_etl.object_storage.ObjectStorageHandler \
 from imars_etl.metadata_db.MetadataDBHandler import MetadataDBHandler
 from imars_etl.metadata_db.MetadataDBHandler import DEFAULT_METADATA_DB_CONN_ID
 from imars_etl.config_logger import config_logger
+from imars_etl.exceptions.TooManyMetadataMatchesException \
+    import TooManyMetadataMatchesException
 
 EXTRACT_DEFAULTS = {
 }
@@ -18,6 +20,7 @@ def extract(
     metadata_conn_id=DEFAULT_METADATA_DB_CONN_ID,
     object_store=DEFAULT_OBJ_STORE_CONN_ID,
     verbose=0,
+    link=False,
     **kwargs
 ):
     """
@@ -30,20 +33,43 @@ def extract(
     metadata_db = MetadataDBHandler(
         metadata_db=metadata_conn_id,
     )
-    result = metadata_db.get_records(
-        full_sql_str,
-        first=first,
-    )
+    try:
+        result = metadata_db.get_records(
+            full_sql_str,
+            first=first,
+        )
+    except TooManyMetadataMatchesException:
+        # === handle acceptable duplicate multihash entries (issue #41)
+        if first:  # shouldn't get here if first == True anyway
+            raise
+        multihash_sql = full_sql_str.replace(
+            "SELECT filepath FROM file ",
+            "SELECT multihash FROM file "
+        )
+        multihashes = metadata_db.get_records(
+            multihash_sql,
+            check_result=False
+        )
+        # if all list elements are equal
+        if multihashes.count(multihashes[0]) == len(multihashes):
+            result = metadata_db.get_records(
+                full_sql_str,
+                first=True,
+            )
 
     src_path = result[0]
 
     if output_path is None:
         output_path = "./" + os.path.basename(src_path)
 
+    if link:
+        raise NotImplementedError("symlink creation NYI.")
+
     object_storage = ObjectStorageHandler(
         sql=sql,
         output_path=output_path,
         first=first,
+        link=link,
         metadata_conn_id=metadata_conn_id,
         object_store=object_store,
         **kwargs
@@ -54,6 +80,7 @@ def extract(
         src_path,
         target_path=output_path,
         first=False,
+        link=link,
         **kwargs
     )
 

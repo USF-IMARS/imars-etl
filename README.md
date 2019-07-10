@@ -11,7 +11,7 @@ In this context "load" roughly means "upload my file to the IMaRS data warehouse
 
 To load a file you must provide the file and all required metadata.
 Requirements are specified by the `file` table schema in [imars_puppet/.../product_metadata.sql](https://github.com/USF-IMARS/imars_puppet/blob/test/modules/role/files/sql/product_metadata.sql).
-The current minimum metadata are requirements are: 
+The current minimum metadata are requirements are:
 * `date_time` : (start) date-time string of the product time granule
 * `product_id` : identifier from the `product` table for this product
 * `area_id` : identifier from the `area` table for this product
@@ -41,10 +41,14 @@ $ imars-etl -vvv extract 'date_time < "2018-01-01" AND date_time > "2018-01-07"'
 # you@computer:~/$ imars-etl extract --max 10 --satellite wv2 --time_start  2017-01-02T13:45 --time_end  2017-01-03T18:00
 
 # Not yet implemented (output directory):
-# you@computer:!/$ imars-etl extract --satellite wv2 --time 2017-02-02T13:45 --output /home/you/my_dir/
+# you@computer:~/$ imars-etl extract --satellite wv2 --time 2017-02-02T13:45 --output /home/you/my_dir/
 
 # Not yet implemented (list of products in file)
-# you@computer:!/$ imars-etl extract --infile ./list_of_products.txt
+# you@computer:~/$ imars-etl extract --infile ./list_of_products.txt
+
+# Not yet implemented (output links to network-available file rather than copy):
+# you@computer:~/$ imars-etl extract --link "product_id=3 AND date_time='2019-04-24 11:55:03.591485'"
+# you@computer:~/$ imars-etl extract --link --max inf "product_id=3 AND date_time LIKE '2018%'"
 ```
 ### load
 ```bash
@@ -141,7 +145,7 @@ Currently only one object storage & metadata db are supported.
 The primary object storage method is a custom-coded NFS+autofs kludge managed via puppet called imars-objects.
 More detail in [IMaRS-docs/.../imars-objects/](https://github.com/USF-IMARS/IMaRS-docs/tree/master/docs/management_data/imars-objects)
 
-Object storage in a cloud provider or distrubuted file system is on the todo list; IPFS would be my first choice. 
+Object storage in a cloud provider or distrubuted file system is on the todo list; IPFS would be my first choice.
 
 ### Metadata DB
 The primary metadata db is a mysql db living on imars-sql-hydra and managed by puppet.
@@ -183,4 +187,3 @@ Hooks   |       FS      | S3  | AzureDataLake | DbAPIHook                   |
 Backends| HD| NFS| FUSE | S3  | Azure         | MySQL      | MsSQL | SQLite |
         |---------------+-----+---------------+------------+-------+--------+
 ```
-

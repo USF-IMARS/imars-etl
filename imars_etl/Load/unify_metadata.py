@@ -1,3 +1,4 @@
+import re
 import json
 import logging
 from pprint import pformat
@@ -117,9 +118,11 @@ def sql_str_to_dict(sql_str):
     if sql_str is None or len(sql_str) < 1:
         return result
     else:
-        pairs = sql_str.split(" AND ")
+        pairs = re.split("\s+AND\s+", sql_str)
         for pair in pairs:
             key, val = pair.split('=')
+            key = key.strip().replace("'", "").replace('"', '')
+            val = val.strip().replace("'", "").replace('"', '')
             logger.debug("{}={} is...".format(key, val))
             try:
                 val = int(val)

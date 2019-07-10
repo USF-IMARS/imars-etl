@@ -142,6 +142,15 @@ def parse_args(argvs):
         "If excluded cwd and filename from db is used."
     )
     parser_extract.add_argument("--first", **FIRST)
+    parser_extract.add_argument(
+        "-l", "--link",
+        help=(
+            "Create links to network-available file rather than actual files. "
+            "NOTE: This only works for locally-networked resources. "
+            "      IE mounted NFS shares (currently all data on servers)."
+        ),
+        action="store_true"
+    )
 
     # === select
     parser_select = subparsers.add_parser(
