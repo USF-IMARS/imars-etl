@@ -1,5 +1,6 @@
 # 0.9.1
 * fix `if x=True` bug in extract
+* fix `ValueError` in `sql_str_to_dict` when using non-space whitespace
 
 # 0.9.0
 * + boilerplate for `extract --link`
