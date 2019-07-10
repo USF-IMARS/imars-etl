@@ -1,3 +1,6 @@
+# 0.9.1
+* fix `if x=True` bug in extract
+
 # 0.9.0
 * + boilerplate for `extract --link`
 * more `lru_cache` usage
