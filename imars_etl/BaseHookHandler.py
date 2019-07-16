@@ -143,7 +143,7 @@ def _append_err_msg(err_msg, wrapper, hook, wr_exc):
     )
     err_msg += (
         "\n\t\t\t" +
-        wr_exc.__traceback__.tb_frame.f_code
+        str(wr_exc.__traceback__.tb_frame.f_code)
     )
     return err_msg
 
