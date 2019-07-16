@@ -1,3 +1,6 @@
+# 0.9.2
+* more verbose printouts on "All hooks failed"
+
 # 0.9.1
 * fix `if x=True` bug in extract
 * fix `ValueError` in `sql_str_to_dict` when using non-space whitespace

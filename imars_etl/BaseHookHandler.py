@@ -59,7 +59,6 @@ class BaseHookHandler(object):
         """
         logger = logging.getLogger("imars_etl.{}".format(
             __name__,
-
         ))
         err_msg = ""
         for hook in self.hooks_list:
@@ -103,12 +102,20 @@ class BaseHookHandler(object):
                                 # logger.trace(BR)
                                 continue
         else:
-            logger.debug("\n\t   hooks:{}\n\twrappers:{}".format(
+            logger.info("\n\t   hooks:{}\n\twrappers:{}".format(
                 self.hooks_list,
                 self.wrapper_classes,
             ))
+            logger.info("\n\t   m_args:{}\n\tm_kwargs:{}".format(
+                m_args,
+                m_kwargs,
+            ))
             raise RuntimeError(
-                "All hooks failed. Attempts:{}".format(err_msg)
+                "Failed to execute method '{}'. ".format(method) +
+                "All possible combinations of Hooks and Hook Wrappers Failed. "
+                "At least one of these should have worked. \n"
+                " === Attempts:{}".format(err_msg) +
+                " \n\nCHECK `args` & `kwargs` ABOVE FOR FUNNY BUSINESS."
             )
 
     def handle_exception(self, exc, args_dict):
