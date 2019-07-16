@@ -1,4 +1,5 @@
 import logging
+import pprint
 
 from sqlalchemy.orm.exc import NoResultFound
 from airflow import settings
@@ -70,52 +71,53 @@ class BaseHookHandler(object):
                     self.handle_exception(unwr_exc, m_args, m_kwargs)
                     return
                 except:
-                    err_msg += "\n\t\t(unwrapped) {}:\n\t\t\t{}".format(
-                        hook, unwr_exc
+                    err_msg = _append_err_msg(
+                        err_msg, "unwrapped", hook, unwr_exc
                     )
-                    for wrapper in self.wrapper_classes:
-                        try:  # try this wrapper
-                            return getattr(wrapper(hook), method)(
-                                *m_args, **m_kwargs
-                            )
-                        except Exception as wr_exc:  # wrapper did not work
-                            try:
-                                self.handle_exception(
-                                    wr_exc, m_args, m_kwargs
-                                )
-                                return
-                            except:
-                                err_msg += "\n\t\t{}( {} ):\n\t\t\t{}".format(
-                                    wrapper, hook, wr_exc
-                                )
-                                # logger.error(err_msg)
-                                # import pdb; pdb.set_trace()
+            for wrapper in self.wrapper_classes:
+                try:  # try this wrapper
+                    return getattr(wrapper(hook), method)(
+                        *m_args, **m_kwargs
+                    )
+                except Exception as wr_exc:  # wrapper did not work
+                    try:
+                        self.handle_exception(
+                            wr_exc, m_args, m_kwargs
+                        )
+                        return
+                    except:
+                        err_msg = _append_err_msg(
+                            err_msg, wrapper, hook, wr_exc
+                        )
+                        logger.error(err_msg)
+                        import pdb; pdb.set_trace()
 
-                                # BR = "\n" + "X"*80
-                                # logger.trace(
-                                #     "{}( {} ) Trace:".format(wrapper, hook) +
-                                #     BR
-                                # )
-                                # logger.trace(
-                                #     traceback.print_stack()
-                                # )
-                                # logger.trace(BR)
-                                continue
+                        # BR = "\n" + "X"*80
+                        # logger.trace(
+                        #     "{}( {} ) Trace:".format(wrapper, hook) +
+                        #     BR
+                        # )
+                        # logger.trace(
+                        #     traceback.print_stack()
+                        # )
+                        # logger.trace(BR)
+                        continue
         else:
-            logger.info("\n\t   hooks:{}\n\twrappers:{}".format(
-                self.hooks_list,
-                self.wrapper_classes,
+            logger.info("\n\t   hooks:\n{}\n\twrappers:\n{}".format(
+                '\n\t\t'.join(self.hooks_list),
+                '\n\t\t'.join(self.wrapper_classes),
             ))
+            TAB_LEVEL = 2*4  # assumes tab display width is 4
             logger.info("\n\t   m_args:{}\n\tm_kwargs:{}".format(
-                m_args,
-                m_kwargs,
+                pprint.pformat(m_args, indent=TAB_LEVEL),
+                pprint.pformat(m_kwargs, indent=TAB_LEVEL),
             ))
             raise RuntimeError(
                 "Failed to execute method '{}'. ".format(method) +
                 "All possible combinations of Hooks and Hook Wrappers Failed. "
                 "At least one of these should have worked. \n"
                 " === Attempts:{}".format(err_msg) +
-                " \n\nCHECK `args` & `kwargs` ABOVE FOR FUNNY BUSINESS."
+                " \n\nCHECK `m_args` & `m_kwargs` ABOVE FOR FUNNY BUSINESS."
             )
 
     def handle_exception(self, exc, args_dict):
@@ -133,6 +135,17 @@ BUILT_IN_CONNECTIONS = {
     "no_backend": NoBackendObjectHook,
     "no_upload": NoBackendObjectHook,
 }
+
+
+def _append_err_msg(err_msg, wrapper, hook, wr_exc):
+    err_msg += "\n\t\t{}( {} ):\n\t\t\t{}".format(
+        wrapper, hook, wr_exc
+    )
+    err_msg += (
+        "\n\t\t\t" +
+        wr_exc.__traceback__.tb_frame.f_code
+    )
+    return err_msg
 
 
 def get_hook_list(conn_id):
