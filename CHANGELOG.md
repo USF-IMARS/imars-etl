@@ -1,3 +1,7 @@
+# 0.9.3
+* even more verbose printouts on "All hooks failed"
+* removed unnecessary try-except nesting for hooks & wrappers
+
 # 0.9.2
 * more verbose printouts on "All hooks failed"
 
