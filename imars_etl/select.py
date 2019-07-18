@@ -38,7 +38,7 @@ def select(
     assert ';' not in post_where
 
     # updated select() allows more direct usage of SQL:
-    V2_KEYWORDS = ['WHERE', 'LIMIT', 'GROUP BY', 'JOIN']
+    V2_KEYWORDS = ['WHERE', 'LIMIT', 'GROUP', 'BY', 'JOIN', 'ORDER']
     if any(k in sql.upper().split() for k in V2_KEYWORDS):
         logger.debug("using newer select() API v >= 0.9.0")
         if post_where != '':
