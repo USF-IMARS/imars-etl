@@ -1,3 +1,8 @@
+# 0.10.0
+* fix select() expecting multiple results always fails
+* update sentinel path format string
+* multiple bugfixes for new select()
+
 # 0.9.3
 * even more verbose printouts on "All hooks failed"
 * removed unnecessary try-except nesting for hooks & wrappers

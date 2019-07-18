@@ -124,7 +124,7 @@ class MetadataDBHandler(BaseHookHandler):
             result = [result]
 
         try:
-            result = validate_sql_result(result)
+            result = validate_sql_result(result, first)
         except (NoMetadataMatchException, TooManyMetadataMatchesException):
             if check_result is True:
                 logger.error(result)
@@ -155,13 +155,13 @@ class MetadataDBHandler(BaseHookHandler):
             raise
 
 
-def validate_sql_result(result):
+def validate_sql_result(result, first):
     if (not result or result is None):
         raise NoMetadataMatchException(
             "Zero files found matching given metadata."
         )
         # exit(EXIT_STATUS.NO_MATCHING_FILES)
-    elif (len(result) > 1):
+    elif (first is True and len(result) > 1):
         # TODO: request more info from user?
         raise TooManyMetadataMatchesException(
             "Too many results found matching given metadata." +
