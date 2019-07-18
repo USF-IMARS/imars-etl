@@ -1,4 +1,5 @@
 # 0.10.0
+* BREAKING: select() now *always* returns list of tuples eg: [(0,1)]
 * fix select() expecting multiple results always fails
 * update sentinel path format string
 * multiple bugfixes for new select()

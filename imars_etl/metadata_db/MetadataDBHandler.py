@@ -169,4 +169,4 @@ def validate_sql_result(result, first):
         )
         # exit(EXIT_STATUS.MULTIPLE_MATCH)
     else:
-        return result[0]
+        return result
