@@ -117,6 +117,12 @@ class MetadataDBHandler(BaseHookHandler):
         else:
             result = self._get_records(sql)
 
+        # ensure result is a list of tuples
+        try:
+            result[0][0]
+        except TypeError:  # object is not subscriptable
+            result = [result]
+
         try:
             result = validate_sql_result(result)
         except (NoMetadataMatchException, TooManyMetadataMatchesException):
