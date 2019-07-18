@@ -90,7 +90,6 @@ class BaseHookHandler(object):
                             err_msg, wrapper, hook, wr_exc
                         )
                         logger.error(err_msg)
-                        import pdb; pdb.set_trace()
 
                         # BR = "\n" + "X"*80
                         # logger.trace(
