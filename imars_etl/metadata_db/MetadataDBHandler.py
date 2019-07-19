@@ -122,6 +122,8 @@ class MetadataDBHandler(BaseHookHandler):
             result[0][0]
         except TypeError:  # object is not subscriptable
             result = [result]
+        except IndexError:  # no results
+            pass
 
         try:
             result = validate_sql_result(result, first)

@@ -1,3 +1,7 @@
+# 0.10.1
+* + tests for get_records always returns list of tuples
+* resolve many bugs created by select() changes in v0.10.0
+
 # 0.10.0
 * BREAKING: select() now *always* returns list of tuples eg: [(0,1)]
 * fix select() expecting multiple results always fails
