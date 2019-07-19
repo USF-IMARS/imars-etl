@@ -15,7 +15,9 @@ HookHandlers.
 
 ```
 # OSI-like model:
-
+        |-------------------------------------------------------------------|
+user    |             .load()    .extract()    .select()                    |
+api     |                                                                   |
         |-------------------------------------+-----------------------------|
 methods | .load() .extract()                  | .get_first() .get_records() |
         | .format_filepath()                  | .insert_rows()              |
@@ -29,8 +31,19 @@ Hooks   |       FS      | S3  | AzureDataLake | DbAPIHook                   |
 Backends| HD| NFS| FUSE | S3  | Azure         | MySQL      | MsSQL | SQLite |
         |---------------+-----+---------------+------------+-------+--------+
 ```
+
+! CACHE WARNING ! : This handler makes use of a local cache and assumes that
+    any changes to the database not made by this instantiation of imars-etl are
+    irrelevant to proper execution.
+    This means that if you get_records(), then externally alter the database
+    and get_records() again all within the same python script then you will
+    be surprised that the records appear unchanged (because you will be
+    seeing the cached version).
+    If you want to invalidate the cache manually you may use
+    `MetadataDBHandler._clear_caches()`
 """
 import logging
+from functools import lru_cache
 
 from imars_etl.BaseHookHandler import BaseHookHandler
 from imars_etl.exceptions.NoMetadataMatchException \
@@ -61,6 +74,7 @@ class MetadataDBHandler(BaseHookHandler):
         commit_every=1000,
         replace=False,
     ):
+        self._clear_caches()
         return self.try_hooks_n_wrappers(
             method='insert_rows',
             m_args=[],
@@ -73,6 +87,7 @@ class MetadataDBHandler(BaseHookHandler):
             )
         )
 
+    @lru_cache(maxsize=None)
     def get_first(self, sql):
         return [
             self.try_hooks_n_wrappers(
@@ -82,6 +97,7 @@ class MetadataDBHandler(BaseHookHandler):
             )
         ]
 
+    @lru_cache(maxsize=None)
     def _get_records(self, sql):
         return self.try_hooks_n_wrappers(
             method='get_records',
@@ -175,6 +191,10 @@ class MetadataDBHandler(BaseHookHandler):
             )
         else:
             raise
+
+    def _clear_caches(self):
+        self.get_first.cache_clear()
+        self._get_records.cache_clear()
 
 
 def validate_sql_result(result, first):
