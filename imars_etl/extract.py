@@ -51,13 +51,20 @@ def extract(
             check_result=False
         )
         # if all list elements are equal
+        # TODO: this looks incorrect! Should be:
+        # if (
+        #   len(
+        #       [ 1 for m in multihashes if m[0] == multihashes[0][0]]
+        #   ) == len(multihashes)
+        # ):
         if multihashes.count(multihashes[0]) == len(multihashes):
+            # TODO: also: don't re-query here, just use first of last result
             result = metadata_db.get_records(
                 full_sql_str,
                 first=True,
             )
 
-    src_path = result[0]
+    src_path = result[0][0]
 
     if output_path is None:
         output_path = "./" + os.path.basename(src_path)
