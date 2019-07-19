@@ -51,14 +51,8 @@ def extract(
             check_result=False
         )
         # if all list elements are equal
-        # TODO: this looks incorrect! Should be:
-        # if (
-        #   len(
-        #       [ 1 for m in multihashes if m[0] == multihashes[0][0]]
-        #   ) == len(multihashes)
-        # ):
         if multihashes.count(multihashes[0]) == len(multihashes):
-            # TODO: also: don't re-query here, just use first of last result
+            # we must re-query here bc first result was stoppered by exception
             result = metadata_db.get_records(
                 full_sql_str,
                 first=True,
