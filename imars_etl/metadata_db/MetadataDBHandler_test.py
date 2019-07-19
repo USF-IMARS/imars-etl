@@ -25,6 +25,18 @@ class Test_MetadataDBHandler(TestCase):
             [("col1_val", 2, "col3_val")]
         )
 
+    def test_get_records_first_returns_list_of_tuples_overwrapped(self):
+        """ get_records() returns obj like [()] even if get_first misbehaves"""
+        handle = MetadataDBHandler()
+        handle.get_first = MagicMock(
+            name='get_first',
+            return_value=[("col1_val", 2, "col3_val")]  # extra unexpected []
+        )
+        self.assertEqual(
+            handle.get_records("fake sql string", first=True),
+            [("col1_val", 2, "col3_val")]
+        )
+
     def test_get_records_multiple_returns_list_of_tuples(self):
         """ get_records(first=False) returns obj like [(),()] """
         handle = MetadataDBHandler()
