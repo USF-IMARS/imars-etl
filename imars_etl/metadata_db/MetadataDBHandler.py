@@ -113,12 +113,40 @@ class MetadataDBHandler(BaseHookHandler):
         logger.info("MetaDB SQL query:\n```sql\n{}\n```".format(sql))
 
         if first is True:
-            result = [self.get_first(sql)]
+            result = self.get_first(sql)
         else:
             result = self._get_records(sql)
 
+        EXPECTED_ITERABLE_TYPES = [list, tuple]
+
+        # wrap result if under-wrapped to make iterable of iterables.
+        if type(result) not in EXPECTED_ITERABLE_TYPES:
+            result = [result]
+
+        if len(result) > 0 and type(result[0]) not in EXPECTED_ITERABLE_TYPES:
+            result = [result]
+
+        # trim down to 2D if over-wrapped. eg [[(1),(2)]]
+        max_n = 10
+        n = 0
+        while True:  # loop until exception raised
+            n += 1
+            logger.info(result)
+            if (n > max_n):
+                raise RuntimeError("max list trim n exceeded")
+            elif (
+                len(result) < 1 or
+                (
+                    type(result) in EXPECTED_ITERABLE_TYPES and
+                    type(result[0]) in EXPECTED_ITERABLE_TYPES
+                )
+            ):
+                break
+            else:
+                result = result[0]
+
         try:
-            result = validate_sql_result(result)
+            validate_sql_result(result, first)
         except (NoMetadataMatchException, TooManyMetadataMatchesException):
             if check_result is True:
                 logger.error(result)
@@ -149,13 +177,13 @@ class MetadataDBHandler(BaseHookHandler):
             raise
 
 
-def validate_sql_result(result):
-    if (not result or result is None):
+def validate_sql_result(result, first):
+    if (len(result) < 1 or not result[0] or result[0] is None):
         raise NoMetadataMatchException(
             "Zero files found matching given metadata."
         )
         # exit(EXIT_STATUS.NO_MATCHING_FILES)
-    elif (len(result) > 1):
+    elif (first is True and len(result) > 1):
         # TODO: request more info from user?
         raise TooManyMetadataMatchesException(
             "Too many results found matching given metadata." +
@@ -163,4 +191,4 @@ def validate_sql_result(result):
         )
         # exit(EXIT_STATUS.MULTIPLE_MATCH)
     else:
-        return result[0]
+        return

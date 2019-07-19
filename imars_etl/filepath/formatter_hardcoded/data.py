@@ -266,13 +266,15 @@ data = {
                     "--------------------------------------------------",
                     'additionally, note that instance ID for s3a EFR files',
                     ' is formatted with "frames" metadata',
-                    ' proc_location : [SVL, LN1]',
-                    ' sat_id : [S3A, S3B]'
+                    ' proc_location : [SVL, LN1, LN2, LN3, MAR]',
+                    ' sat_id : [A, B]'
+                    ' platform : [O, F, D, R, _]'
+                    ' timeliness : [NR, ST, NT, __]'
                 ],
                 "path_format": (
                     "S3{sat_id}_OL_1_EFR____%Y%m%dT%H%M%S" +
                     "_{end_date:08d}T{end_t:06d}_{ing_date:08d}T{ing_t:06d}_" +
-                    "{duration:04d}_{cycle:03d}_{orbit:03d}_{frame:04d}_{proc_location}_O_N{r_or_t}" +
+                    "{duration:04d}_{cycle:03d}_{orbit:03d}_{frame:04d}_{proc_location}_{platform}_{timeliness}" +
                     "_{base_collection:03d}.zip"
                 )
             }

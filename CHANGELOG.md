@@ -1,3 +1,13 @@
+# 0.10.1
+* + tests for get_records always returns list of tuples
+* resolve many bugs created by get_records() changes in v0.10.0
+
+# 0.10.0
+* BREAKING: select() now *always* returns list of tuples eg: [(0,1)]
+* fix select() expecting multiple results always fails
+* update sentinel path format string
+* multiple bugfixes for new select()
+
 # 0.9.3
 * even more verbose printouts on "All hooks failed"
 * removed unnecessary try-except nesting for hooks & wrappers

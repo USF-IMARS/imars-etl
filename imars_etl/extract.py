@@ -52,12 +52,13 @@ def extract(
         )
         # if all list elements are equal
         if multihashes.count(multihashes[0]) == len(multihashes):
+            # we must re-query here bc first result was stoppered by exception
             result = metadata_db.get_records(
                 full_sql_str,
                 first=True,
             )
 
-    src_path = result[0]
+    src_path = result[0][0]
 
     if output_path is None:
         output_path = "./" + os.path.basename(src_path)

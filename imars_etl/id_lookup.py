@@ -63,7 +63,7 @@ def _id_lookup(
             value
         ),
         first=first,
-    )[0]
+    )[0][0]
     return translation
 
 

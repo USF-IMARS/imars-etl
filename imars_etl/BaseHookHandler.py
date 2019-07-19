@@ -90,7 +90,6 @@ class BaseHookHandler(object):
                             err_msg, wrapper, hook, wr_exc
                         )
                         logger.error(err_msg)
-                        import pdb; pdb.set_trace()
 
                         # BR = "\n" + "X"*80
                         # logger.trace(
@@ -103,10 +102,6 @@ class BaseHookHandler(object):
                         # logger.trace(BR)
                         continue
         else:
-            logger.info("\n\t   hooks:\n{}\n\twrappers:\n{}".format(
-                '\n\t\t'.join(self.hooks_list),
-                '\n\t\t'.join(self.wrapper_classes),
-            ))
             TAB_LEVEL = 2*4  # assumes tab display width is 4
             logger.info("\n\t   m_args:{}\n\tm_kwargs:{}".format(
                 pprint.pformat(m_args, indent=TAB_LEVEL),
