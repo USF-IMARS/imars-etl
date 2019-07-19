@@ -126,7 +126,7 @@ class MetadataDBHandler(BaseHookHandler):
             pass
 
         try:
-            result = validate_sql_result(result, first)
+            validate_sql_result(result, first)
         except (NoMetadataMatchException, TooManyMetadataMatchesException):
             if check_result is True:
                 logger.error(result)
@@ -171,4 +171,4 @@ def validate_sql_result(result, first):
         )
         # exit(EXIT_STATUS.MULTIPLE_MATCH)
     else:
-        return result
+        return
