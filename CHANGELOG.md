@@ -1,3 +1,6 @@
+# 0.11.1
+* allow 0 len result for `product_format`s & print warning
+
 # 0.11.0
 * fixes unexpected AssertionError "inputs not in dict" w/ implicit hashcheck
 * load API explicitly forbids positional args instead of confusing other errs
