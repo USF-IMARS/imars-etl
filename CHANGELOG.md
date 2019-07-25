@@ -1,3 +1,8 @@
+# 0.11.0
+* fixes unexpected AssertionError "inputs not in dict" w/ implicit hashcheck
+* load API explicitly forbids positional args instead of confusing other errs
+* + test for S3 API load usage
+
 # 0.10.1
 * + tests for get_records always returns list of tuples
 * resolve many bugs created by get_records() changes in v0.10.0

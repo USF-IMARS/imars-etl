@@ -25,7 +25,7 @@ VALID_FILE_TABLE_COLNAMES = [  # TODO: get this from db
 ]
 
 
-def load(verbose=0, **kwargs):
+def load(*, verbose=0, **kwargs):
     config_logger(verbose)
     return _load(
         **validate_args(kwargs, DEFAULTS=LOAD_DEFAULTS)
