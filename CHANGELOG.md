@@ -1,5 +1,6 @@
 # 0.11.1
 * allow 0 len result for `product_format`s & print warning
+* fix select() CLI usage to eat extra kwargs (like `func`)
 
 # 0.11.0
 * fixes unexpected AssertionError "inputs not in dict" w/ implicit hashcheck
