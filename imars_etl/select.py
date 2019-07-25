@@ -12,7 +12,16 @@ def select(
     first=False,
     metadata_conn_id=DEFAULT_METADATA_DB_CONN_ID,
     verbose=0,
+    **kwargs  # NOTE: these get thrown out
 ):
+    logger = logging.getLogger("imars_etl.{}".format(
+        __name__,
+    ))
+    logger.warn("Throwing out unrecognized kwargs: \n\t{}".format(kwargs))
+    _select(sql, cols, post_where, first, metadata_conn_id, verbose)
+
+
+def _select(sql, cols, post_where, first, metadata_conn_id, verbose):
     """
     Prints json-formatted metadata for first entry in given args.sql
 

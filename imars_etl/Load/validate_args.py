@@ -47,7 +47,7 @@ def validate_args(kwargs_dict, DEFAULTS={}):
             [
                 ('multihash', ['filepath'], get_hash),
             ],
-            raise_cannot_constrain=True
+            raise_cannot_constrain=False
         )
         if not args_dict.get('duplicates_ok', False):
             hashcheck(**args_dict)

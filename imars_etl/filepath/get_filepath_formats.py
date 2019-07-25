@@ -136,9 +136,14 @@ def get_filepath_formats(
         """.format(where_clause),
         first=first, check_result=check_result
     )
+    assert len(result) == 1
+    result = result[0]
     logger.debug(result)
-    if len(result) > 0 and len(result[0]) != 4:
+    if len(result) > 0 and len(result) != 4:
         raise AssertionError("misshapen results?!?")
+    elif len(result) == 0:
+        logger.warn("no product_format strings specified for this product")
+
     res_dict = {}
     for res in result:
         logger.trace("(prod_name, path_name, params, fmt_str)={}".format(res))
