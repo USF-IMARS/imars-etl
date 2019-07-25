@@ -104,7 +104,7 @@ def get_filepath_formats(
             where_clause += " product.short_name='{}' ".format(short_name)
             n_clauses += 1
         if ingest_name is not None:
-            if n_clauses > :
+            if n_clauses > 0:
                 andy = "AND"
             else:
                 andy = ""
