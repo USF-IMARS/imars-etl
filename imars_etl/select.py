@@ -18,7 +18,7 @@ def select(
         __name__,
     ))
     logger.warn("Throwing out unrecognized kwargs: \n\t{}".format(kwargs))
-    _select(sql, cols, post_where, first, metadata_conn_id, verbose)
+    return _select(sql, cols, post_where, first, metadata_conn_id, verbose)
 
 
 def _select(sql, cols, post_where, first, metadata_conn_id, verbose):
