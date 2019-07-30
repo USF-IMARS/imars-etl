@@ -5,6 +5,19 @@
 PY_SCRIPT='python3 ./backfill_airflow_db.py'  # cmd to exec prefill_airflow_db.py
 
 # ==========================================================================
+# === worldview unzip
+# ==========================================================================
+DAG_PRE=processing_wv2_unzip_
+COMMON_SQL='product_id=11'
+$PY_SCRIPT ${DAG_PRE}big_bend    "$COMMON_SQL AND area_id=6"
+$PY_SCRIPT ${DAG_PRE}fl_se       "$COMMON_SQL AND area_id=7"
+$PY_SCRIPT ${DAG_PRE}fl_ne       "$COMMON_SQL AND area_id=8"
+$PY_SCRIPT ${DAG_PRE}monroe      "$COMMON_SQL AND area_id=9"
+$PY_SCRIPT ${DAG_PRE}panhandle   "$COMMON_SQL AND area_id=10"
+$PY_SCRIPT ${DAG_PRE}west_fl_pen "$COMMON_SQL AND area_id=11"
+# TODO: + other regions & wv3 product
+# ==========================================================================
+# ==========================================================================
 # === worldview classification images
 # ==========================================================================
 DAG_PRE=processing_wv_classification_
