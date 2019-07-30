@@ -47,6 +47,7 @@ def main(argvs):
         print("v{}".format(imars_etl.__version__))
         exit()
     else:
+        del args.version
         result = args.func(**vars(args))
 
     if args.func in [extract, id_lookup, select]:
