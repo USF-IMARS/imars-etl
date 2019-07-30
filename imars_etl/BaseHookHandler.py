@@ -16,7 +16,7 @@ logging.getLogger("airflow").propagate = False
 
 
 class BaseHookHandler(object):
-    def __init__(self, hook_conn_id, wrapper_classes, built_in_hooks={}):
+    def __init__(self, hook_conn_id, wrapper_classes):
         self.hooks_list = get_hook_list(hook_conn_id)
         self.wrapper_classes = wrapper_classes
 
@@ -61,6 +61,9 @@ class BaseHookHandler(object):
         logger = logging.getLogger("imars_etl.{}".format(
             __name__,
         ))
+        if len(self.hooks_list) < 1:
+            raise ValueError("No airflow connection hooks setup in DB")
+
         err_msg = ""
         for hook in self.hooks_list:
             err_msg += "\n\thook: {}".format(hook)
