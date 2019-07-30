@@ -48,6 +48,7 @@ def main(argvs):
         exit()
     else:
         del args.version
+        del args.func
         result = args.func(**vars(args))
 
     if args.func in [extract, id_lookup, select]:

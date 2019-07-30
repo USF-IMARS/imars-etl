@@ -17,7 +17,6 @@ def select(
     logger = logging.getLogger("imars_etl.{}".format(
         __name__,
     ))
-    assert kwargs.pop('func') == select
     if len(kwargs) > 0:
         logger.warn("Throwing out unrecognized kwargs: \n\t{}".format(kwargs))
     return _select(sql, cols, post_where, first, metadata_conn_id, verbose)

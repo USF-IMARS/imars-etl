@@ -1,3 +1,6 @@
+# 0.11.3
+* fix select() API broken in 0.11.1 by args.pop(func)
+
 # 0.11.2
 * better ERR message when no hooks in handler
 
