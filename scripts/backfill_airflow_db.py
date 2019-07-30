@@ -13,7 +13,7 @@ def main(args):
         prod_date = prod_date[0]
         print('-'*100)
         cmd = ([
-            "/usr/bin/env", "airflow", "backfill", "--mark_success"
+            "/usr/bin/env", "airflow", "backfill", "--mark_success",
             "-s", prod_date.strftime(ISO_8601_SPACEY_FMT),
             "-e", prod_date.strftime(ISO_8601_SPACEY_FMT),
             args.dag_id
