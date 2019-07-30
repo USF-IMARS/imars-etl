@@ -1,3 +1,6 @@
+# 0.11.2
+* better ERR message when no hooks in handler
+
 # 0.11.1
 * allow 0 len result for `product_format`s & print warning
 * fix select() CLI usage to eat extra kwargs (like `func`)

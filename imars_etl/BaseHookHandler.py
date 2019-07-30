@@ -61,6 +61,9 @@ class BaseHookHandler(object):
         logger = logging.getLogger("imars_etl.{}".format(
             __name__,
         ))
+        if len(self.hooks_list) < 1:
+            raise ValueError("No airflow connection hooks setup in DB")
+
         err_msg = ""
         for hook in self.hooks_list:
             err_msg += "\n\thook: {}".format(hook)
