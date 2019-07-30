@@ -16,7 +16,7 @@ logging.getLogger("airflow").propagate = False
 
 
 class BaseHookHandler(object):
-    def __init__(self, hook_conn_id, wrapper_classes, built_in_hooks={}):
+    def __init__(self, hook_conn_id, wrapper_classes):
         self.hooks_list = get_hook_list(hook_conn_id)
         self.wrapper_classes = wrapper_classes
 
