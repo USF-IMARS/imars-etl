@@ -48,17 +48,19 @@ def main(argvs):
         exit()
     else:
         del args.version
-        result = args.func(**vars(args))
+        fn = args.func
+        del args.func
+        result = fn(**vars(args))
 
-    if args.func in [extract, id_lookup, select]:
+    if fn in [extract, id_lookup, select]:
         # print return value
         print(result)
-    elif args.func in [find, load]:
+    elif fn in [find, load]:
         # do nothing w/ return value
         pass
     else:
         raise NotImplementedError(
-            "unsure how to handle returned value for func {}".format(args.func)
+            "unsure how to handle returned value for func {}".format(fn)
         )
     return result
 
