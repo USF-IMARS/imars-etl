@@ -136,7 +136,6 @@ def get_filepath_formats(
         """.format(where_clause),
         first=first, check_result=check_result
     )
-    assert len(result) == 1
     result = result[0]
     logger.debug(result)
     if len(result) > 0 and len(result) != 4:
