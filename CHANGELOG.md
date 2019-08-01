@@ -2,6 +2,7 @@
 * fix select() API broken in 0.11.1 by args.pop(func)
 * + ./scripts/ to help w/ airflow backfilling
 * fix AssertionError on multiple `product_format`s introduced in 0.11.1
+* better error message when cannot connect to airflow db
 
 # 0.11.2
 * better ERR message when no hooks in handler

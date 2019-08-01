@@ -2,9 +2,9 @@ import logging
 import pprint
 
 from sqlalchemy.orm.exc import NoResultFound
+from sqlalchemy.exc import OperationalError
 from airflow import settings
 from airflow.models import Connection
-
 from airflow.hooks.http_hook import HttpHook
 from airflow.contrib.hooks.fs_hook import FSHook
 
@@ -191,15 +191,21 @@ def _get_hook(conn_id):
     else:
         logger.debug("hook not built-in".format(conn_id))
 
-    # fetch encrypted connection from airflow:
-    session = settings.Session()
-    conn = (
-        session.query(Connection)
-        .filter(Connection.conn_id == conn_id)
-        .one()
-    )
-    logger.debug("conn from airflow: {}".format(conn))
-    hook = conn.get_hook()
+    # fetch encrypted connection hook from airflow:
+    try:
+        session = settings.Session()
+        conn = (
+            session.query(Connection)
+            .filter(Connection.conn_id == conn_id)
+            .one()
+        )
+        logger.debug("conn from airflow: {}".format(conn))
+        hook = conn.get_hook()
+    except OperationalError:
+        raise ValueError(
+            "Cannot fetch connections from airflow DB. "
+            "Does `airflow connections --list` work?"
+        )
     if hook is None:
         logger.debug("hook not airflow-official")
         hook = _get_supplemental_hook(conn)
