@@ -1,5 +1,6 @@
 import logging
 import pprint
+import traceback
 
 from sqlalchemy.orm.exc import NoResultFound
 from sqlalchemy.exc import OperationalError
@@ -139,10 +140,7 @@ def _append_err_msg(err_msg, wrapper, hook, wr_exc):
     err_msg += "\n\t\t{}( {} ):\n\t\t\t{}".format(
         wrapper, hook, wr_exc
     )
-    err_msg += (
-        "\n\t\t\t" +
-        str(wr_exc.__traceback__.tb_frame.f_code)
-    )
+    err_msg += (traceback.format_exc())
     return err_msg
 
 
