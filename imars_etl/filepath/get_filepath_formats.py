@@ -136,9 +136,9 @@ def get_filepath_formats(
         """.format(where_clause),
         first=first, check_result=check_result
     )
-    result = result[0]
     logger.debug(result)
-    if len(result) > 0 and len(result) != 4:
+    # check shape of the first result
+    if len(result) > 0 and len(result[0]) != 4:
         raise AssertionError("misshapen results?!?")
     elif len(result) == 0:
         logger.warn("no product_format strings specified for this product")
