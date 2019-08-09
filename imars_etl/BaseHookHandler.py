@@ -119,7 +119,7 @@ class BaseHookHandler(object):
                 " \n\nCHECK `m_args` & `m_kwargs` ABOVE FOR FUNNY BUSINESS."
             )
 
-    def handle_exception(self, exc, args_dict):
+    def handle_exception(self, exc, m_args, m_kwargs):
         """
         Re-raises if exception is not ok.
         Returns None if exception can be safely ignored

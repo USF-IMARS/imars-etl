@@ -4,6 +4,7 @@
 * fix AssertionError on multiple `product_format`s introduced in 0.11.1
 * better error message when cannot connect to airflow db
 * incl traceback in message on hook fails
+* fix handle_exception wrong # of args causing "takes 3 pos args but 4 given"
 
 # 0.11.2
 * better ERR message when no hooks in handler
