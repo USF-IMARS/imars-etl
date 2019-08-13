@@ -1,3 +1,7 @@
+# 0.12.1
+* update deprecated warn() usages
+* improved(?) hook + wrapper error printout
+
 # 0.12.0
 * fix select() API broken in 0.11.1 by args.pop(func)
 * + ./scripts/ to help w/ airflow backfilling
