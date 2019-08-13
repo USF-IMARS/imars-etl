@@ -2,6 +2,7 @@
 * update deprecated warn() usages
 * improved(?) hook + wrapper error printout
 * fix unexpected "misshapen results" when 0 format_strings found
+* + test for get_filepath_formats()
 
 # 0.12.0
 * fix select() API broken in 0.11.1 by args.pop(func)
