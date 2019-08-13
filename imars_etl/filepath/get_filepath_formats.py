@@ -141,7 +141,7 @@ def get_filepath_formats(
     if len(result) > 0 and len(result[0]) != 4:
         raise AssertionError("misshapen results?!?")
     elif len(result) == 0:
-        logger.warn("no product_format strings specified for this product")
+        logger.warning("no product_format strings specified for this product")
 
     res_dict = {}
     for res in result:
