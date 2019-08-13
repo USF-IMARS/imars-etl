@@ -145,7 +145,10 @@ def get_filepath_formats(
                 "no product_format strings specified for this product"
             )
         elif len(res) != 4:
-            raise AssertionError("misshapen results?!?")
+            logger.error("misshapen results?!?")
+            logger.error('result   : "{}"'.format(result))
+            logger.error('result[i]: "{}"'.format(res))
+            raise AssertionError("result[i] does not have 4 columns.")
         else:
             logger.trace(
                 "(prod_name, path_name, params, fmt_str)={}".format(res)
