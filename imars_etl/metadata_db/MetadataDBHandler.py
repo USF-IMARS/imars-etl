@@ -117,6 +117,10 @@ class MetadataDBHandler(BaseHookHandler):
         else:
             result = self._get_records(sql)
 
+        # [[None]] ==> [[]]
+        if result is None or result[0] is None:
+            result = [[]]
+
         EXPECTED_ITERABLE_TYPES = [list, tuple]
 
         # wrap result if under-wrapped to make iterable of iterables.
@@ -144,10 +148,6 @@ class MetadataDBHandler(BaseHookHandler):
                 break
             else:
                 result = result[0]
-
-        # [[None]] ==> [[]]
-        if len(result[0]) == 1 and result[0][0] is None:
-            result = [[]]
 
         try:
             validate_sql_result(result, first)
