@@ -79,6 +79,8 @@ class Test_MetadataDBHandler(TestCase):
             return_value=RECORDS
         )
         self.assertEqual(
-            handle.get_records("fake sql string", first=False),
+            handle.get_records(
+                "fake sql string", first=False, check_result=False
+            ),
             [[]]
         )

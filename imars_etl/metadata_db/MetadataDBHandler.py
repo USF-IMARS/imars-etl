@@ -117,8 +117,8 @@ class MetadataDBHandler(BaseHookHandler):
         else:
             result = self._get_records(sql)
 
-        # [[None]] ==> [[]]
-        if result is None or result[0] is None:
+        # (None) ==> [[]]
+        if result is None or (len(result) > 0 and result[0] is None):
             result = [[]]
 
         EXPECTED_ITERABLE_TYPES = [list, tuple]
@@ -182,7 +182,12 @@ class MetadataDBHandler(BaseHookHandler):
 
 
 def validate_sql_result(result, first):
-    if (len(result) < 1 or not result[0] or result[0] is None):
+    if (
+        len(result) < 1 or
+        not result[0] or
+        result[0] is None or
+        len(result[0]) < 1
+    ):
         raise NoMetadataMatchException(
             "Zero files found matching given metadata."
         )
