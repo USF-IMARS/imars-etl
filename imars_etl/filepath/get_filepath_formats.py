@@ -137,21 +137,28 @@ def get_filepath_formats(
         first=first, check_result=check_result
     )
     logger.debug(result)
-    # check shape of the first result
-    if len(result) > 0 and len(result[0]) != 4:
-        raise AssertionError("misshapen results?!?")
-    elif len(result) == 0:
-        logger.warn("no product_format strings specified for this product")
 
     res_dict = {}
     for res in result:
-        logger.trace("(prod_name, path_name, params, fmt_str)={}".format(res))
-        (prod_name, path_name, params, fmt_str) = res
-        # NOTE: path_name AKA ingest_key
-        res_dict["{}.{}".format(prod_name, path_name)] = _prefill_fmt_str(
-            fmt_str,
-            params
-        )
+        if len(res) == 0:
+            logger.warning(
+                "no product_format strings specified for this product"
+            )
+        elif len(res) != 4:
+            logger.error("misshapen results?!?")
+            logger.error('result   : "{}"'.format(result))
+            logger.error('result[i]: "{}"'.format(res))
+            raise AssertionError("result[i] does not have 4 columns.")
+        else:
+            logger.trace(
+                "(prod_name, path_name, params, fmt_str)={}".format(res)
+            )
+            (prod_name, path_name, params, fmt_str) = res
+            # NOTE: path_name AKA ingest_key
+            res_dict["{}.{}".format(prod_name, path_name)] = _prefill_fmt_str(
+                fmt_str,
+                params
+            )
 
     # if Logger.isEnabledFor(logging.INFO):
     logger.debug("matching formats:\n{}".format(

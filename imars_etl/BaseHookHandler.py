@@ -15,6 +15,8 @@ from imars_etl.object_storage.NoBackendObjectHook \
 logging.getLogger("airflow").setLevel(logging.WARNING)
 logging.getLogger("airflow").propagate = False
 
+SEPARATOR_WIDTH = 200
+
 
 class BaseHookHandler(object):
     def __init__(self, hook_conn_id, wrapper_classes):
@@ -65,9 +67,12 @@ class BaseHookHandler(object):
         if len(self.hooks_list) < 1:
             raise ValueError("No airflow connection hooks setup in DB")
 
+        HOOK_SEP = "\n" + "="*SEPARATOR_WIDTH + "\n"
+        HOOK_PRE = HOOK_SEP + "v"*SEPARATOR_WIDTH + "\n"
+        HOOK_POST = "\n" + "^"*SEPARATOR_WIDTH + HOOK_SEP
         err_msg = ""
         for hook in self.hooks_list:
-            err_msg += "\n\thook: {}".format(hook)
+            err_msg += "{}hook: {}{}".format(HOOK_SEP, hook, HOOK_PRE)
             try:  # directly
                 return getattr(hook, method)(*m_args, **m_kwargs)
             except Exception as unwr_exc:  # with wrappers
@@ -93,8 +98,7 @@ class BaseHookHandler(object):
                         err_msg = _append_err_msg(
                             err_msg, wrapper, hook, wr_exc
                         )
-                        logger.error(err_msg)
-
+                        # logger.error(err_msg)
                         # BR = "\n" + "X"*80
                         # logger.trace(
                         #     "{}( {} ) Trace:".format(wrapper, hook) +
@@ -105,6 +109,7 @@ class BaseHookHandler(object):
                         # )
                         # logger.trace(BR)
                         continue
+            err_msg += HOOK_POST
         else:
             TAB_LEVEL = 2*4  # assumes tab display width is 4
             logger.info("\n\t   m_args:{}\n\tm_kwargs:{}".format(
@@ -112,11 +117,18 @@ class BaseHookHandler(object):
                 pprint.pformat(m_kwargs, indent=TAB_LEVEL),
             ))
             raise RuntimeError(
+                HOOK_SEP*3 +
                 "Failed to execute method '{}'. ".format(method) +
                 "All possible combinations of Hooks and Hook Wrappers Failed. "
-                "At least one of these should have worked. \n"
-                " === Attempts:{}".format(err_msg) +
-                " \n\nCHECK `m_args` & `m_kwargs` ABOVE FOR FUNNY BUSINESS."
+                "At least one of these should have worked. \n" +
+                HOOK_SEP +
+                " === Attempts:{}{}".format(
+                    err_msg,
+                    "="*SEPARATOR_WIDTH
+                ) +
+                HOOK_SEP +
+                " \n\nCHECK `m_args` & `m_kwargs` ABOVE FOR FUNNY BUSINESS." +
+                HOOK_SEP*3
             )
 
     def handle_exception(self, exc, m_args, m_kwargs):
@@ -137,10 +149,11 @@ BUILT_IN_CONNECTIONS = {
 
 
 def _append_err_msg(err_msg, wrapper, hook, wr_exc):
-    err_msg += "\n\t\t{}( {} ):\n\t\t\t{}".format(
+    ERR_SEP = "\n" + "-"*SEPARATOR_WIDTH + "\n"
+    err_msg += ERR_SEP + "{}( {} ):\n\t{}".format(
         wrapper, hook, wr_exc
     )
-    err_msg += (traceback.format_exc())
+    err_msg += (traceback.format_exc()) + ERR_SEP
     return err_msg
 
 

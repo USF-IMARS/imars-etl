@@ -38,7 +38,7 @@ def main(argvs):
     logger.info('=' * len(HELLO))
     # # log test:
     # logger.critical('c')
-    # logger.warn('w')
+    # logger.warning('w')
     # logger.info('i')
     # logger.debug('d')
     # logger.trace('t')

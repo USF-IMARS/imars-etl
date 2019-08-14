@@ -18,7 +18,9 @@ def select(
         __name__,
     ))
     if len(kwargs) > 0:
-        logger.warn("Throwing out unrecognized kwargs: \n\t{}".format(kwargs))
+        logger.warning(
+            "Throwing out unrecognized kwargs: \n\t{}".format(kwargs)
+        )
     return _select(sql, cols, post_where, first, metadata_conn_id, verbose)
 
 
