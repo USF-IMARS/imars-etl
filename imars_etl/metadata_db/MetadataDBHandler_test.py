@@ -67,3 +67,18 @@ class Test_MetadataDBHandler(TestCase):
             handle.get_records("fake sql string", first=False),
             RECORDS
         )
+
+    def test_get_records_handles_nones(self):
+        """ get_records() handles (None) from _get_records """
+        handle = MetadataDBHandler()
+        RECORDS = [
+            (None),
+        ]
+        handle._get_records = MagicMock(
+            name='_get_records',
+            return_value=RECORDS
+        )
+        self.assertEqual(
+            handle.get_records("fake sql string", first=False),
+            [[]]
+        )
