@@ -145,6 +145,10 @@ class MetadataDBHandler(BaseHookHandler):
             else:
                 result = result[0]
 
+        # [[None]] ==> [[]]
+        if len(result[0]) == 1 and result[0][0] is None:
+            result = [[]]
+
         try:
             validate_sql_result(result, first)
         except (NoMetadataMatchException, TooManyMetadataMatchesException):
