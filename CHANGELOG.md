@@ -1,3 +1,6 @@
+# 0.12.2
+* better error message when no product_formats
+
 # 0.12.1
 * update deprecated warn() usages
 * improved(?) hook + wrapper error printout
