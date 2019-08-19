@@ -6,6 +6,10 @@ from imars_etl.config_logger import config_logger
 
 
 def _output_formatter_unix(output_result):
+    """
+    Converts sql output_result of shape [[]] into a unix-friendly string.
+    Rows are split by newlines and columns are split by tabs.
+    """
     output_str = ""
     for row in output_result:
         for col in row:
