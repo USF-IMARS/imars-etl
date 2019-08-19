@@ -12,16 +12,20 @@ from imars_etl.object_storage.ObjectStorageHandler \
     import DEFAULT_OBJ_STORE_CONN_ID
 from imars_etl.drivers_metadata.get_metadata_driver_from_key \
     import DRIVER_MAP_DICT as METADATA_DRIVER_KEYS
-from imars_etl.api import load
-from imars_etl.api import extract
-from imars_etl.api import id_lookup
-from imars_etl.api import select
-from imars_etl.api import find
 from imars_etl.config_logger import config_logger
 
+from imars_etl.api import load
 from imars_etl.Load.Load import LOAD_DEFAULTS
 
+from imars_etl.api import extract
 from imars_etl.extract import EXTRACT_DEFAULTS
+
+from imars_etl.api import id_lookup
+
+from imars_etl.api import select
+from imars_etl.select import SELECT_OUTPUT_FORMATTERS
+
+from imars_etl.api import find
 
 
 def main(argvs):
@@ -174,6 +178,16 @@ def parse_args(argvs):
             "eg: 'filepath,date_time'"
         ),
         default="*"
+    )
+    parser_select.add_argument(
+        "-f", "--format",
+        help=(
+            "Output formatter."
+            "eg: '-f json'"
+        ),
+        action=ConstMapAction,
+        options_map_dict=SELECT_OUTPUT_FORMATTERS,
+        default=SELECT_OUTPUT_FORMATTERS['json'],
     )
     parser_select.add_argument(
         "-p", "--post_where",

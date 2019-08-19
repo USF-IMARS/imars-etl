@@ -1,5 +1,6 @@
 # 0.13.0
 * + `--quiet` mode
+* + `--format` output option to `select` CLI
 
 # 0.12.2
 * better error message when no product_formats

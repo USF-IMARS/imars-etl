@@ -4,6 +4,10 @@ from imars_etl.metadata_db.MetadataDBHandler import MetadataDBHandler
 from imars_etl.metadata_db.MetadataDBHandler import DEFAULT_METADATA_DB_CONN_ID
 from imars_etl.config_logger import config_logger
 
+SELECT_OUTPUT_FORMATTERS = {
+    "json": lambda x: x
+}
+
 
 def select(
     sql='',
@@ -12,6 +16,7 @@ def select(
     first=False,
     metadata_conn_id=DEFAULT_METADATA_DB_CONN_ID,
     verbose=0,
+    output_formatting_fn=SELECT_OUTPUT_FORMATTERS["json"],
     **kwargs  # NOTE: these get thrown out
 ):
     logger = logging.getLogger("imars_etl.{}".format(
@@ -21,7 +26,9 @@ def select(
         logger.warning(
             "Throwing out unrecognized kwargs: \n\t{}".format(kwargs)
         )
-    return _select(sql, cols, post_where, first, metadata_conn_id, verbose)
+    return output_formatting_fn(
+        _select(sql, cols, post_where, first, metadata_conn_id, verbose)
+    )
 
 
 def _select(sql, cols, post_where, first, metadata_conn_id, verbose):
