@@ -183,11 +183,11 @@ def parse_args(argvs):
         "-f", "--format",
         help=(
             "Output formatter."
-            "eg: '-f json'"
+            "eg: '-f unix'"
         ),
         action=ConstMapAction,
         options_map_dict=SELECT_OUTPUT_FORMATTERS,
-        default=SELECT_OUTPUT_FORMATTERS['json'],
+        default=SELECT_OUTPUT_FORMATTERS['py_obj'],
     )
     parser_select.add_argument(
         "-p", "--post_where",

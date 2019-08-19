@@ -4,8 +4,22 @@ from imars_etl.metadata_db.MetadataDBHandler import MetadataDBHandler
 from imars_etl.metadata_db.MetadataDBHandler import DEFAULT_METADATA_DB_CONN_ID
 from imars_etl.config_logger import config_logger
 
+
+def _output_formatter_unix(output_result):
+    output_str = ""
+    for row in output_result:
+        for col in row:
+            try:  # use isoformat for datetimes instead of str()
+                col_str = col.isoformat()
+            except AttributeError:
+                col_str = str(col)
+            output_str += col_str.replace('"', '').replace("'", "") + "\t"
+        output_str += "\n"
+    return output_str
+
 SELECT_OUTPUT_FORMATTERS = {
-    "json": lambda x: x
+    "py_obj": lambda x: x,
+    "unix": _output_formatter_unix,
 }
 
 
@@ -16,7 +30,7 @@ def select(
     first=False,
     metadata_conn_id=DEFAULT_METADATA_DB_CONN_ID,
     verbose=0,
-    output_formatting_fn=SELECT_OUTPUT_FORMATTERS["json"],
+    format=SELECT_OUTPUT_FORMATTERS["unix"],
     **kwargs  # NOTE: these get thrown out
 ):
     logger = logging.getLogger("imars_etl.{}".format(
@@ -26,7 +40,7 @@ def select(
         logger.warning(
             "Throwing out unrecognized kwargs: \n\t{}".format(kwargs)
         )
-    return output_formatting_fn(
+    return format(
         _select(sql, cols, post_where, first, metadata_conn_id, verbose)
     )
 
