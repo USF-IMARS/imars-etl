@@ -26,7 +26,7 @@ from imars_etl.extract import EXTRACT_DEFAULTS
 
 def main(argvs):
     args = parse_args(argvs)
-    config_logger(args.verbose)
+    config_logger(verbosity=args.verbose, quiet=args.quiet)
 
     logger = logging.getLogger("imars_etl.{}".format(
         __name__,
@@ -78,6 +78,11 @@ def parse_args(argvs):
         help="increase output verbosity",
         action="count",
         default=0
+    )
+    parser.add_argument(
+        "-q", "--quiet",
+        help="output only results",
+        action="store_true"
     )
     parser.add_argument(
         "-V", "--version",
