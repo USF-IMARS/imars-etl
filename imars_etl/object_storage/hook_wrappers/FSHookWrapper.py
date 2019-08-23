@@ -81,14 +81,22 @@ class FSHookWrapper(BaseHookWrapper):
         )
         logger.trace('fmt_fpath()')
         # get the format with the highest priority rank
-        format_key, fullpath = get_filepath_formats(
-            metadata_db_handle,
-            short_name=product_type_name,
-            product_id=product_id,
-            ingest_name=ingest_key,
-            include_test_formats=False,
-            first=True
-        ).popitem()
+        try:
+            format_key, fullpath = get_filepath_formats(
+                metadata_db_handle,
+                short_name=product_type_name,
+                product_id=product_id,
+                ingest_name=ingest_key,
+                include_test_formats=False,
+                first=True
+            ).popitem()
+        except KeyError:
+            raise KeyError(
+                "Cannot create filepath for this product. "
+                "Metadata DB `product_formats` table contains no entries "
+                "for this product. (product_id:{}) ".format(product_id) +
+                "Add a product_format row for this product_id and try again."
+            )
         if forced_basename is not None:  # for testing only
             logger.trace('forcing basename="{}"'.format(forced_basename))
             fullpath = os.path.join(forced_basename, fullpath)
