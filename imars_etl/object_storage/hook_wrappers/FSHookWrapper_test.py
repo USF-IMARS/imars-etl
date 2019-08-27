@@ -23,6 +23,11 @@ class Test_format_filepath(TestCase):
     fake_fs_hook = MagicMock(
         get_path=lambda: "/fake_path/"
     )
+    fake_fs_hook_w_params_in_path = MagicMock(
+        get_path=lambda: (
+            "/fake_path/w_params_like/{area_short_name}/{product_short_name}/"
+        )
+    )
 
     def test_format_filepath_p_name(self):
         """Create filepath w/ minimal args (product_name)"""
@@ -112,5 +117,37 @@ class Test_format_filepath(TestCase):
         self.assertEqual(
             result,
             "/fake_path/_fancy_003_/2015/" +
+            "num_is_0033_time_is_15.fancy_file"
+        )
+
+    def test_connection_path_with_params(self):
+        """
+        root path from hook.get_path() with {params} in it is formatted with
+        params passed to format_filepath.
+        """
+        args = {
+            "date_time": datetime(2015, 5, 25, 15, 55),
+            "test_num2": 33,
+            "area_short_name": "test_area",
+            "product_short_name": "test_product",
+
+        }
+        result = FSHookWrapper(
+            self.fake_fs_hook_w_params_in_path
+        ).format_filepath(
+            MagicMock(
+                get_records=lambda **kwargs: [[
+                    'test_test_test', 'imars_object_format', '{}',
+                    (
+                        'num_is_{test_num2:0>4d}_time_is_%H.fancy_file'
+                    )
+                ]]
+            ),
+            **args
+        )
+        self.assertEqual(
+            result,
+            "/fake_path/w_params_like/" +
+            "test_area/test_product/" +
             "num_is_0033_time_is_15.fancy_file"
         )

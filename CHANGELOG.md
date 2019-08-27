@@ -1,3 +1,8 @@
+# 0.13.1
+* set more reasonable defaults on select output (unix for CLI, py_obj for API)
+* + FSHookWrapper test_connection_path_with_params
+* fix ingest_key unexpected effect on load hook (output fmt != input fmt)
+
 # 0.13.0
 * + `--quiet` mode
 * + `--format` output option to `select` CLI

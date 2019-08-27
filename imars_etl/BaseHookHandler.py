@@ -67,12 +67,12 @@ class BaseHookHandler(object):
         if len(self.hooks_list) < 1:
             raise ValueError("No airflow connection hooks setup in DB")
 
-        HOOK_SEP = "\n" + "="*SEPARATOR_WIDTH + "\n"
-        HOOK_PRE = HOOK_SEP + "v"*SEPARATOR_WIDTH + "\n"
-        HOOK_POST = "\n" + "^"*SEPARATOR_WIDTH + HOOK_SEP
+        HOOK_SEP = "="*SEPARATOR_WIDTH
+        HOOK_PRE = HOOK_SEP + "\n" + "v"*SEPARATOR_WIDTH + "\n"
+        HOOK_POST = "\n" + "^"*SEPARATOR_WIDTH + "\n" + HOOK_SEP
         err_msg = ""
         for hook in self.hooks_list:
-            err_msg += "{}hook: {}{}".format(HOOK_SEP, hook, HOOK_PRE)
+            err_msg += "{}\nhook: {}\n{}".format(HOOK_SEP, hook, HOOK_PRE)
             try:  # directly
                 return getattr(hook, method)(*m_args, **m_kwargs)
             except Exception as unwr_exc:  # with wrappers
@@ -117,18 +117,18 @@ class BaseHookHandler(object):
                 pprint.pformat(m_kwargs, indent=TAB_LEVEL),
             ))
             raise RuntimeError(
-                HOOK_SEP*3 +
+                (HOOK_SEP + "\n")*3 +
                 "Failed to execute method '{}'. ".format(method) +
                 "All possible combinations of Hooks and Hook Wrappers Failed. "
                 "At least one of these should have worked. \n" +
                 HOOK_SEP +
-                " === Attempts:{}{}".format(
+                "\n === Attempts:{}\n{}\n".format(
                     err_msg,
-                    "="*SEPARATOR_WIDTH
+                    HOOK_SEP
                 ) +
                 HOOK_SEP +
                 " \n\nCHECK `m_args` & `m_kwargs` ABOVE FOR FUNNY BUSINESS." +
-                HOOK_SEP*3
+                (HOOK_SEP + "\n")*3
             )
 
     def handle_exception(self, exc, m_args, m_kwargs):
