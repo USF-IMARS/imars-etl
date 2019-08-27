@@ -34,7 +34,7 @@ def select(
     first=False,
     metadata_conn_id=DEFAULT_METADATA_DB_CONN_ID,
     verbose=0,
-    format=SELECT_OUTPUT_FORMATTERS["unix"],
+    format=SELECT_OUTPUT_FORMATTERS["py_obj"],
     **kwargs  # NOTE: these get thrown out
 ):
     logger = logging.getLogger("imars_etl.{}".format(

@@ -187,7 +187,7 @@ def parse_args(argvs):
         ),
         action=ConstMapAction,
         options_map_dict=SELECT_OUTPUT_FORMATTERS,
-        default=SELECT_OUTPUT_FORMATTERS['py_obj'],
+        default=SELECT_OUTPUT_FORMATTERS['unix'],
     )
     parser_select.add_argument(
         "-p", "--post_where",
