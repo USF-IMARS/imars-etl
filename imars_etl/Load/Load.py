@@ -67,6 +67,7 @@ def _load(
         filepath.split('/')[-1]
     ))
 
+    args_dict.pop('ingest_key', None)  # rm this key used by validate_args only
     new_filepath = object_storage_handle.load(**args_dict)
 
     fields, rows = _make_sql_row_and_key_lists(**args_dict)
