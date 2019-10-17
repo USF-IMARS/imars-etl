@@ -97,7 +97,7 @@ def parse_args(argvs):
     # parser.add_argument("source", help="directory to copy from")
     # parser.add_argument('-l', '--log',
     #     help="desired filepath of log file",
-    #     default="/var/opt/projectname/backup.log"
+    #     default="/var/opt/imars-etl/backup.log"
     # )
     # parser.add_argument('--rclonelog',
     #     help="desired path of rclone log file",
@@ -109,8 +109,8 @@ def parse_args(argvs):
     # =========================================================================
     subparsers = parser.add_subparsers(
         title='subcommands',
-        description='usage: `projectname $subcommand` ',
-        help='addtnl help for subcommands: `projectname $subcommand -h`'
+        description='usage: `imars-etl $subcommand` ',
+        help='addtnl help for subcommands: `imars-etl $subcommand -h`'
     )
 
     # === sub-cmd arguments shared between multiple subcommands:
