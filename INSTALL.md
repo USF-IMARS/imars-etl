@@ -21,7 +21,11 @@
     2. `cd imars-etl`
     3. `pip install -e .[test]`
         * NOTE: if using `sudo` you need to include `-E`
-3. set up connections. At a minimum set a default for metadata & object stores (`imars_metadata` and `imars_object_store`).
+3. init airflow database (for connections):
+    * `airflow initdb`
+4. set up connections. At a minimum set a default for metadata & object stores (`imars_metadata` and `imars_object_store`).
+    0. install any [airflow subpackages](https://airflow.readthedocs.io/en/stable/installation.html) required by your connections eg:
+        * `pip install apache-airflow[mysql]`
     1. Example metadata connection: `/bin/airflow connections -a --conn_id imars_metadata --conn_uri mysql://mysql_user:FANCYpassword123@mysql-server/imars_product_metadata`
     2. Example object storage connection: `/bin/airflow connections -a --conn_id imars_object_store --conn_uri azure_data_lake://azure_user:AZUREpw123@azure_srv/lakename`
 
