@@ -9,7 +9,12 @@
         2. unzip IPFS `tar xvfz go-ipfs.tar.gz`
         3. `cd go-ipfs`
         4. `./install.sh`
-    2. manual set up for airflow
+        5. `ipfs init`
+    2. `gcc`
+        * -buntu: `sudo apt install gcc`
+        * centos: `sudo yum install gcc`
+        * arch  : `sudo pacman install gcc`
+    3. (skippable) manual set up for airflow (no longer required as of v1.10.4)
         1. `export SLUGIFY_USES_TEXT_UNIDECODE=yes`
 2. install imars-etl itself & pypi dependencies
     1. `git clone https://github.com/USF-IMARS/imars-etl`
