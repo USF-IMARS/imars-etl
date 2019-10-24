@@ -19,6 +19,7 @@ from imars_etl.Load.Load import LOAD_DEFAULTS
 
 from imars_etl.api import extract
 from imars_etl.extract import EXTRACT_DEFAULTS
+from imars_etl.extract import EXTRACT_METHOD
 
 from imars_etl.api import id_lookup
 
@@ -155,13 +156,20 @@ def parse_args(argvs):
     )
     parser_extract.add_argument("--first", **FIRST)
     parser_extract.add_argument(
-        "-l", "--link",
+        "-m", "--method",
         help=(
-            "Create links to network-available file rather than actual files. "
-            "NOTE: This only works for locally-networked resources. "
-            "      IE mounted NFS shares (currently all data on servers)."
+            "Extraction method to use. "
+            "IE should we create a local copy? a link? a compressed file? "
+            "'copy' (default) creates local copy."
+            "'link' creates symlinks to files rather than copies; "
+            " NOTE: This only works for locally-networked resources - "
+            " IE mounted NFS shares (currently all data on servers)."
         ),
-        action="store_true"
+        choices=[
+            EXTRACT_METHOD.COPY[0],
+            EXTRACT_METHOD.LINK[0]
+        ],
+        default=EXTRACT_METHOD.COPY[0]
     )
 
     # === select
