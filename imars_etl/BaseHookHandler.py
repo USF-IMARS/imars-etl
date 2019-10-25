@@ -8,6 +8,7 @@ from airflow import settings
 from airflow.models import Connection
 from airflow.hooks.http_hook import HttpHook
 from airflow.contrib.hooks.fs_hook import FSHook
+from airflow.exceptions import AirflowException
 
 from imars_etl.object_storage.NoBackendObjectHook \
     import NoBackendObjectHook
@@ -217,6 +218,9 @@ def _get_hook(conn_id):
             "Cannot fetch connections from airflow DB. "
             "Does `airflow connections --list` work?"
         )
+    except AirflowException:
+        logger.warning("using supplemental hook not supported by airflow")
+        hook = None
     if hook is None:
         logger.debug("hook not airflow-official")
         hook = _get_supplemental_hook(conn)

@@ -1,3 +1,7 @@
+# 0.14.0
+* implement symlinking
+* change `extract --link` to `extract --method link` w/ default as `copy`
+
 # 0.13.1
 * set more reasonable defaults on select output (unix for CLI, py_obj for API)
 * + FSHookWrapper test_connection_path_with_params
