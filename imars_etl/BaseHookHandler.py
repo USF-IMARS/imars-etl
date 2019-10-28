@@ -204,6 +204,7 @@ def _get_hook(conn_id):
         logger.debug("hook not built-in".format(conn_id))
 
     # fetch encrypted connection hook from airflow:
+    conn = None
     try:
         session = settings.Session()
         conn = (
@@ -213,14 +214,19 @@ def _get_hook(conn_id):
         )
         logger.debug("conn from airflow: {}".format(conn))
         hook = conn.get_hook()
-    except OperationalError:
-        raise ValueError(
-            "Cannot fetch connections from airflow DB. "
-            "Does `airflow connections --list` work?"
-        )
     except AirflowException:
+        if conn is None:
+            raise ValueError(
+                "Cannot fetch connections from airflow DB. "
+                "Does `airflow connections --list` work?"
+            )
         logger.warning("using supplemental hook not supported by airflow")
         hook = None
+    except OperationalError:
+        raise ValueError(
+            "Cannot fetch hooks from airflow DB. "
+            "Does `airflow connections --list` work?"
+        )
     if hook is None:
         logger.debug("hook not airflow-official")
         hook = _get_supplemental_hook(conn)

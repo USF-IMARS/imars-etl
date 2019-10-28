@@ -23,6 +23,7 @@ class Test_get_hook(TestCase):
         "UnboundLocalError: local variable 'conn' referenced before assignment"
         """
         from imars_etl.BaseHookHandler import _get_hook
-        _get_hook(
-            "imars_object_store"
-        )
+        with self.assertRaises(ValueError):
+            _get_hook(
+                "imars_object_store"
+            )

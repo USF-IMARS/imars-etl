@@ -1,3 +1,6 @@
+# 0.14.1
+* fix misleading error message on early af conn db fail & + test to demonstrate
+
 # 0.14.0
 * implement symlinking
 * change `extract --link` to `extract --method link` w/ default as `copy`
