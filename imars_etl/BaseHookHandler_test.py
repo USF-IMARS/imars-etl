@@ -7,11 +7,6 @@ from unittest.mock import patch
 
 from airflow.exceptions import AirflowException
 
-from imars_etl.exceptions.NoMetadataMatchException \
-    import NoMetadataMatchException
-from imars_etl.exceptions.TooManyMetadataMatchesException \
-    import TooManyMetadataMatchesException
-
 
 class Test_get_hook(TestCase):
     # mock patch settings.Session().query() to throw AirflowException before
