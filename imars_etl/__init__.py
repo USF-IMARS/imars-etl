@@ -18,8 +18,8 @@ try:
 except Exception as err:
     # if err is airflow.exceptions.AirflowConfigException
     #   w/o importing airflow:
-    if "Permission denied" in err.message:
-        airflow_home = err.message.split(
+    if "Permission denied" in repr(err):
+        airflow_home = repr(err).split(
             "airflow.exceptions.AirflowConfigException: Error creating "
         )[1].split(
             ": Permission denied"
