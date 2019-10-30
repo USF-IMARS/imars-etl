@@ -1,5 +1,5 @@
 import logging
-import subprocess
+import os
 
 # The airflow import weirdness below is to handle the case where the airflow
 # config lives on an NFS share managed by autofs.
@@ -26,7 +26,7 @@ except Exception as err:
             "Permission denied on $AIRFLOW_HOME. Ignore this message if your "
             " $AIRFLOW_HOME is an autofs-managed NFS."
         )
-        subprocess.run(["ls", airflow_home])  # this tells autofs to mount
+        os.system(["ls", airflow_home])  # this tells autofs to mount
         import airflow  # noqa F401
     else:
         raise
