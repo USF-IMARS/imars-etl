@@ -18,12 +18,10 @@ try:
 except Exception as err:
     # if err is airflow.exceptions.AirflowConfigException
     #   w/o importing airflow:
-    if "Permission denied" in repr(err):
-        airflow_home = repr(err).split(
-            "airflow.exceptions.AirflowConfigException: Error creating "
-        )[1].split(
-            ": Permission denied"
-        )[0]
+    prefix = "AirflowConfigException('Error creating "
+    suffix = ": Permission denied'"  # ",)"
+    if prefix in repr(err):
+        airflow_home = repr(err).split(prefix)[1].split(suffix)[0]
         logging.debug(
             "Permission denied on $AIRFLOW_HOME. Ignore this message if your "
             " $AIRFLOW_HOME is an autofs-managed NFS."
