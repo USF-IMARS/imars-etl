@@ -26,7 +26,8 @@ except Exception as err:
             "Permission denied on $AIRFLOW_HOME. Ignore this message if your "
             " $AIRFLOW_HOME is an autofs-managed NFS."
         )
-        os.system(["ls", airflow_home])  # this tells autofs to mount
+        logging.info("stat-ing {}".format(airflow_home))
+        os.system("ls {}".format(airflow_home))  # this tells autofs to mount
         import airflow  # noqa F401
     else:
         raise
