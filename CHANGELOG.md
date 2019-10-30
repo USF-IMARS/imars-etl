@@ -1,5 +1,6 @@
 # 0.14.1
 * fix misleading error message on early af conn db fail & + test to demonstrate
+* add exception so airflow works better w/ autofs-managed NFS $AIRFLOW_HOME
 
 # 0.14.0
 * implement symlinking
