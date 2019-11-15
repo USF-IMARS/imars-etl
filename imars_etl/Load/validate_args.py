@@ -66,9 +66,21 @@ def validate_args(kwargs_dict, DEFAULTS={}):
     if args_dict.get('filepath') is not None:
         fpath = args_dict['filepath']
         dirname, fname = os.path.split(fpath)
-        assert fname == fpath.split('/')[-1]
+        if fname != fpath.split('/')[-1]:
+            raise AssertionError(
+                "filename does not match end of filepath:" +
+                "\n\t'{}'\n\t\t!=\n\t'{}'".format(
+                    fname, fpath.split('/')[-1]
+                )
+            )
         fbase, ext = os.path.splitext(fname)
-        assert fbase == fname.split('.')[0]
+        if fbase != fname.split('.')[0]:
+            raise AssertionError(
+                "basename does not match first part of filename:" +
+                "\n\t'{}'\n\t\t!=\n\t'{}'.format(
+                    fbase, fname.split('.')[0]
+                )
+            )
         args_dict.setdefault('filename', fname)
         args_dict.setdefault('basename', fbase)
         args_dict.setdefault('directory', dirname)
