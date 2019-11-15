@@ -74,11 +74,11 @@ def validate_args(kwargs_dict, DEFAULTS={}):
                 )
             )
         fbase, ext = os.path.splitext(fname)
-        if fbase != fname.split('.')[0]:
+        if fbase != '.'.join(fname.split('.')[0:-1]):
             raise AssertionError(
                 "basename does not match first part of filename:" +
                 "\n\t'{}'\n\t\t!=\n\t'{}'".format(
-                    fbase, fname.split('.')[0]
+                    fbase, '.'.join(fname.split('.')[0:-1])
                 )
             )
         args_dict.setdefault('filename', fname)
