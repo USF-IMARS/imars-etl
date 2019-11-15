@@ -189,13 +189,13 @@ def validate_sql_result(result, first):
         len(result[0]) < 1
     ):
         raise NoMetadataMatchException(
-            "Zero files found matching given metadata."
+            "Zero matching db rows found for query"
         )
         # exit(EXIT_STATUS.NO_MATCHING_FILES)
     elif (first is True and len(result) > 1):
         # TODO: request more info from user?
         raise TooManyMetadataMatchesException(
-            "Too many results found matching given metadata." +
+            "Too many results found matching given query." +
             "\n\tlen(result): {}".format(len(result))
         )
         # exit(EXIT_STATUS.MULTIPLE_MATCH)
