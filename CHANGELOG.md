@@ -1,6 +1,9 @@
 # 0.14.1
 * fix misleading error message on early af conn db fail & + test to demonstrate
 * add exception so airflow works better w/ autofs-managed NFS $AIRFLOW_HOME
+* more verbose AssertionErrors for fpath validation issues
+* fix loading of files with '.' in basename
+* make NoMetadataMatchException error message less confusing when caused by id_lookup
 
 # 0.14.0
 * implement symlinking
