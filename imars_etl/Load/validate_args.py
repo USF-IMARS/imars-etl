@@ -77,7 +77,7 @@ def validate_args(kwargs_dict, DEFAULTS={}):
         if fbase != fname.split('.')[0]:
             raise AssertionError(
                 "basename does not match first part of filename:" +
-                "\n\t'{}'\n\t\t!=\n\t'{}'.format(
+                "\n\t'{}'\n\t\t!=\n\t'{}'".format(
                     fbase, fname.split('.')[0]
                 )
             )
