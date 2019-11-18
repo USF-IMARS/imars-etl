@@ -62,8 +62,10 @@ class FSHookWrapper(BaseHookWrapper):
     def format_filepath(
         self,
         metadata_db_handle,
+        *args,
+        date_time,
         product_type_name=None, product_id=None, ingest_key=None,
-        forced_basename=None, date_time=None,
+        forced_basename=None, 
         **kwargs
     ):
         args_dict = dict(
