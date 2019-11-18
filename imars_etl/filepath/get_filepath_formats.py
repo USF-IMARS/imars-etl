@@ -151,7 +151,7 @@ def get_filepath_formats(
             raise AssertionError("result[i] does not have 4 columns.")
         else:
             logger.trace(
-                "(prod_name, path_name, params, fmt_str)={}".format(res)
+                "(prod_name, path_name, params, fmt_str)=\n\t{}".format(res)
             )
             (prod_name, path_name, params, fmt_str) = res
             # NOTE: path_name AKA ingest_key
