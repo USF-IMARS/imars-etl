@@ -28,12 +28,14 @@ OC_PRODUCT_ID=41
 
 ls ${OUTPUT_PATH}A*.L2_LAC_SST.nc \
 	| xargs -n 1 imars-etl load \
+	--load_format 'A%Y%j%H%M%S.{obdaac_id}.nc' \
 	--sql "area_id=$GOM_AREA_ID AND \
 		product_id=$SST_PRODUCT_ID AND \
 		provenance=\"$PROVENANCE_STR\"\
 	"
 ls ${OUTPUT_PATH}A*.L2_LAC_OC.nc \
 	| xargs -n 1 imars-etl load \
+	--load_format 'A%Y%j%H%M%S.{obdaac_id}.nc' \
 	--sql "area_id=$GOM_AREA_ID AND \
 		product_id=$OC_PRODUCT_ID AND \
 		provenance=\"$PROVENANCE_STR\"\
@@ -47,6 +49,7 @@ ls ${OUTPUT_PATH}A*.L2_LAC_OC.nc \
 #	4. imars-etl load consumes one argument at a time to load the file
 #		4a. the SQL passed to imars-etl describes the metadata of the file
 #		4b. additional metadata may be automatically read from the file path & file contents.
+#			4.b.i. the file path format is specified by --load_format
 
 # === next steps:
 
