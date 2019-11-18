@@ -1,9 +1,11 @@
+# (NYI) 0.15.0
+* TODO: add ./examples/ dir & mv examples from readme
+
 # 0.14.1
-* fix misleading error message on early af conn db fail & + test to demonstrate
 * add exception so airflow works better w/ autofs-managed NFS $AIRFLOW_HOME
-* more verbose AssertionErrors for fpath validation issues
 * fix loading of files with '.' in basename
-* make NoMetadataMatchException error message less confusing when caused by id_lookup
+* create new OB.DAAC load example in `./examples/load`
+* multiple improved log & error messages
 
 # 0.14.0
 * implement symlinking
