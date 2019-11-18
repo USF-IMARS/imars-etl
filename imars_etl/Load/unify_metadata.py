@@ -118,7 +118,7 @@ def sql_str_to_dict(sql_str):
     if sql_str is None or len(sql_str) < 1:
         return result
     else:
-        pairs = re.split("\s+AND\s+", sql_str)
+        pairs = re.split(r"\s+AND\s+", sql_str)
         for pair in pairs:
             key, val = pair.split('=')
             key = key.strip().replace("'", "").replace('"', '')
