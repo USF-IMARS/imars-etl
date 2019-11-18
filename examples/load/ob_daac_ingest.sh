@@ -23,8 +23,8 @@ PROVENANCE_STR="example_modis_dotis_ingest_l2_v1"
 GOM_AREA_ID=1
 
 # we load the SST product, and then the OC product
-SST_PRODUCT_ID = 51
-OC_PRODUCT_ID = 41
+SST_PRODUCT_ID=51
+OC_PRODUCT_ID=41
 
 ls ${OUTPUT_PATH}A*.L2_LAC_SST.nc \
 	| xargs -n 1 imars-etl load \
