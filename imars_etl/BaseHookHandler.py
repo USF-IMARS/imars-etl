@@ -16,7 +16,7 @@ from imars_etl.object_storage.NoBackendObjectHook \
 logging.getLogger("airflow").setLevel(logging.WARNING)
 logging.getLogger("airflow").propagate = False
 
-SEPARATOR_WIDTH = 200
+SEPARATOR_WIDTH = 120
 
 
 class BaseHookHandler(object):
