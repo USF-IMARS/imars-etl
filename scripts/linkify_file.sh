@@ -21,5 +21,5 @@ imars-etl load \
 	$FPATH
 	
 rm $FPATH
-NEW_FPATH=$(imars-etl extract --method link --sql "$SQL")
+NEW_FPATH=$(imars-etl extract --method link "$SQL")
 mv $NEW_FPATH $FPATH
