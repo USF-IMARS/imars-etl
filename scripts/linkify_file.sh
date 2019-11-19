@@ -17,5 +17,5 @@ SQL="product_id=$P_ID AND area_id=$A_ID and provenance=\"$PROV\""
 	FPATH
 	
 rm $FPATH
-NEW_FPATH=imars-etl extract --method link --sql "$SQL"
+NEW_FPATH=$(imars-etl extract --method link --sql "$SQL")
 mv $NEW_FPATH $FPATH
