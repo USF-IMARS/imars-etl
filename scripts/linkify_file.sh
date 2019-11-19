@@ -13,7 +13,7 @@ set -e
 
 SQL="product_id=$P_ID AND area_id=$A_ID and provenance=\"$PROV\""
 
-# imars-etl load \
+imars-etl load \
 	--sql "$SQL" \
 	--load_format "$FMT_STR" \
 	FPATH
