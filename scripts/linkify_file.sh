@@ -9,6 +9,8 @@ FMT_STR=$3
 PROV=$4
 FPATH=$5
 
+set -e
+
 SQL="product_id=$P_ID AND area_id=$A_ID and provenance=\"$PROV\""
 
 # imars-etl load \
