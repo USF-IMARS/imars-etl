@@ -7,7 +7,7 @@ from imars_etl.filepath.formatter_hardcoded.get_product_id \
     import get_product_id
 from imars_etl.filepath.formatter_hardcoded.get_product_name \
     import get_product_name
-from imars_etl.config_logger import config_logger
+from imars_etl.util.config_logger import config_logger
 
 
 def id_lookup(

@@ -4,7 +4,7 @@ import logging
 import sys
 
 from imars_etl.Load.validate_args import validate_args
-from imars_etl.config_logger import config_logger
+from imars_etl.util.config_logger import config_logger
 
 
 def find(

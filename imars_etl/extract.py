@@ -6,7 +6,7 @@ from imars_etl.object_storage.ObjectStorageHandler \
     import DEFAULT_OBJ_STORE_CONN_ID
 from imars_etl.metadata_db.MetadataDBHandler import MetadataDBHandler
 from imars_etl.metadata_db.MetadataDBHandler import DEFAULT_METADATA_DB_CONN_ID
-from imars_etl.config_logger import config_logger
+from imars_etl.util.config_logger import config_logger
 from imars_etl.exceptions.TooManyMetadataMatchesException \
     import TooManyMetadataMatchesException
 

@@ -4,7 +4,7 @@
 # std modules:
 from unittest import TestCase
 
-from imars_etl.config_logger import config_logger
+from imars_etl.util.config_logger import config_logger
 
 config_logger(1)
 

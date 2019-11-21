@@ -12,7 +12,7 @@ from imars_etl.object_storage.ObjectStorageHandler \
     import DEFAULT_OBJ_STORE_CONN_ID
 from imars_etl.drivers_metadata.get_metadata_driver_from_key \
     import DRIVER_MAP_DICT as METADATA_DRIVER_KEYS
-from imars_etl.config_logger import config_logger
+from imars_etl.util.config_logger import config_logger
 
 from imars_etl.api import load
 from imars_etl.Load.Load import LOAD_DEFAULTS

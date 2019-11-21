@@ -2,7 +2,7 @@ import logging
 
 from imars_etl.metadata_db.MetadataDBHandler import MetadataDBHandler
 from imars_etl.metadata_db.MetadataDBHandler import DEFAULT_METADATA_DB_CONN_ID
-from imars_etl.config_logger import config_logger
+from imars_etl.util.config_logger import config_logger
 
 
 def _output_formatter_unix(output_result):

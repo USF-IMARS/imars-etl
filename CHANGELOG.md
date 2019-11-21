@@ -1,6 +1,9 @@
 # (NYI) 0.15.0
 * TODO: add ./examples/ dir & mv examples from readme
 
+# 0.14.2
+* mv config_logger into `util`s
+
 # 0.14.1
 * add exception so airflow works better w/ autofs-managed NFS $AIRFLOW_HOME
 * fix loading of files with '.' in basename
