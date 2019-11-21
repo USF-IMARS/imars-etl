@@ -5,6 +5,7 @@
 * mv config_logger into `util`s
 * break out imars-etl.filepath into filepanther
 * improved constraint failed error message
+* fix linkify_file issue when default format == extant path
 
 # 0.14.1
 * add exception so airflow works better w/ autofs-managed NFS $AIRFLOW_HOME
