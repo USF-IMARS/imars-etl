@@ -22,4 +22,10 @@ imars-etl load \
 	
 rm $FPATH
 NEW_FPATH=$(imars-etl extract --method link "$SQL")
-mv $NEW_FPATH $FPATH
+if [[ $NEW_FPATH -ef $FPATH ]]; 
+then 
+	echo "verified new link is correct"
+else
+	echo "fixing new link path"
+	mv $NEW_FPATH $FPATH
+fi
