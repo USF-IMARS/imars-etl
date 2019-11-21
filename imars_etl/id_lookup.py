@@ -3,9 +3,9 @@ from functools import lru_cache
 from imars_etl.metadata_db.MetadataDBHandler import DEFAULT_METADATA_DB_CONN_ID
 from imars_etl.metadata_db.MetadataDBHandler import MetadataDBHandler
 
-from imars_etl.filepath.formatter_hardcoded.get_product_id \
+from filepanther.formatter_hardcoded.get_product_id \
     import get_product_id
-from imars_etl.filepath.formatter_hardcoded.get_product_name \
+from filepanther.formatter_hardcoded.get_product_name \
     import get_product_name
 from imars_etl.util.config_logger import config_logger
 

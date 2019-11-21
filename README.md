@@ -94,7 +94,7 @@ imars-etl -v load \
 # manually enter the time
 $ imars-etl load --time "2017-01-02T13:45" --product_id 4 /path/to/file.hdf
 
-# auto-parse info (date) from filename using info from `imars_etl.filepath.data`
+# auto-parse info (date) from filename using info from `filepanther.data`
 $ imars-etl load --product_id 4 /path/to/file/wv2_2012_02_myChunk.zip
 
 # use product short_name instead of id:

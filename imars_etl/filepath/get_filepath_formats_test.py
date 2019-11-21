@@ -9,7 +9,7 @@ from unittest import TestCase
 from unittest.mock import MagicMock
 
 # tested module(s):
-from imars_etl.filepath.get_filepath_formats import get_filepath_formats
+from filepanther.get_filepath_formats import get_filepath_formats
 
 
 class Test_get_filepath_formats(TestCase):

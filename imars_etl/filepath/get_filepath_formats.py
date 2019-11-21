@@ -4,8 +4,8 @@ from pprint import pformat
 import re
 from functools import lru_cache
 
-from imars_etl.filepath.parse_to_fmt_sanitize import parse_to_fmt_sanitize
-from imars_etl.filepath.parse_to_fmt_sanitize import restore_parse_fmts
+from filepanther.parse_to_fmt_sanitize import parse_to_fmt_sanitize
+from filepanther.parse_to_fmt_sanitize import restore_parse_fmts
 
 
 def _prefill_fmt_str(fmt_str, params):
@@ -85,7 +85,7 @@ def get_filepath_formats(
     }
 
     deprecated alternative implementation at:
-    from imars_etl.filepath.formatter_hardcoded.get_ingest_format import \
+    from filepanther.formatter_hardcoded.get_ingest_format import \
         get_ingest_formats
     """
     logger = logging.getLogger("imars_etl.{}".format(

@@ -1,5 +1,5 @@
-from imars_etl.filepath.formatter_hardcoded.data import data
-from imars_etl.filepath.formatter_hardcoded.get_product_name \
+from filepanther.formatter_hardcoded.data import data
+from filepanther.formatter_hardcoded.get_product_name \
     import get_product_name
 
 

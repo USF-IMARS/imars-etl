@@ -6,7 +6,7 @@ from pprint import pformat
 from imars_etl.exceptions.InputValidationError import InputValidationError
 from imars_etl.Load.metadata_constraints import ensure_constistent_metadata
 from imars_etl.Load.metadata_constraints import ensure_metadata_types
-from imars_etl.filepath.parse_filepath import parse_filepath
+from filepanther.parse_filepath import parse_filepath
 from imars_etl.util.timestrings import iso8601strptime
 from imars_etl.metadata_db.MetadataDBHandler import MetadataDBHandler
 

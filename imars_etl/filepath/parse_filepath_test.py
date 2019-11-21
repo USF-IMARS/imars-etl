@@ -6,10 +6,10 @@ from unittest import TestCase
 from datetime import datetime
 
 # dependencies:
-from imars_etl.filepath.parse_filepath import parse_filepath
-from imars_etl.filepath.parse_filepath import _strptime_parsed_pattern
-from imars_etl.filepath.parse_filepath import _parse_multidirective
-from imars_etl.filepath.parse_filepath import _strptime_safe
+from filepanther.parse_filepath import parse_filepath
+from filepanther.parse_filepath import _strptime_parsed_pattern
+from filepanther.parse_filepath import _parse_multidirective
+from filepanther.parse_filepath import _strptime_safe
 from imars_etl.cli import parse_args
 # TODO: mock MetadataDBHandler (using formatter_hardcoded)?:
 from imars_etl.metadata_db.MetadataDBHandler import MetadataDBHandler

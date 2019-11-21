@@ -7,8 +7,8 @@ import os
 
 from parse import parse
 
-from imars_etl.filepath.get_filepath_formats import get_filepath_formats
-from imars_etl.filepath.parse_to_fmt_sanitize import parse_to_fmt_sanitize
+from filepanther.get_filepath_formats import get_filepath_formats
+from filepanther.parse_to_fmt_sanitize import parse_to_fmt_sanitize
 
 
 def parse_filepath(
@@ -23,7 +23,7 @@ def parse_filepath(
 ):
     """
     Attempts to fill all arguments in args using args.filepath and information
-    from `imars_etl.filepath.data`. Tries to match against all possible product
+    from `filepanther.data`. Tries to match against all possible product
     types if args.product_type_name is not given
     parse_filepath but for argparse namespaces
     """

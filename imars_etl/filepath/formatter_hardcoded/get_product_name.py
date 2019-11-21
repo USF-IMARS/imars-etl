@@ -1,7 +1,7 @@
 import logging
 import sys
 
-from imars_etl.filepath.formatter_hardcoded.data import data
+from filepanther.formatter_hardcoded.data import data
 
 
 def get_product_name(product_id):

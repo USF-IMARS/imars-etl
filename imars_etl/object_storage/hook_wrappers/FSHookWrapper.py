@@ -12,9 +12,9 @@ import shutil
 
 from imars_etl.object_storage.hook_wrappers.BaseHookWrapper \
     import BaseHookWrapper
-from imars_etl.filepath.get_filepath_formats \
+from filepanther.get_filepath_formats \
     import get_filepath_formats
-from imars_etl.filepath.parse_to_fmt_sanitize import parse_to_fmt_sanitize
+from filepanther.parse_to_fmt_sanitize import parse_to_fmt_sanitize
 
 
 class FSHookWrapper(BaseHookWrapper):

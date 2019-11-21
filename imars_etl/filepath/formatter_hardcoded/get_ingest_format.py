@@ -1,4 +1,4 @@
-from imars_etl.filepath.formatter_hardcoded.data import data
+from filepanther.formatter_hardcoded.data import data
 
 
 def get_ingest_formats():
