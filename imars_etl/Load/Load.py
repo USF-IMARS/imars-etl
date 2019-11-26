@@ -165,7 +165,7 @@ def _make_sql_where_clause(**kwargs):
     result = []
     for key in kwargs:
         val = kwargs[key]
-        if key in VALID_FILE_TABLE_COLNAMES:
+        if key in VALID_FILE_TABLE_COLNAMES and key != "filepath":
             result.append('{}="{}"'.format(key, val))
     result = ' AND '.join(result)
     logger.debug(result)
