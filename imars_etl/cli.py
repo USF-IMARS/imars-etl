@@ -29,10 +29,7 @@ from imars_etl.select import SELECT_OUTPUT_FORMATTERS
 from imars_etl.api import find
 
 
-def main(argvs):
-    args = parse_args(argvs)
-    config_logger(verbosity=args.verbose, quiet=args.quiet)
-
+def _welcome_message():
     logger = logging.getLogger("imars_etl.{}".format(
         __name__,
     ))
@@ -41,6 +38,14 @@ def main(argvs):
     )
     logger.info(HELLO)
     logger.info('=' * len(HELLO))
+
+
+def main(argvs):
+    args = parse_args(argvs)
+    config_logger(verbosity=args.verbose, quiet=args.quiet)
+
+    _welcome_message()
+
     # # log test:
     # logger.critical('c')
     # logger.warning('w')

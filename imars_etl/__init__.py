@@ -1,6 +1,9 @@
 import logging
 import os
 
+from imars_etl.util.config_logger import preconfig_logger
+preconfig_logger()
+
 # The airflow import weirdness below is to handle the case where the airflow
 # config lives on an NFS share managed by autofs.
 # Yet another weird and specific bug:
