@@ -3,6 +3,8 @@
 
 # 0.15.0
 * load now returns SQL kwarg list
+* fix duplicate welcome message
+* fix linkify script to use load SQL returned
 
 # 0.14.2
 * mv config_logger into `util`s

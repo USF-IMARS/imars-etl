@@ -13,18 +13,22 @@ set -e
 
 SQL="product_id=$P_ID AND area_id=$A_ID AND provenance=\"$PROV\""
 
-echo sql: $SQL
+echo "loading SQL : $SQL"
 
-imars-etl load \
-	--sql "$SQL" \
-	--load_format "$FMT_STR" \
-	$FPATH
-	
+FILE_SQL=$( \
+	imars-etl load \
+		--sql "$SQL" \
+		--load_format "$FMT_STR" \
+		$FPATH \
+)
+
+echo "new file SQL: $FILE_SQL"
+
 rm $FPATH
-NEW_FPATH=$(imars-etl extract --method link "$SQL")
+NEW_FPATH=$(imars-etl extract --method link "$FILE_SQL")
 
 if [[ $NEW_FPATH -ef $FPATH ]]
-then 
+then
 	echo "verified new link is correct"
 else
 	echo "fixing new link path"
