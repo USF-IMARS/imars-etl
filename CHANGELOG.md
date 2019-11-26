@@ -1,11 +1,12 @@
-# (NYI) 0.15.0
+# (NYI) 0.16.0
 * TODO: add ./examples/ dir & mv examples from readme
+
+# 0.15.0
+* load now returns SQL kwarg list
 
 # 0.14.2
 * mv config_logger into `util`s
-* break out imars-etl.filepath into filepanther
-* improved constraint failed error message
-* fix linkify_file issue when default format == extant path
+* break out imars-etl.filepath into filepanther (#47)
 
 # 0.14.1
 * add exception so airflow works better w/ autofs-managed NFS $AIRFLOW_HOME

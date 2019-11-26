@@ -92,6 +92,7 @@ def _load(
             commit_every=1000,
             replace=False,
         )
+        return _make_sql_where_clause(**args_dict)
 
 
 def _make_sql_row_and_key_lists(**kwargs):
@@ -111,7 +112,14 @@ def _make_sql_row_and_key_lists(**kwargs):
 def _make_sql_row_and_key_strings(**kwargs):
     """
     !!! DEPRECATED !!!
-    Creates SQL key & value strings with metadata from given args dict
+    Creates SQL key & value strings with metadata from given args dict.
+
+    returns
+    -------
+    keys : list of str
+        eg: ['date_time', 'id', 'product_id']
+    vals : list of str
+        eg: ['2018-01-22T15:45:00', '1234', '10']
     """
     KEY_FMT_STR = '{},'  # how we format sql keys
     keys = ""
@@ -144,3 +152,21 @@ def _make_sql_insert(**kwargs):
     SQL = "INSERT INTO file ("+keys+") VALUES ("+vals+")"
     logger.debug(SQL)
     return SQL
+
+
+def _make_sql_where_clause(**kwargs):
+    """
+    Creates SQL WHERE ____ statement with metadata from given args dict
+    """
+    logger = logging.getLogger("imars_etl.{}".format(
+        __name__,
+        )
+    )
+    result = []
+    for key in kwargs:
+        val = kwargs[key]
+        if key in VALID_FILE_TABLE_COLNAMES:
+            result.append('{}="{}"'.format(key, val))
+    result = ' AND '.join(result)
+    logger.debug(result)
+    return result

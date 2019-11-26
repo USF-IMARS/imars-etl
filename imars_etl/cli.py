@@ -57,10 +57,10 @@ def main(argvs):
         del args.func
         result = fn(**vars(args))
 
-    if fn in [extract, id_lookup, select]:
+    if fn in [extract, id_lookup, select, load]:
         # print return value
         print(result)
-    elif fn in [find, load]:
+    elif fn in [find]:
         # do nothing w/ return value
         pass
     else:
