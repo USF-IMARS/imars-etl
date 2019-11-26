@@ -55,6 +55,7 @@ def _set_verbosity(verbosity, quiet):
             # stream_handler.setLevel(logging.DEBUG)
             # file_handler.setLevel(logging.DEBUG)
     logging.getLogger("imars_etl").setLevel(lvl_console)
+
     return lvl_console, lvl_libs
 
 
@@ -90,10 +91,10 @@ def config_logger(verbosity=0, quiet=False):
     # config our loggers
     my_logger.propagate = False
     # === config lib loggers
-    logging.getLogger("airflow").setLevel(lvl_libs)
-    logging.getLogger("airflow").propagate = False
-    logging.getLogger("parse").setLevel(lvl_libs)
-    logging.getLogger("parse").propagate = False
+    libs = ['airflow', 'parse', 'filepanther']
+    for libname in libs:
+        logging.getLogger(libname).setLevel(lvl_libs)
+        logging.getLogger(libname).propagate = False
 
     # LOG_DIR = "/var/opt/imars_etl/"
     # if not os.path.exists(LOG_DIR):
