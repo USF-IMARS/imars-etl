@@ -1,5 +1,7 @@
 #!/bin/bash
 # ingest all the files in /home1/cestes/s3proc/S3_zip and replace them with symlinks
+#
+# NOTE: a newer (and less verbose) version of this sort of thing can be found at examples/load/linkify_s3_l3.sh
 
 set -e
 
