@@ -3,8 +3,6 @@
 
 set -e
 
-FMT_STR=
-
 FILES=/home1/cestes/s3proc/S3_zip/*
 for FPATH in $FILES
 do
