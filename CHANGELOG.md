@@ -5,6 +5,7 @@
 * load now returns SQL kwarg list
 * fix duplicate welcome message
 * fix linkify script to use load SQL returned
+* linkify script now `mv`s files and `rm`s at end in case of errors
 
 # 0.14.2
 * mv config_logger into `util`s

@@ -16,7 +16,7 @@ SQL="product_id=$P_ID AND area_id=$A_ID AND provenance=\"$PROV\""
 echo "loading SQL : $SQL"
 
 FILE_SQL=$( \
-	imars-etl -q load \
+	imars-etl -q load --duplicates_ok \
 		--sql "$SQL" \
 		--load_format "$FMT_STR" \
 		$FPATH \
@@ -24,7 +24,7 @@ FILE_SQL=$( \
 
 echo "new file SQL: $FILE_SQL"
 
-TMP_PATH=/tmp/${FPATH}
+TMP_PATH=/tmp/$(basename ${FPATH})
 mv $FPATH $TMP_PATH
 NEW_FPATH=$(imars-etl -q extract --method link "$FILE_SQL")
 
