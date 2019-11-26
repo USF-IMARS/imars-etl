@@ -16,7 +16,7 @@ SQL="product_id=$P_ID AND area_id=$A_ID AND provenance=\"$PROV\""
 echo "loading SQL : $SQL"
 
 FILE_SQL=$( \
-	imars-etl load \
+	imars-etl -q load \
 		--sql "$SQL" \
 		--load_format "$FMT_STR" \
 		$FPATH \
@@ -24,8 +24,9 @@ FILE_SQL=$( \
 
 echo "new file SQL: $FILE_SQL"
 
-rm $FPATH
-NEW_FPATH=$(imars-etl extract --method link "$FILE_SQL")
+TMP_PATH=/tmp/${FPATH}
+mv $FPATH $TMP_PATH
+NEW_FPATH=$(imars-etl -q extract --method link "$FILE_SQL")
 
 if [[ $NEW_FPATH -ef $FPATH ]]
 then
@@ -34,3 +35,5 @@ else
 	echo "fixing new link path"
 	mv $NEW_FPATH $FPATH
 fi
+
+rm $TMP_PATH
