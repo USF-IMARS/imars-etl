@@ -1,3 +1,6 @@
+# (NYI) 1.0.0
+* remove dependence on airflow
+
 # (NYI) 0.16.0
 * TODO: add ./examples/ dir & mv examples from readme
 

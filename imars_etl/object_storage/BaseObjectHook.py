@@ -1,10 +1,9 @@
 """
 Base Hook for object storage.
 """
-from airflow.hooks.base_hook import BaseHook
 
 
-class BaseObjectHook(BaseHook):
+class BaseObjectHook(object):
     def load(self, **kwargs):
         raise NotImplementedError()
 

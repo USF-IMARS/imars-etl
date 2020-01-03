@@ -91,7 +91,7 @@ def config_logger(verbosity=0, quiet=False):
     # config our loggers
     my_logger.propagate = False
     # === config lib loggers
-    libs = ['airflow', 'parse', 'filepanther']
+    libs = ['parse', 'filepanther']
     for libname in libs:
         logging.getLogger(libname).setLevel(lvl_libs)
         logging.getLogger(libname).propagate = False

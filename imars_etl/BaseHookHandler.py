@@ -4,11 +4,6 @@ import traceback
 
 from sqlalchemy.orm.exc import NoResultFound
 from sqlalchemy.exc import OperationalError
-from airflow import settings
-from airflow.models import Connection
-from airflow.hooks.http_hook import HttpHook
-from airflow.contrib.hooks.fs_hook import FSHook
-from airflow.exceptions import AirflowException
 
 from imars_etl.object_storage.NoBackendObjectHook \
     import NoBackendObjectHook
@@ -203,42 +198,44 @@ def _get_hook(conn_id):
     else:
         logger.debug("hook not built-in".format(conn_id))
 
+    raise NotImplementedError('hooks not replaced yet')
     # fetch encrypted connection hook from airflow:
-    conn = None
-    try:
-        session = settings.Session()
-        conn = (
-            session.query(Connection)
-            .filter(Connection.conn_id == conn_id)
-            .one()
-        )
-        logger.debug("conn from airflow: {}".format(conn))
-        hook = conn.get_hook()
-    except AirflowException:
-        if conn is None:
-            raise ValueError(
-                "Cannot fetch connections from airflow DB. "
-                "Does `airflow connections --list` work?"
-            )
-        logger.warning("using supplemental hook not supported by airflow")
-        hook = None
-    except OperationalError:
-        raise ValueError(
-            "Cannot fetch hooks from airflow DB. "
-            "Does `airflow connections --list` work?"
-        )
-    if hook is None:
-        logger.debug("hook not airflow-official")
-        hook = _get_supplemental_hook(conn)
-    logger.debug("hook from airflow: {}".format(hook))
-    return hook
+    # conn = None
+    # try:
+    #     session = settings.Session()
+    #     conn = (
+    #         session.query(Connection)
+    #         .filter(Connection.conn_id == conn_id)
+    #         .one()
+    #     )
+    #     logger.debug("conn from airflow: {}".format(conn))
+    #     hook = conn.get_hook()
+    # except AirflowException:
+    #     if conn is None:
+    #         raise ValueError(
+    #             "Cannot fetch connections from airflow DB. "
+    #             "Does `airflow connections --list` work?"
+    #         )
+    #     logger.warning("using supplemental hook not supported by airflow")
+    #     hook = None
+    # except OperationalError:
+    #     raise ValueError(
+    #         "Cannot fetch hooks from airflow DB. "
+    #         "Does `airflow connections --list` work?"
+    #     )
+    # if hook is None:
+    #     logger.debug("hook not airflow-official")
+    #     hook = _get_supplemental_hook(conn)
+    # logger.debug("hook from airflow: {}".format(hook))
+    # return hook
 
 
 def get_hooks_list():
     """get list of all hooks available"""
     return (
-        list(settings.Session().query(Connection))
-        .append(BUILT_IN_CONNECTIONS.keys())
+        # list(settings.Session().query(Connection))
+        # .append(BUILT_IN_CONNECTIONS.keys())
+        BUILT_IN_CONNECTIONS.keys()
     )
 
 
@@ -248,15 +245,16 @@ def _get_supplemental_hook(conn):
         __name__,
         )
     )
-    if conn.conn_type == 'fs':
-        logger.debug('fs hook')
-        return FSHook(conn_id=conn.conn_id)
-    elif conn.conn_type == 'http':
-        logger.debug('http hook')
-        return HttpHook(
-            method='GET',  # TODO: this should come from ...somewhere
-            http_conn_id=conn.conn_id,
-        )
-    else:
-        logger.debug('hook not found for conn')
-        raise ValueError("cannot get hook for connection {}".format(conn))
+    raise NotImplementedError('built-in hooks not replaced yet')
+    # if conn.conn_type == 'fs':
+    #     logger.debug('fs hook')
+    #     return FSHook(conn_id=conn.conn_id)
+    # elif conn.conn_type == 'http':
+    #     logger.debug('http hook')
+    #     return HttpHook(
+    #         method='GET',  # TODO: this should come from ...somewhere
+    #         http_conn_id=conn.conn_id,
+    #     )
+    # else:
+    #     logger.debug('hook not found for conn')
+    #     raise ValueError("cannot get hook for connection {}".format(conn))
