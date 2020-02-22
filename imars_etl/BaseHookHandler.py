@@ -16,7 +16,7 @@ from imars_etl.object_storage.NoBackendObjectHook \
 logging.getLogger("airflow").setLevel(logging.WARNING)
 logging.getLogger("airflow").propagate = False
 
-SEPARATOR_WIDTH = 120
+SEPARATOR_WIDTH = 80
 
 
 class BaseHookHandler(object):
@@ -118,7 +118,7 @@ class BaseHookHandler(object):
                 pprint.pformat(m_kwargs, indent=TAB_LEVEL),
             ))
             raise RuntimeError(
-                (HOOK_SEP + "\n")*3 +
+                "\n" + (HOOK_SEP + "\n")*3 +
                 "Failed to execute method '{}'. ".format(method) +
                 "All possible combinations of Hooks and Hook Wrappers Failed. "
                 "At least one of these should have worked. \n" +
@@ -128,7 +128,7 @@ class BaseHookHandler(object):
                     HOOK_SEP
                 ) +
                 HOOK_SEP +
-                " \n\nCHECK `m_args` & `m_kwargs` ABOVE FOR FUNNY BUSINESS." +
+                "\n\nCHECK `m_args` & `m_kwargs` ABOVE FOR FUNNY BUSINESS.\n" +
                 (HOOK_SEP + "\n")*3
             )
 
