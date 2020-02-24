@@ -4,6 +4,7 @@
 # std modules:
 from unittest import TestCase
 from datetime import datetime
+import pytest
 
 # dependencies:
 from filepanther.parse_filepath import parse_filepath
@@ -82,6 +83,7 @@ class Test_parse_filepath(TestCase):
     # tests:
     #########################
     # === parse_filepath
+    @pytest.mark.metadatatest
     def test_parse_filename_browse_jpg(self):
         """parse_filepath on xml_wv2_m1bs *.XML"""
         test_args = parse_args([
@@ -104,6 +106,7 @@ class Test_parse_filepath(TestCase):
         self.assertEqual(res_args['passNumber'], "003")
         self.assertEqual(res_args['product_type_name'], "xml_wv2_m1bs")
 
+    @pytest.mark.metadatatest  # requires real metadata connection
     def test_parse_filename_shx_wv2_p1bs(self):
         """parse_filepath on shx_wv2_p1bs *_PIXEL_SHAPE.shx"""
         test_args = parse_args([
@@ -126,6 +129,7 @@ class Test_parse_filepath(TestCase):
         self.assertEqual(res_args['passNumber'], "003")
         self.assertEqual(res_args['product_type_name'], "shx_wv2_p1bs")
 
+    @pytest.mark.metadatatest
     def test_guess_ingest_key(self):
         """
         parse_filepath can guess ingest_key if only 1 option
@@ -147,6 +151,7 @@ class Test_parse_filepath(TestCase):
         # this fails... but I don't think we really care.
         # self.assertEqual(res_args.ingest_key, "file_w_date")
 
+    @pytest.mark.metadatatest
     def test_parse_args_and_date_from_filename(self):
         """Parse fancy filepath reads args & date from path"""
         test_args = parse_args([

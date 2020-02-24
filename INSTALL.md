@@ -33,3 +33,12 @@
 * IPFS is required for hashing files during load & may be used as an object
     storage connection in the future.
 * airflow is used to manage secure connections to metadata & object stores.
+
+# testing the installation
+```
+# run all tests that don't require a real metadata db
+python3 -m pytest -m "not metadatatest"
+
+# run all tests
+python3 -m pytest
+```

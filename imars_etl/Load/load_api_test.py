@@ -7,10 +7,12 @@ except ImportError:  # py3
     from unittest import mock
     from unittest.mock import patch
 
+import pytest
 from imars_etl.util.TestCasePlusSQL import TestCasePlusSQL
 
 
 class Test_load_api(TestCasePlusSQL):
+    @pytest.mark.metadatatest
     @patch(
         "imars_etl.object_storage.ObjectStorageHandler."
         "ObjectStorageHandler.load",
@@ -110,6 +112,7 @@ class Test_load_api(TestCasePlusSQL):
     #         ]
     #     )
 
+    @pytest.mark.metadatatest
     @patch(
         "imars_etl.object_storage.ObjectStorageHandler."
         "ObjectStorageHandler.load",

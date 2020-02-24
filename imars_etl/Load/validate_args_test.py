@@ -3,6 +3,7 @@
 
 # std modules:
 from unittest import TestCase
+import pytest
 
 from imars_etl.util.config_logger import config_logger
 
@@ -71,6 +72,7 @@ class Test_validate_args(TestCase):
     #     }
     #     assert expected_subset.items() <= result_arg_dict.items()
 
+    @pytest.mark.metadatatest
     def test_validate_gets_area_id_from_area_name(self):
         """
         area_id can be inferred from area_name

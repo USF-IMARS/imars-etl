@@ -1,5 +1,6 @@
 # std modules:
 from unittest import TestCase
+import pytest
 
 from imars_etl.Load.unify_metadata import sql_str_to_dict
 
@@ -51,6 +52,7 @@ class Test_unify_metadata(TestCase):
     #     }
     #     assert expected_subset.items() <= result_arg_dict.items()
 
+    @pytest.mark.metadatatest
     def test_unify_identical_date_and_datestr(self):
         """
         unify_metadata can use date_time from sql string
@@ -81,6 +83,7 @@ class Test_unify_metadata(TestCase):
         }
         assert expected_subset.items() <= result_arg_dict.items()
 
+    @pytest.mark.metadatatest
     def test_unify_sql_str(self):
         """
         unify_metadata can typecast sql string to datetime

@@ -7,6 +7,7 @@ except ImportError:  # py3
     from unittest import mock
     from unittest.mock import patch
 
+import pytest
 from datetime import datetime
 
 from imars_etl.util.TestCasePlusSQL import TestCasePlusSQL
@@ -114,6 +115,7 @@ class Test_load_cli(TestCasePlusSQL):
         ]
         self.assertRaises(Exception, main, test_args)  # noqa H202
 
+    @pytest.mark.metadatatest
     @patch(
         "imars_etl.object_storage.ObjectStorageHandler."
         "ObjectStorageHandler.load"
@@ -149,6 +151,7 @@ class Test_load_cli(TestCasePlusSQL):
             ]
         )
 
+    @pytest.mark.metadatatest
     @patch(
         "imars_etl.object_storage.ObjectStorageHandler."
         "ObjectStorageHandler.load"
