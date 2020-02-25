@@ -35,7 +35,7 @@ def load(*, verbose=0, **kwargs):
 def _load(
     filepath, *args,
     object_storage_handle, metadata_db_handle,
-    dry_run, **kwargs
+    dry_run, no_load, **kwargs
 ):
     """
     Args can be a dict or argparse.Namespace
@@ -68,7 +68,10 @@ def _load(
     ))
 
     args_dict.pop('ingest_key', None)  # rm this key used by validate_args only
-    new_filepath = object_storage_handle.load(**args_dict)
+    if no_load:
+        new_filepath = filepath
+    else:
+        new_filepath = object_storage_handle.load(**args_dict)
 
     fields, rows = _make_sql_row_and_key_lists(**args_dict)
     for row_i, row in enumerate(rows):

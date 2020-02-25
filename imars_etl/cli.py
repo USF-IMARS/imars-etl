@@ -321,6 +321,11 @@ def parse_args(argvs):
         help="do not parse filename for metadata. WARN: may disable features",
         action="store_true"
     )
+    parser_load.add_argument(
+        "--no_load",
+        help="do not load file into object store.",
+        action="store_true"
+    )
     # ===
     args = parser.parse_args(argvs)
     try:
