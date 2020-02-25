@@ -35,7 +35,7 @@ def load(*, verbose=0, **kwargs):
 def _load(
     filepath, *args,
     object_storage_handle, metadata_db_handle,
-    dry_run, no_load, **kwargs
+    dry_run, no_load=False, **kwargs
 ):
     """
     Args can be a dict or argparse.Namespace

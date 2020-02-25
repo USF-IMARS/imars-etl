@@ -37,4 +37,4 @@ except Exception as err:
 
 from imars_etl.api import *  # noqa F401
 
-__version__ = "0.16.0"  # NOTE: this should match version in setup.py
+__version__ = "0.16.1"  # NOTE: this should match version in setup.py
