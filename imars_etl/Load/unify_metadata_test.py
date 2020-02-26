@@ -6,6 +6,28 @@ from imars_etl.Load.unify_metadata import sql_str_to_dict
 
 
 class Test_unify_metadata(TestCase):
+    def test_unify_metadata_can_read_from_filepath(self):
+        """unify meta reads filepath data"""
+        from imars_etl.Load.unify_metadata import unify_metadata
+        result = unify_metadata(
+            filepath=(
+                '/srv/imars-objects/west_fl_pen/worldview/'
+                'WV02_20091220161049_103001000366EE00_09DEC20161049-M1BS-'
+                '502573785040_01_P001.ntf'
+            ),
+            load_format=(
+                'WV02_%Y%m%d%H%M%S_{someNumber}_'
+                '%y%b%d%H%M%S-{m_or_p}1BS-{idNumber}_P{passNumber}.ntf'
+            )
+        )
+        expected_subset = {
+            'm_or_p': 'M',
+            'idNumber': '502573785040_01',
+            'passNumber': '001'
+        }
+        print(result)
+        assert expected_subset.items() <= result.items()
+
     # def test_unify_metadata_json_into_args(self):
     #     """
     #     unify_metadata sticks stuff from --json into args
