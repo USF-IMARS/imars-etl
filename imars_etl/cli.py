@@ -7,9 +7,6 @@ from argparse import ArgumentParser
 
 import imars_etl
 from imars_etl.util.ConstMapAction import ConstMapAction
-from imars_etl.BaseHookHandler import get_hooks_list
-from imars_etl.object_storage.ObjectStorageHandler \
-    import DEFAULT_OBJ_STORE_CONN_ID
 from imars_etl.drivers_metadata.get_metadata_driver_from_key \
     import DRIVER_MAP_DICT as METADATA_DRIVER_KEYS
 from imars_etl.util.config_logger import config_logger
@@ -296,15 +293,6 @@ def parse_args(argvs):
         "--dry_run",
         help="test run only, does not actually insert into database",
         action="store_true"
-    )
-    parser_load.add_argument(
-        "--object_store",
-        help=(
-            "Connection id to use for loading the file into object storage. " +
-            "ie: which backend to use"
-        ),
-        default=DEFAULT_OBJ_STORE_CONN_ID,
-        choices=get_hooks_list()
     )
     parser_load.add_argument(
         "--duplicates_ok",

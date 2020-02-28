@@ -1,7 +1,7 @@
 import os
 import logging
 
-from imars_etl.object_storage.ObjectStorageHandler import ObjectStorageHandler
+from imars_etl.object_storage.imars_objects import imars_objects
 from imars_etl.object_storage.ObjectStorageHandler \
     import DEFAULT_OBJ_STORE_CONN_ID
 from imars_etl.metadata_db.MetadataDBHandler import MetadataDBHandler
@@ -84,14 +84,15 @@ def extract(
         os.symlink(src_path, output_path)  # ln -s src_path output_path
         fpath = output_path
     elif method.lower() in EXTRACT_METHOD.COPY:
-        object_storage = ObjectStorageHandler(
-            sql=sql,
-            output_path=output_path,
-            first=first,
-            metadata_conn_id=metadata_conn_id,
-            object_store=object_store,
-            **kwargs
-        )
+        # object_storage = ObjectStorageHandler(
+        #     sql=sql,
+        #     output_path=output_path,
+        #     first=first,
+        #     metadata_conn_id=metadata_conn_id,
+        #     object_store=object_store,
+        #     **kwargs
+        # )
+        object_storage = imars_objects()
         # use connection to download & then print a path to where the file can
         # be accessed on the local machine.
         fpath = object_storage.extract(
