@@ -3,7 +3,7 @@ import logging
 
 from imars_etl.object_storage.imars_objects import imars_objects
 from imars_etl.util.config_logger import config_logger
-from imars_etl.metadata_db.mysql import select
+from imars_etl.metadata_db.mysql import meta_db_select
 
 EXTRACT_DEFAULTS = {
 }
@@ -35,7 +35,7 @@ def extract(
 
     full_sql_str = "SELECT filepath FROM file WHERE {}".format(sql)
 
-    src_path = select(full_sql_str)
+    src_path = meta_db_select(full_sql_str)
     if output_path is None:
         output_path = "./" + os.path.basename(src_path)
 

@@ -5,7 +5,7 @@ from filepanther.formatter_hardcoded.get_product_id \
 from filepanther.formatter_hardcoded.get_product_name \
     import get_product_name
 from imars_etl.util.config_logger import config_logger
-from imars_etl.metadata_db.mysql import select
+from imars_etl.metadata_db.mysql import meta_db_select
 
 
 def id_lookup(
@@ -49,7 +49,7 @@ def _id_lookup(
         column_given = 'short_name'
         column_to_get = 'id'
 
-    translation = select.get_records(
+    translation = meta_db_select.get_records(
         "SELECT {} FROM {} WHERE {}={}".format(
             column_to_get,
             table,

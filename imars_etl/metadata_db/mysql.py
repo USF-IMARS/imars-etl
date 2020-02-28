@@ -7,7 +7,7 @@ METADATA_ENGINE = create_engine(
 )
 
 
-def select(sql):
+def meta_db_select(sql):
     with METADATA_ENGINE.connect() as con:
         result = con.execute(sql)
         # TODO: check len of result?

@@ -1,6 +1,6 @@
 import logging
 
-from imars_etl.metadata_db.mysql import select as meta_db_select
+from imars_etl.metadata_db.mysql import meta_db_select
 from imars_etl.util.config_logger import config_logger
 
 
