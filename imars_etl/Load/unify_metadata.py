@@ -8,7 +8,7 @@ from imars_etl.Load.metadata_constraints import ensure_constistent_metadata
 from imars_etl.Load.metadata_constraints import ensure_metadata_types
 from filepanther.parse_filepath import parse_filepath
 from imars_etl.util.timestrings import iso8601strptime
-from imars_etl.metadata_db.MetadataDBHandler import MetadataDBHandler
+from imars_etl.get_hook import get_metadata_hook
 
 
 def unify_metadata(**kwargs):
@@ -80,7 +80,7 @@ def unify_metadata(**kwargs):
         kwargs.get('filepath') is not None
     ):
         path_metadata = parse_filepath(
-            metadb_handle=MetadataDBHandler(**kwargs),
+            metadb_handle=get_metadata_hook(),
             **final_meta
         )
         path_metadata = ensure_metadata_types(path_metadata)
