@@ -3,18 +3,15 @@
 
 # std modules:
 from unittest import TestCase
-import pytest
-try:  # py2
-    from mock import patch
-except ImportError:  # py3
-    from unittest.mock import patch
+from unittest.mock import patch
+from unittest.mock import MagicMock
 
 from imars_etl.util.config_logger import config_logger
 
 config_logger(1)
 
 
-class Test_validate_args(TestCase):
+# class Test_validate_args(TestCase):
 
     # def test_validate_returns_dict(self):
     #     from imars_etl.Load.Load import validate_args
@@ -76,31 +73,33 @@ class Test_validate_args(TestCase):
     #     }
     #     assert expected_subset.items() <= result_arg_dict.items()
 
-    @patch(
-        'imars_etl.Load.validate_args._get_handles',
-        return_value=(1, 2)
-    )
-    def test_validate_gets_area_id_from_area_name(self, mock_handles):
-        """
-        area_id can be inferred from area_name
-        """
-        from imars_etl.Load.Load import validate_args
-        from imars_etl.cli import parse_args
-        test_args = parse_args([
-            '-vvv',
-            'load',
-            '--dry_run',
-            '--nohash',
-            (
-                "fake_fpath/ftp-ingest/"
-                "wv2_2018_10_08T115750_fl_se_058523212_10_0.zip"
-            ),
-        ])
-        result_arg_dict = validate_args(vars(test_args))
-        expected_subset = {
-            "verbose": 3,
-            "dry_run": True,
-            "area_short_name": "fl_se",
-            "area_id": 7,
-        }
-        assert expected_subset.items() <= result_arg_dict.items()
+    # @patch(
+    #     'imars_etl.Load.validate_args._get_handles',
+    #     return_value=(1, 2)
+    # )
+    # def test_validate_gets_area_id_from_area_name(
+    #     self, mock_meta_hook, mock_handles
+    # ):
+    #     """
+    #     area_id can be inferred from area_name
+    #     """
+    #     from imars_etl.Load.Load import validate_args
+    #     from imars_etl.cli import parse_args
+    #     test_args = parse_args([
+    #         '-vvv',
+    #         'load',
+    #         '--dry_run',
+    #         '--nohash',
+    #         (
+    #             "fake_fpath/ftp-ingest/"
+    #             "wv2_2018_10_08T115750_fl_se_058523212_10_0.zip"
+    #         ),
+    #     ])
+    #     result_arg_dict = validate_args(vars(test_args))
+    #     expected_subset = {
+    #         "verbose": 3,
+    #         "dry_run": True,
+    #         "area_short_name": "fl_se",
+    #         "area_id": 7,
+    #     }
+    #     assert expected_subset.items() <= result_arg_dict.items()

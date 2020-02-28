@@ -6,7 +6,7 @@ from unittest.mock import patch
 from imars_etl.util.TestCasePlusSQL import TestCasePlusSQL
 
 
-class Test_load_api(TestCasePlusSQL):
+# class Test_load_api(TestCasePlusSQL):
     # === python API (passes dicts)
     # @patch(
     #     "imars_etl.object_storage.ObjectStorageHandler."
@@ -86,48 +86,48 @@ class Test_load_api(TestCasePlusSQL):
     #         ]
     #     )
 
-    @patch(
-        "imars_etl.Load.validate_args._get_handles",
-        return_value=(1, 2)
-    )
-    @patch(
-        "imars_etl.Load.Load._load_metadata",
-        return_value=""
-    )
-    @patch(
-        "imars_etl.Load.Load._dry_run_load_object",
-        return_value="/tmp/imars-etl-test-fpath"
-    )
-    def test_load_att_wv2_m1bs(self, mock_load, mock_meta, mock_get_handles):
-        """
-        API load att_wv2_m1bs with inferred date from filepath
-        """
-        from imars_etl.api import load
-        test_args = {
-            "verbose": 3,
-            "dry_run": True,
-            "filepath": (
-                "/tmp/airflow_output_2018-03-01T20:00:00/057522945010_01_003" +
-                "/057522945010_01/057522945010_01_P002_MUL" +
-                "/16FEB12162518-M1BS-057522945010_P002.ATT"
-            ),
-            "product_id": 7,
-            # "time":"2016-02-12T16:25:18",
-            # "date_time": datetime(2016,2,12,16,25,18),
-            "json": '{"status_id":3,"area_id":5}',
-            "nohash": True,
-        }
-        self.assertSQLInsertKeyValuesMatch(
-            load(**test_args),
-            ['status_id', 'date_time', 'area_id', 'product_id', 'filepath'],
-            [
-                '3',
-                '"2016-02-12 16:25:18"',
-                '5',
-                '7',
-                '"{}"'.format(mock_load.return_value)
-            ]
-        )
+    # @patch(
+    #     "imars_etl.Load.validate_args._get_handles",
+    #     return_value=(1, 2)
+    # )
+    # @patch(
+    #     "imars_etl.Load.Load._load_metadata",
+    #     return_value=""
+    # )
+    # @patch(
+    #     "imars_etl.Load.Load._dry_run_load_object",
+    #     return_value="/tmp/imars-etl-test-fpath"
+    # )
+    # def test_load_att_wv2_m1bs(self, mock_load, mock_meta, mock_get_handles):
+    #     """
+    #     API load att_wv2_m1bs with inferred date from filepath
+    #     """
+    #     from imars_etl.api import load
+    #     test_args = {
+    #         "verbose": 3,
+    #         "dry_run": True,
+    #         "filepath": (
+    #             "/tmp/airflow_output_2018-03-01T20:00:00/057522945010_01_003" +
+    #             "/057522945010_01/057522945010_01_P002_MUL" +
+    #             "/16FEB12162518-M1BS-057522945010_P002.ATT"
+    #         ),
+    #         "product_id": 7,
+    #         # "time":"2016-02-12T16:25:18",
+    #         # "date_time": datetime(2016,2,12,16,25,18),
+    #         "json": '{"status_id":3,"area_id":5}',
+    #         "nohash": True,
+    #     }
+    #     self.assertSQLInsertKeyValuesMatch(
+    #         load(**test_args),
+    #         ['status_id', 'date_time', 'area_id', 'product_id', 'filepath'],
+    #         [
+    #             '3',
+    #             '"2016-02-12 16:25:18"',
+    #             '5',
+    #             '7',
+    #             '"{}"'.format(mock_load.return_value)
+    #         ]
+    #     )
 
     # @patch(
     #     "imars_etl.object_storage.ObjectStorageHandler."

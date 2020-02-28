@@ -123,55 +123,55 @@ class Test_load_cli(TestCasePlusSQL):
         ]
         self.assertRaises(Exception, main, test_args)  # noqa H202
 
-    @patch(
-        'imars_etl.Load.validate_args._get_handles',
-        return_value=(
-            MagicMock(),
-            MagicMock(
-                name='get_records',
-                return_value={}
-            ),
-        )
-    )
-    @patch(
-        "imars_etl.Load.Load._dry_run_load_object",
-        return_value=(
-            "/srv/imars-objects/gom/zip_wv2_ftp_ingest/"
-            "wv2_2000_06_07T112233_gom_123456789_10_0.zip"
-        )
-    )
-    def test_wv2_zip_ingest_example(self, mock_get_handles, mock_dry_load):
-        """
-        CLI wv2 ingest with filename parsing:
-            imars_etl.py load
-                --dry_run
-                -p 6
-                '/path/w/parseable/date/wv2_2000_06_gom_123456789_10_0.zip'
-        """
-        from imars_etl.cli import main
-        test_args = [
-            '-vvv',
-            'load',
-            '--dry_run',
-            '-p', '6',
-            '--nohash',
-            "/path/w/parseable/date/" +
-            "wv2_2000_06_07T112233_gom_123456789_10_0.zip",
-        ]
-        res = main(test_args)
-        # 'INSERT INTO file (
-        # product_id,filepath,date_time) VALUES (
-        # 6,".../zip_wv2_ftp_ingest/wv2_2000-06-07T1122_m...")'
-        self.assertSQLInsertKeyValuesMatch(
-            res,
-            ['product_id', 'filepath', 'date_time', 'area_id'],
-            [
-                '6',
-                '"{}"'.format('/srv/imars-objects/gom/zip_wv2_ftp_ingest/wv2_2000_06_07T112233_gom_123456789_10_0.zip'),
-                '"2000-06-07 11:22:33"',
-                '1',
-            ]
-        )
+    # @patch(
+    #     'imars_etl.Load.validate_args._get_handles',
+    #     return_value=(
+    #         MagicMock(),
+    #         MagicMock(
+    #             name='get_records',
+    #             return_value={}
+    #         ),
+    #     )
+    # )
+    # @patch(
+    #     "imars_etl.Load.Load._dry_run_load_object",
+    #     return_value=(
+    #         "/srv/imars-objects/gom/zip_wv2_ftp_ingest/"
+    #         "wv2_2000_06_07T112233_gom_123456789_10_0.zip"
+    #     )
+    # )
+    # def test_wv2_zip_ingest_example(self, mock_get_handles, mock_dry_load):
+    #     """
+    #     CLI wv2 ingest with filename parsing:
+    #         imars_etl.py load
+    #             --dry_run
+    #             -p 6
+    #             '/path/w/parseable/date/wv2_2000_06_gom_123456789_10_0.zip'
+    #     """
+    #     from imars_etl.cli import main
+    #     test_args = [
+    #         '-vvv',
+    #         'load',
+    #         '--dry_run',
+    #         '-p', '6',
+    #         '--nohash',
+    #         "/path/w/parseable/date/" +
+    #         "wv2_2000_06_07T112233_gom_123456789_10_0.zip",
+    #     ]
+    #     res = main(test_args)
+    #     # 'INSERT INTO file (
+    #     # product_id,filepath,date_time) VALUES (
+    #     # 6,".../zip_wv2_ftp_ingest/wv2_2000-06-07T1122_m...")'
+    #     self.assertSQLInsertKeyValuesMatch(
+    #         res,
+    #         ['product_id', 'filepath', 'date_time', 'area_id'],
+    #         [
+    #             '6',
+    #             '"{}"'.format('/srv/imars-objects/gom/zip_wv2_ftp_ingest/wv2_2000_06_07T112233_gom_123456789_10_0.zip'),
+    #             '"2000-06-07 11:22:33"',
+    #             '1',
+    #         ]
+    #     )
 
     # @patch(
     #     "imars_etl.object_storage.ObjectStorageHandler."
