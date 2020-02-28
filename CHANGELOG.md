@@ -3,6 +3,7 @@
 
 # 0.17.0
 * simplified load hooks & wrappers paradigm
+* broke a lot of stuff
 
 # 0.16.0 & 0.16.1
 * improved tests
