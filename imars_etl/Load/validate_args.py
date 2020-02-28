@@ -35,11 +35,6 @@ def validate_args(kwargs_dict, DEFAULTS={}):
     # remove keys with None values
     args_dict = _rm_dict_none_values(args_dict)
 
-    (
-        args_dict['object_storage_handle'],
-        args_dict['metadata_db_handle']
-    ) = _get_handles(**args_dict)
-
     if not args_dict.get('nohash', False):
         logger.debug('ensuring hash in metadata...')
         args_dict = _ensure_constistent_metadata(
