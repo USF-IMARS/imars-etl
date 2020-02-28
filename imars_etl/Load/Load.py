@@ -8,6 +8,8 @@ from imars_etl.object_storage.ObjectStorageHandler \
     import DEFAULT_OBJ_STORE_CONN_ID
 from imars_etl.metadata_db.MetadataDBHandler import DEFAULT_METADATA_DB_CONN_ID
 from imars_etl.util.config_logger import config_logger
+from imars_etl.get_hook import get_metadata_hook
+from imars_etl.object_storage.imars_objects import imars_objects
 
 LOAD_DEFAULTS = {  # defaults here instead of fn def for cli argparse usage
     'metadata_file_driver': get_metadata_driver_from_key('dhus_json'),
@@ -68,10 +70,10 @@ def _load(
     ))
 
     args_dict.pop('ingest_key', None)  # rm this key used by validate_args only
-    if no_load:
-        new_filepath = filepath
+    if no_load or dry_run:
+        new_filepath = _dry_run_load_object(args_dict)
     else:
-        new_filepath = object_storage_handle.load(**args_dict)
+        new_filepath = _load_object(args_dict)
 
     fields, rows = _make_sql_row_and_key_lists(**args_dict)
     for row_i, row in enumerate(rows):
@@ -88,14 +90,29 @@ def _load(
             filepath, new_filepath
         )
     else:
-        metadata_db_handle.insert_rows(
-            table='file',
-            rows=rows,
-            target_fields=fields,
-            commit_every=1000,
-            replace=False,
-        )
-        return _make_sql_where_clause(**args_dict)
+        return _load_metadata(args_dict, rows, fields)
+
+
+def _dry_run_load_object(args_dict):
+    wrapper = imars_objects()
+    return wrapper.format_filepath(**args_dict)
+
+
+def _load_object(args_dict):
+    wrapper = imars_objects()
+    return wrapper.load(**args_dict)
+
+
+def _load_metadata(args_dict, rows, fields):
+    hook = get_metadata_hook()
+    hook.insert_rows(
+        table='file',
+        rows=rows,
+        target_fields=fields,
+        commit_every=1000,
+        replace=False,
+    )
+    return _make_sql_where_clause(**args_dict)
 
 
 def _make_sql_row_and_key_lists(**kwargs):

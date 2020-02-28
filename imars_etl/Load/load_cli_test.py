@@ -116,11 +116,7 @@ class Test_load_cli(TestCasePlusSQL):
         self.assertRaises(Exception, main, test_args)  # noqa H202
 
     @pytest.mark.metadatatest
-    @patch(
-        "imars_etl.object_storage.ObjectStorageHandler."
-        "ObjectStorageHandler.load"
-    )
-    def test_load_missing_date_guessable(self, mock_load):
+    def test_load_missing_date_guessable(self):
         """
         CLI cmd missing date that *can* be guessed:
             imars_etl.py load
@@ -131,7 +127,6 @@ class Test_load_cli(TestCasePlusSQL):
                 wv2_1989_06_07T111234_gom_123456789_10_0.zip'
         """
         from imars_etl.cli import main
-        mock_load.return_value = "/tmp/imars-etl-test-fpath"
         test_args = [
             '-vvv',
             'load',
@@ -147,16 +142,12 @@ class Test_load_cli(TestCasePlusSQL):
             ['date_time', 'area_id', 'product_id', 'filepath'],
             [
                 '"1989-06-07 11:12:34"', '1', '6',
-                '"{}"'.format(mock_load.return_value)
+                '"{}"'.format('/srv/imars-objects/gom/zip_wv2_ftp_ingest/wv2_1989_06_07T111234_gom_123456789_10_0.zip')
             ]
         )
 
     @pytest.mark.metadatatest
-    @patch(
-        "imars_etl.object_storage.ObjectStorageHandler."
-        "ObjectStorageHandler.load"
-    )
-    def test_wv2_zip_ingest_example(self, mock_load):
+    def test_wv2_zip_ingest_example(self):
         """
         CLI wv2 ingest with filename parsing:
             imars_etl.py load
@@ -165,7 +156,6 @@ class Test_load_cli(TestCasePlusSQL):
                 '/path/w/parseable/date/wv2_2000_06_gom_123456789_10_0.zip'
         """
         from imars_etl.cli import main
-        mock_load.return_value = "/tmp/imars-etl-test-fpath"
         test_args = [
             '-vvv',
             'load',
@@ -184,7 +174,7 @@ class Test_load_cli(TestCasePlusSQL):
             ['product_id', 'filepath', 'date_time', 'area_id'],
             [
                 '6',
-                '"{}"'.format(mock_load.return_value),
+                '"{}"'.format('/srv/imars-objects/gom/zip_wv2_ftp_ingest/wv2_2000_06_07T112233_gom_123456789_10_0.zip'),
                 '"2000-06-07 11:22:33"',
                 '1',
             ]

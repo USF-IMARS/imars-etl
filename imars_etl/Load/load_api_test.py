@@ -12,13 +12,15 @@ from imars_etl.util.TestCasePlusSQL import TestCasePlusSQL
 
 
 class Test_load_api(TestCasePlusSQL):
-    @pytest.mark.metadatatest
     @patch(
-        "imars_etl.object_storage.ObjectStorageHandler."
-        "ObjectStorageHandler.load",
+        "imars_etl.Load.Load._dry_run_load_object",
         return_value="/tmp/imars-etl-test-fpath"
     )
-    def test_load_s3(self, mock_load):
+    @patch(
+        "imars_etl.Load.Load._load_metadata",
+        return_value=""
+    )
+    def test_load_s3(self, mock_load, mock_metadata):
         """
         test API load s3 file
         """
@@ -112,13 +114,15 @@ class Test_load_api(TestCasePlusSQL):
     #         ]
     #     )
 
-    @pytest.mark.metadatatest
     @patch(
-        "imars_etl.object_storage.ObjectStorageHandler."
-        "ObjectStorageHandler.load",
+        "imars_etl.Load.Load._dry_run_load_object",
         return_value="/tmp/imars-etl-test-fpath"
     )
-    def test_load_att_wv2_m1bs(self, mock_load):
+    @patch(
+        "imars_etl.Load.Load._load_metadata",
+        return_value=""
+    )
+    def test_load_att_wv2_m1bs(self, mock_meta, mock_load):
         """
         API load att_wv2_m1bs with inferred date from filepath
         """

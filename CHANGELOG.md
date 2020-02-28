@@ -1,5 +1,11 @@
-# (NYI) 0.16.0
+# (NYI) 0.17.0
 * TODO: add ./examples/ dir & mv examples from readme
+
+# 0.17.0
+* simplified load hooks & wrappers paradigm
+
+# 0.16.0 & 0.16.1
+* improved tests
 
 # 0.15.0
 * load now returns SQL kwarg list
