@@ -2,10 +2,8 @@ import os
 import logging
 
 from imars_etl.object_storage.imars_objects import imars_objects
-from imars_etl.get_hook import get_metadata_hook
 from imars_etl.util.config_logger import config_logger
-from imars_etl.exceptions.TooManyMetadataMatchesException \
-    import TooManyMetadataMatchesException
+from imars_etl.metadata_db.mysql import select
 
 EXTRACT_DEFAULTS = {
 }
@@ -37,34 +35,7 @@ def extract(
 
     full_sql_str = "SELECT filepath FROM file WHERE {}".format(sql)
 
-    meta_hook = get_metadata_hook()
-    try:
-        result = meta_hook.get_records(
-            full_sql_str,
-            first=first,
-        )
-    except TooManyMetadataMatchesException:
-        # === handle acceptable duplicate multihash entries (issue #41)
-        if first:  # shouldn't get here if first == True anyway
-            raise
-        multihash_sql = full_sql_str.replace(
-            "SELECT filepath FROM file ",
-            "SELECT multihash FROM file "
-        )
-        multihashes = meta_hook.get_records(
-            multihash_sql,
-            check_result=False
-        )
-        # if all list elements are equal
-        if multihashes.count(multihashes[0]) == len(multihashes):
-            # we must re-query here bc first result was stoppered by exception
-            result = meta_hook.get_records(
-                full_sql_str,
-                first=True,
-            )
-
-    src_path = result[0][0]
-
+    src_path = select(full_sql_str)
     if output_path is None:
         output_path = "./" + os.path.basename(src_path)
 

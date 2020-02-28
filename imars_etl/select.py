@@ -1,6 +1,6 @@
 import logging
 
-from imars_etl.get_hook import get_metadata_hook
+from imars_etl.metadata_db.mysql import select as meta_db_select
 from imars_etl.util.config_logger import config_logger
 
 
@@ -92,8 +92,7 @@ def _select(sql, cols, post_where, first, verbose):
             cols, sql, post_where
         )
     # logger.debug(sql_query)
-    metadata_db = get_metadata_hook()
-    result = metadata_db.get_records(
+    result = meta_db_select(
         sql_query,
         first=first,
     )

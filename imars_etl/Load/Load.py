@@ -5,7 +5,7 @@ from imars_etl.drivers_metadata.get_metadata_driver_from_key\
     import get_metadata_driver_from_key
 from imars_etl.Load.validate_args import validate_args
 from imars_etl.util.config_logger import config_logger
-from imars_etl.get_hook import get_metadata_hook
+from imars_etl.metadata_db.mysql import insert
 from imars_etl.object_storage.imars_objects import imars_objects
 
 LOAD_DEFAULTS = {  # defaults here instead of fn def for cli argparse usage
@@ -99,8 +99,7 @@ def _load_object(args_dict):
 
 
 def _load_metadata(args_dict, rows, fields):
-    hook = get_metadata_hook()
-    hook.insert_rows(
+    insert(
         table='file',
         rows=rows,
         target_fields=fields,
