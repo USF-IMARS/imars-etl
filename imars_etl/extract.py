@@ -3,7 +3,6 @@ import logging
 
 from imars_etl.object_storage.imars_objects import imars_objects
 from imars_etl.get_hook import get_metadata_hook
-from imars_etl.metadata_db.MetadataDBHandler import DEFAULT_METADATA_DB_CONN_ID
 from imars_etl.util.config_logger import config_logger
 from imars_etl.exceptions.TooManyMetadataMatchesException \
     import TooManyMetadataMatchesException
@@ -23,7 +22,6 @@ def extract(
     sql,
     output_path=None,
     first=False,
-    metadata_conn_id=DEFAULT_METADATA_DB_CONN_ID,
     verbose=0,
     method=EXTRACT_METHOD.COPY[0],
     **kwargs
