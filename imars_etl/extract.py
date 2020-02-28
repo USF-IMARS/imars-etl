@@ -2,9 +2,7 @@ import os
 import logging
 
 from imars_etl.object_storage.imars_objects import imars_objects
-from imars_etl.object_storage.ObjectStorageHandler \
-    import DEFAULT_OBJ_STORE_CONN_ID
-from imars_etl.metadata_db.MetadataDBHandler import MetadataDBHandler
+from imars_etl.get_hook import get_metadata_hook
 from imars_etl.metadata_db.MetadataDBHandler import DEFAULT_METADATA_DB_CONN_ID
 from imars_etl.util.config_logger import config_logger
 from imars_etl.exceptions.TooManyMetadataMatchesException \
@@ -26,7 +24,6 @@ def extract(
     output_path=None,
     first=False,
     metadata_conn_id=DEFAULT_METADATA_DB_CONN_ID,
-    object_store=DEFAULT_OBJ_STORE_CONN_ID,
     verbose=0,
     method=EXTRACT_METHOD.COPY[0],
     **kwargs
@@ -42,11 +39,9 @@ def extract(
 
     full_sql_str = "SELECT filepath FROM file WHERE {}".format(sql)
 
-    metadata_db = MetadataDBHandler(
-        metadata_db=metadata_conn_id,
-    )
+    meta_hook = get_metadata_hook()
     try:
-        result = metadata_db.get_records(
+        result = meta_hook.get_records(
             full_sql_str,
             first=first,
         )
@@ -58,14 +53,14 @@ def extract(
             "SELECT filepath FROM file ",
             "SELECT multihash FROM file "
         )
-        multihashes = metadata_db.get_records(
+        multihashes = meta_hook.get_records(
             multihash_sql,
             check_result=False
         )
         # if all list elements are equal
         if multihashes.count(multihashes[0]) == len(multihashes):
             # we must re-query here bc first result was stoppered by exception
-            result = metadata_db.get_records(
+            result = meta_hook.get_records(
                 full_sql_str,
                 first=True,
             )
@@ -84,14 +79,6 @@ def extract(
         os.symlink(src_path, output_path)  # ln -s src_path output_path
         fpath = output_path
     elif method.lower() in EXTRACT_METHOD.COPY:
-        # object_storage = ObjectStorageHandler(
-        #     sql=sql,
-        #     output_path=output_path,
-        #     first=first,
-        #     metadata_conn_id=metadata_conn_id,
-        #     object_store=object_store,
-        #     **kwargs
-        # )
         object_storage = imars_objects()
         # use connection to download & then print a path to where the file can
         # be accessed on the local machine.

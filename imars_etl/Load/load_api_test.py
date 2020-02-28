@@ -1,51 +1,12 @@
 """
 """
-try:  # py2
-    import mock
-    from mock import patch
-except ImportError:  # py3
-    from unittest import mock
-    from unittest.mock import patch
-    from unittest.mock import MagicMock
 
-import pytest
+from unittest.mock import patch
+
 from imars_etl.util.TestCasePlusSQL import TestCasePlusSQL
 
 
 class Test_load_api(TestCasePlusSQL):
-    @patch(
-        "imars_etl.Load.Load._dry_run_load_object",
-        return_value="/tmp/imars-etl-test-fpath"
-    )
-    @patch(
-        "imars_etl.Load.Load._load_metadata",
-        return_value=""
-    )
-    @patch(
-        'imars_etl.Load.validate_args._get_handles',
-        return_value=(
-            MagicMock(),
-            MagicMock(
-                name='get_records',
-                return_value={}
-            ),
-        )
-    )
-    def test_load_s3(self, mock_load, mock_metadat, mock_get_handles):
-        """
-        test API load s3 file
-        """
-        import imars_etl
-        imars_etl.load(
-            filepath=__file__,  # just use this file as test filepath
-            sql=(
-                "uuid='{}' AND date_time='{}' AND product_id={} AND "
-                "area_id={} AND provenance='s3_test_v1'"
-            ).format(
-                "fake-uuid-str", '2019-02-02 10:10:10.001', 1, 1
-            ),
-            dry_run=True
-        )
     # === python API (passes dicts)
     # @patch(
     #     "imars_etl.object_storage.ObjectStorageHandler."

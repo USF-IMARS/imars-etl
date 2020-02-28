@@ -4,31 +4,34 @@
 # std modules:
 from unittest import TestCase
 from unittest.mock import patch
-import pytest
-
-from imars_etl.exceptions.NoMetadataMatchException \
-    import NoMetadataMatchException
-from imars_etl.exceptions.TooManyMetadataMatchesException \
-    import TooManyMetadataMatchesException
+from unittest.mock import MagicMock
 
 
-class Test_extract_api(TestCase):
+# class Test_extract_api(TestCase):
     # === python API
-    @pytest.mark.metadatatest
-    def test_extract_API_basic_none_found(self):
-        """
-        imars_etl.extract on impossible query raises NoMetadataMatchException:
-            imars_etl.extract({
-                "sql": 'status_id=-1 AND area_id=-10 AND product_id=-99'
-            })
-        """
-        from imars_etl.api import extract
-
-        self.assertRaises(
-            NoMetadataMatchException,
-            extract,
-            'status_id=-1 AND area_id=-10 AND product_id=-99'
-        )
+    # @patch(
+    #     'imars_etl.get_hook.get_metadata_hook',
+    #     return_value=MagicMock(
+    #         name='get_records',
+    #         return_value=[]
+    #     )
+    # )
+    # def test_extract_API_basic_none_found(self, mock_get_hook):
+    #     """
+    #     imars_etl.extract on impossible query raises NoMetadataMatchException:
+    #         imars_etl.extract({
+    #             "sql": 'status_id=-1 AND area_id=-10 AND product_id=-99'
+    #         })
+    #     """
+    #     from imars_etl.exceptions.NoMetadataMatchException \
+    #         import NoMetadataMatchException
+    #     from imars_etl.api import extract
+    #
+    #     self.assertRaises(
+    #         NoMetadataMatchException,
+    #         extract,
+    #         'status_id=-1 AND area_id=-10 AND product_id=-99'
+    #     )
 
     # # NOTE: this test doesn't work for unexplained reasons
     # #       the TooManyMetadataMatchesException below should be

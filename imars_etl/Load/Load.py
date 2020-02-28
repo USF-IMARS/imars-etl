@@ -4,9 +4,6 @@ import numbers
 from imars_etl.drivers_metadata.get_metadata_driver_from_key\
     import get_metadata_driver_from_key
 from imars_etl.Load.validate_args import validate_args
-from imars_etl.object_storage.ObjectStorageHandler \
-    import DEFAULT_OBJ_STORE_CONN_ID
-from imars_etl.metadata_db.MetadataDBHandler import DEFAULT_METADATA_DB_CONN_ID
 from imars_etl.util.config_logger import config_logger
 from imars_etl.get_hook import get_metadata_hook
 from imars_etl.object_storage.imars_objects import imars_objects
@@ -15,8 +12,6 @@ LOAD_DEFAULTS = {  # defaults here instead of fn def for cli argparse usage
     'metadata_file_driver': get_metadata_driver_from_key('dhus_json'),
     'nohash': False,
     'noparse': False,
-    'object_store': DEFAULT_OBJ_STORE_CONN_ID,
-    'metadata_db': DEFAULT_METADATA_DB_CONN_ID,
     'sql': '',
     'dry_run': False,
 }
