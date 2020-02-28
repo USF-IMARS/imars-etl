@@ -9,13 +9,13 @@ from imars_etl.Load.unify_metadata import unify_metadata
 from imars_etl.Load.unify_metadata import _rm_dict_none_values
 from imars_etl.util.timestrings import standardize_time_str
 
-from imars_etl.object_storage.ObjectStorageHandler import ObjectStorageHandler
-from imars_etl.metadata_db.MetadataDBHandler import MetadataDBHandler
+from imars_etl.object_storage.imars_objects import imars_objects
+from imars_etl.get_hook import get_metadata_hook
 
 
 def _get_handles(**kwargs):
     """returns object storage & metadata handles to given args"""
-    return ObjectStorageHandler(**kwargs), MetadataDBHandler(**kwargs)
+    return imars_objects(), get_metadata_hook()
 
 
 # TODO: move usage of this func into parse_args() ?

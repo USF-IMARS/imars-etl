@@ -4,6 +4,10 @@
 # std modules:
 from unittest import TestCase
 import pytest
+try:  # py2
+    from mock import patch
+except ImportError:  # py3
+    from unittest.mock import patch
 
 from imars_etl.util.config_logger import config_logger
 
@@ -72,8 +76,11 @@ class Test_validate_args(TestCase):
     #     }
     #     assert expected_subset.items() <= result_arg_dict.items()
 
-    @pytest.mark.metadatatest
-    def test_validate_gets_area_id_from_area_name(self):
+    @patch(
+        'imars_etl.Load.validate_args._get_handles',
+        return_value=(1, 2)
+    )
+    def test_validate_gets_area_id_from_area_name(self, mock_handles):
         """
         area_id can be inferred from area_name
         """

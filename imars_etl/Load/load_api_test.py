@@ -6,6 +6,7 @@ try:  # py2
 except ImportError:  # py3
     from unittest import mock
     from unittest.mock import patch
+    from unittest.mock import MagicMock
 
 import pytest
 from imars_etl.util.TestCasePlusSQL import TestCasePlusSQL
@@ -20,7 +21,17 @@ class Test_load_api(TestCasePlusSQL):
         "imars_etl.Load.Load._load_metadata",
         return_value=""
     )
-    def test_load_s3(self, mock_load, mock_metadata):
+    @patch(
+        'imars_etl.Load.validate_args._get_handles',
+        return_value=(
+            MagicMock(),
+            MagicMock(
+                name='get_records',
+                return_value={}
+            ),
+        )
+    )
+    def test_load_s3(self, mock_load, mock_metadat, mock_get_handles):
         """
         test API load s3 file
         """
@@ -115,14 +126,18 @@ class Test_load_api(TestCasePlusSQL):
     #     )
 
     @patch(
-        "imars_etl.Load.Load._dry_run_load_object",
-        return_value="/tmp/imars-etl-test-fpath"
+        "imars_etl.Load.validate_args._get_handles",
+        return_value=(1, 2)
     )
     @patch(
         "imars_etl.Load.Load._load_metadata",
         return_value=""
     )
-    def test_load_att_wv2_m1bs(self, mock_meta, mock_load):
+    @patch(
+        "imars_etl.Load.Load._dry_run_load_object",
+        return_value="/tmp/imars-etl-test-fpath"
+    )
+    def test_load_att_wv2_m1bs(self, mock_load, mock_meta, mock_get_handles):
         """
         API load att_wv2_m1bs with inferred date from filepath
         """

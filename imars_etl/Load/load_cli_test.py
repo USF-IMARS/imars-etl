@@ -6,9 +6,8 @@ try:  # py2
 except ImportError:  # py3
     from unittest import mock
     from unittest.mock import patch
-
+    from unittest.mock import MagicMock
 import pytest
-from datetime import datetime
 
 from imars_etl.util.TestCasePlusSQL import TestCasePlusSQL
 
@@ -93,8 +92,17 @@ class Test_load_cli(TestCasePlusSQL):
     #             '"{}"'.format(FPATH)
     #         ]
     #     )
-
-    def test_load_missing_date_unguessable(self):
+    @patch(
+        'imars_etl.Load.validate_args._get_handles',
+        return_value=(
+            MagicMock(),
+            MagicMock(
+                name='get_records',
+                return_value={}
+            ),
+        )
+    )
+    def test_load_missing_date_unguessable(self, mock_get_handles):
         """
         CLI cmd missing date that cannot be guessed fails:
             imars_etl.py load
@@ -115,39 +123,24 @@ class Test_load_cli(TestCasePlusSQL):
         ]
         self.assertRaises(Exception, main, test_args)  # noqa H202
 
-    @pytest.mark.metadatatest
-    def test_load_missing_date_guessable(self):
-        """
-        CLI cmd missing date that *can* be guessed:
-            imars_etl.py load
-                --dry_run
-                -j '{"area_id":1}'
-                -p 6
-                '/path/w/parseable/date/\
-                wv2_1989_06_07T111234_gom_123456789_10_0.zip'
-        """
-        from imars_etl.cli import main
-        test_args = [
-            '-vvv',
-            'load',
-            '--dry_run',
-            '-j', '{"area_id":1}',
-            '-p', '6',
-            '--nohash',
-            "/path/w/parseable/date/" +
-            "wv2_1989_06_07T111234_gom_123456789_10_0.zip",
-        ]
-        self.assertSQLInsertKeyValuesMatch(
-            main(test_args),
-            ['date_time', 'area_id', 'product_id', 'filepath'],
-            [
-                '"1989-06-07 11:12:34"', '1', '6',
-                '"{}"'.format('/srv/imars-objects/gom/zip_wv2_ftp_ingest/wv2_1989_06_07T111234_gom_123456789_10_0.zip')
-            ]
+    @patch(
+        'imars_etl.Load.validate_args._get_handles',
+        return_value=(
+            MagicMock(),
+            MagicMock(
+                name='get_records',
+                return_value={}
+            ),
         )
-
-    @pytest.mark.metadatatest
-    def test_wv2_zip_ingest_example(self):
+    )
+    @patch(
+        "imars_etl.Load.Load._dry_run_load_object",
+        return_value=(
+            "/srv/imars-objects/gom/zip_wv2_ftp_ingest/"
+            "wv2_2000_06_07T112233_gom_123456789_10_0.zip"
+        )
+    )
+    def test_wv2_zip_ingest_example(self, mock_get_handles, mock_dry_load):
         """
         CLI wv2 ingest with filename parsing:
             imars_etl.py load
