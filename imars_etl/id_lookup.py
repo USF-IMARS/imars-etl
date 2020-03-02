@@ -50,13 +50,12 @@ def _id_lookup(
         column_to_get = 'id'
 
     translation = meta_db_select(
-        "SELECT {} FROM {} WHERE {}={}".format(
+        "SELECT {} FROM {} WHERE {}={} LIMIT 1".format(
             column_to_get,
             table,
             column_given,
             value
-        ),
-        first=first,
+        )
     )
     return translation
 
