@@ -9,9 +9,8 @@ from imars_etl.util.TestCasePlusSQL import TestCasePlusSQL
 class Test_load_cli(TestCasePlusSQL):
 
     @patch(
-        'imars_etl.Load.validate_args._get_handles',
+        'sqlalchemy.create_engine',
         return_value=(
-            MagicMock(),
             MagicMock(
                 name='get_records',
                 return_value={}
