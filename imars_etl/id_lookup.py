@@ -49,7 +49,7 @@ def _id_lookup(
         column_given = 'short_name'
         column_to_get = 'id'
 
-    translation = meta_db_select.get_records(
+    translation = meta_db_select(
         "SELECT {} FROM {} WHERE {}={}".format(
             column_to_get,
             table,
