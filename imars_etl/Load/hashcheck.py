@@ -37,7 +37,7 @@ def hashcheck(filepath=None, multihash=None, **kwargs):
     # check for hash in metadatadb
     try:
         meta_db_select(
-            "{}='{}'".format(
+            "SELECT id WHERE {}='{}'".format(
                 HASH_COL_NAME, file_hash
             )
         )
