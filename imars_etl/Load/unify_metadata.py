@@ -80,7 +80,7 @@ def unify_metadata(**kwargs):
         kwargs.get('filepath') is not None
     ):
         path_metadata = parse_filepath(
-            metadb_engine=METADATA_ENGINE,
+            metadb_handle=METADATA_ENGINE,
             **final_meta
         )
         path_metadata = ensure_metadata_types(path_metadata)

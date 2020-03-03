@@ -14,6 +14,8 @@ from filepanther.get_filepath_formats \
     import get_filepath_formats
 from filepanther.parse_to_fmt_sanitize import parse_to_fmt_sanitize
 
+from imars_etl.metadata_db.mysql import METADATA_ENGINE
+
 
 class imars_objects(object):
     hook_path = "/srv/imars-objects"
@@ -55,7 +57,6 @@ class imars_objects(object):
 
     def format_filepath(
         self,
-        metadata_db_handle,
         *args,
         date_time,
         product_type_name=None, product_id=None, ingest_key=None,
@@ -67,7 +68,6 @@ class imars_objects(object):
             product_id=product_id,
             ingest_key=ingest_key,
             date_time=date_time,
-            metadata_db_handle=metadata_db_handle,
             forced_basename=forced_basename,
             **kwargs
         )
@@ -79,7 +79,7 @@ class imars_objects(object):
         # get the format with the highest priority rank
         try:
             format_key, fullpath = get_filepath_formats(
-                metadata_db_handle,
+                METADATA_ENGINE,
                 short_name=product_type_name,
                 product_id=product_id,
                 ingest_name=ingest_key,

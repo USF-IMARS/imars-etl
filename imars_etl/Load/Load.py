@@ -31,7 +31,6 @@ def load(*, verbose=0, **kwargs):
 
 def _load(
     filepath, *args,
-    object_storage_handle, metadata_db_handle,
     dry_run, no_load=False, **kwargs
 ):
     """
@@ -50,8 +49,6 @@ def _load(
     assert len(args) == 0
     args_dict = dict(
         filepath=filepath,
-        object_storage_handle=object_storage_handle,
-        metadata_db_handle=metadata_db_handle,
         dry_run=dry_run,
         **kwargs
     )
@@ -100,11 +97,7 @@ def _load_object(args_dict):
 
 def _load_metadata(args_dict, rows, fields):
     insert(
-        table='file',
-        rows=rows,
-        target_fields=fields,
-        commit_every=1000,
-        replace=False,
+        _make_sql_insert(**args_dict)
     )
     return _make_sql_where_clause(**args_dict)
 
@@ -154,7 +147,6 @@ def _make_sql_row_and_key_strings(**kwargs):
 
 def _make_sql_insert(**kwargs):
     """
-    !!! DEPRECATED !!!
     Creates SQL INSERT INTO statement with metadata from given args dict
     """
     logger = logging.getLogger("imars_etl.{}".format(

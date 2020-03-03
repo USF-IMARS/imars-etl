@@ -57,7 +57,7 @@ def _id_lookup(
             value
         )
     )
-    return translation
+    return translation[0]
 
 
 def _test_id_lookup(value=None, table=None, first=False):
