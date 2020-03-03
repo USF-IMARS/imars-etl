@@ -1,13 +1,11 @@
 from functools import lru_cache
 
-from imars_etl.metadata_db.MetadataDBHandler import DEFAULT_METADATA_DB_CONN_ID
-from imars_etl.metadata_db.MetadataDBHandler import MetadataDBHandler
-
-from imars_etl.filepath.formatter_hardcoded.get_product_id \
+from filepanther.formatter_hardcoded.get_product_id \
     import get_product_id
-from imars_etl.filepath.formatter_hardcoded.get_product_name \
+from filepanther.formatter_hardcoded.get_product_name \
     import get_product_name
-from imars_etl.config_logger import config_logger
+from imars_etl.util.config_logger import config_logger
+from imars_etl.metadata_db.mysql import meta_db_select
 
 
 def id_lookup(
@@ -38,7 +36,6 @@ def _id_lookup(
     value=None,
     table=None,
     first=False,
-    metadata_conn_id=DEFAULT_METADATA_DB_CONN_ID,
 ):
     assert value is not None
     assert table is not None
@@ -52,19 +49,15 @@ def _id_lookup(
         column_given = 'short_name'
         column_to_get = 'id'
 
-    metadata_db = MetadataDBHandler(
-        metadata_db=metadata_conn_id,
-    )
-    translation = metadata_db.get_records(
-        "SELECT {} FROM {} WHERE {}={}".format(
+    translation = meta_db_select(
+        "SELECT {} FROM {} WHERE {}={} LIMIT 1".format(
             column_to_get,
             table,
             column_given,
             value
-        ),
-        first=first,
-    )[0][0]
-    return translation
+        )
+    )
+    return translation[0]
 
 
 def _test_id_lookup(value=None, table=None, first=False):

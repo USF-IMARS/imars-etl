@@ -14,6 +14,7 @@ class MyLogger(getLoggerClass()):
         if self.isEnabledFor(TRACE):
             self._log(TRACE, msg, args, **kwargs)
 
+
 setLoggerClass(MyLogger)
 
 
@@ -27,10 +28,11 @@ def run_once(f):
 
 
 @run_once
-def config_logger(verbosity=0, quiet=False):
-    # =========================================================================
-    # === set up logging behavior
-    # =========================================================================
+def preconfig_logger():
+    _set_verbosity(0, True)
+
+
+def _set_verbosity(verbosity, quiet):
     if quiet:
         if verbosity > 0:
             raise ValueError(
@@ -52,12 +54,23 @@ def config_logger(verbosity=0, quiet=False):
             lvl_libs = logging.DEBUG
             # stream_handler.setLevel(logging.DEBUG)
             # file_handler.setLevel(logging.DEBUG)
-        # set up console root logger
-        # === (optional) create custom logging format(s)
-        # https://docs.python.org/3/library/logging.html#logrecord-attributes
-        # long_formatter = logging.Formatter(
-        #     '%(asctime)s|%(levelname)s\t|%(filename)s:%(lineno)s\t|%(message)s'
-        # )
+    logging.getLogger("imars_etl").setLevel(lvl_console)
+
+    return lvl_console, lvl_libs
+
+
+@run_once
+def config_logger(verbosity=0, quiet=False):
+    """
+    set up logging behavior for set verbosity and quiet-ness
+    """
+    lvl_console, lvl_libs = _set_verbosity(verbosity, quiet)
+    # set up console root logger
+    # === (optional) create custom logging format(s)
+    # https://docs.python.org/3/library/logging.html#logrecord-attributes
+    # long_formatter = logging.Formatter(
+    #     '%(asctime)s|%(levelname)s\t|%(filename)s:%(lineno)s\t|%(message)s'
+    # )
     short_formatter = logging.Formatter(
         '%(name)-12s: %(levelname)-8s %(message)s'
     )
@@ -68,18 +81,20 @@ def config_logger(verbosity=0, quiet=False):
     stream_handler.setFormatter(short_formatter)
     stream_handler.setLevel(lvl_console)
 
-    logging.getLogger("imars_etl").addHandler(stream_handler)
-    logging.getLogger("imars_etl").setLevel(lvl_console)
+    my_logger = logging.getLogger("imars_etl")
+    my_logger.handlers = []  # clear extant handler to prevent dupl. messages
+    my_logger.addHandler(stream_handler)
+    my_logger.setLevel(lvl_console)
 
     # disable misbehaving root logger
     # logging.getLogger("").setLevel(logging.WARNING)
     # config our loggers
-    logging.getLogger("imars_etl").propagate = False
+    my_logger.propagate = False
     # === config lib loggers
-    logging.getLogger("airflow").setLevel(lvl_libs)
-    logging.getLogger("airflow").propagate = False
-    logging.getLogger("parse").setLevel(lvl_libs)
-    logging.getLogger("parse").propagate = False
+    libs = ['airflow', 'parse', 'filepanther']
+    for libname in libs:
+        logging.getLogger(libname).setLevel(lvl_libs)
+        logging.getLogger(libname).propagate = False
 
     # LOG_DIR = "/var/opt/imars_etl/"
     # if not os.path.exists(LOG_DIR):
@@ -88,3 +103,5 @@ def config_logger(verbosity=0, quiet=False):
     #    LOG_DIR+'imars_etl.log', maxBytes=1e6, backupCount=5
     # )
     # file_handler.setFormatter(formatter)
+
+    my_logger.debug("logger configured for verbosity={}".format(verbosity))

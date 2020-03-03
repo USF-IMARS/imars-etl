@@ -1,8 +1,7 @@
 import logging
 
-from imars_etl.metadata_db.MetadataDBHandler import MetadataDBHandler
-from imars_etl.metadata_db.MetadataDBHandler import DEFAULT_METADATA_DB_CONN_ID
-from imars_etl.config_logger import config_logger
+from imars_etl.metadata_db.mysql import meta_db_select
+from imars_etl.util.config_logger import config_logger
 
 
 def _output_formatter_unix(output_result):
@@ -21,6 +20,7 @@ def _output_formatter_unix(output_result):
         output_str += "\n"
     return output_str
 
+
 SELECT_OUTPUT_FORMATTERS = {
     "py_obj": lambda x: x,
     "unix": _output_formatter_unix,
@@ -32,7 +32,6 @@ def select(
     cols='*',
     post_where='',
     first=False,
-    metadata_conn_id=DEFAULT_METADATA_DB_CONN_ID,
     verbose=0,
     format=SELECT_OUTPUT_FORMATTERS["py_obj"],
     **kwargs  # NOTE: these get thrown out
@@ -45,11 +44,11 @@ def select(
             "Throwing out unrecognized kwargs: \n\t{}".format(kwargs)
         )
     return format(
-        _select(sql, cols, post_where, first, metadata_conn_id, verbose)
+        _select(sql, cols, post_where, first, verbose)
     )
 
 
-def _select(sql, cols, post_where, first, metadata_conn_id, verbose):
+def _select(sql, cols, post_where, first, verbose):
     """
     Prints json-formatted metadata for first entry in given args.sql
 
@@ -93,10 +92,7 @@ def _select(sql, cols, post_where, first, metadata_conn_id, verbose):
             cols, sql, post_where
         )
     # logger.debug(sql_query)
-    metadata_db = MetadataDBHandler(
-        metadata_db=metadata_conn_id,
-    )
-    result = metadata_db.get_records(
+    result = meta_db_select(
         sql_query,
         first=first,
     )

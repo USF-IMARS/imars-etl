@@ -43,7 +43,7 @@ def relation(
         actual = dadict[outkey]
         if actual != expect:
             raise ValueError(
-                "expected output does not match actual:" +
+                "constraint on '{}' has mismatch between actual and expected:".format(outkey) +
                 "\n\tactual: {}".format(actual) +
                 "\n\texpect: {}".format(expect)
             )

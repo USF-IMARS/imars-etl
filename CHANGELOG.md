@@ -1,3 +1,29 @@
+# (NYI) 0.17.0
+* TODO: add ./examples/ dir & mv examples from readme
+
+# 0.17.0
+* simplified load hooks & wrappers paradigm
+* broke a lot of stuff
+
+# 0.16.0 & 0.16.1
+* improved tests
+
+# 0.15.0
+* load now returns SQL kwarg list
+* fix duplicate welcome message
+* fix linkify script to use load SQL returned
+* linkify script now `mv`s files and `rm`s at end in case of errors
+
+# 0.14.2
+* mv config_logger into `util`s
+* break out imars-etl.filepath into filepanther (#47)
+
+# 0.14.1
+* add exception so airflow works better w/ autofs-managed NFS $AIRFLOW_HOME
+* fix loading of files with '.' in basename
+* create new OB.DAAC load example in `./examples/load`
+* multiple improved log & error messages
+
 # 0.14.0
 * implement symlinking
 * change `extract --link` to `extract --method link` w/ default as `copy`

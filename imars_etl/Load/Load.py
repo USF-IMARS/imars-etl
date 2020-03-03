@@ -4,17 +4,14 @@ import numbers
 from imars_etl.drivers_metadata.get_metadata_driver_from_key\
     import get_metadata_driver_from_key
 from imars_etl.Load.validate_args import validate_args
-from imars_etl.object_storage.ObjectStorageHandler \
-    import DEFAULT_OBJ_STORE_CONN_ID
-from imars_etl.metadata_db.MetadataDBHandler import DEFAULT_METADATA_DB_CONN_ID
-from imars_etl.config_logger import config_logger
+from imars_etl.util.config_logger import config_logger
+from imars_etl.metadata_db.mysql import insert
+from imars_etl.object_storage.imars_objects import imars_objects
 
 LOAD_DEFAULTS = {  # defaults here instead of fn def for cli argparse usage
     'metadata_file_driver': get_metadata_driver_from_key('dhus_json'),
     'nohash': False,
     'noparse': False,
-    'object_store': DEFAULT_OBJ_STORE_CONN_ID,
-    'metadata_db': DEFAULT_METADATA_DB_CONN_ID,
     'sql': '',
     'dry_run': False,
 }
@@ -34,8 +31,7 @@ def load(*, verbose=0, **kwargs):
 
 def _load(
     filepath, *args,
-    object_storage_handle, metadata_db_handle,
-    dry_run, **kwargs
+    dry_run, no_load=False, **kwargs
 ):
     """
     Args can be a dict or argparse.Namespace
@@ -53,8 +49,6 @@ def _load(
     assert len(args) == 0
     args_dict = dict(
         filepath=filepath,
-        object_storage_handle=object_storage_handle,
-        metadata_db_handle=metadata_db_handle,
         dry_run=dry_run,
         **kwargs
     )
@@ -68,7 +62,10 @@ def _load(
     ))
 
     args_dict.pop('ingest_key', None)  # rm this key used by validate_args only
-    new_filepath = object_storage_handle.load(**args_dict)
+    if no_load or dry_run:
+        new_filepath = _dry_run_load_object(args_dict)
+    else:
+        new_filepath = _load_object(args_dict)
 
     fields, rows = _make_sql_row_and_key_lists(**args_dict)
     for row_i, row in enumerate(rows):
@@ -85,13 +82,24 @@ def _load(
             filepath, new_filepath
         )
     else:
-        metadata_db_handle.insert_rows(
-            table='file',
-            rows=rows,
-            target_fields=fields,
-            commit_every=1000,
-            replace=False,
-        )
+        return _load_metadata(args_dict, rows, fields)
+
+
+def _dry_run_load_object(args_dict):
+    wrapper = imars_objects()
+    return wrapper.format_filepath(**args_dict)
+
+
+def _load_object(args_dict):
+    wrapper = imars_objects()
+    return wrapper.load(**args_dict)
+
+
+def _load_metadata(args_dict, rows, fields):
+    insert(
+        _make_sql_insert(**args_dict)
+    )
+    return _make_sql_where_clause(**args_dict)
 
 
 def _make_sql_row_and_key_lists(**kwargs):
@@ -111,7 +119,14 @@ def _make_sql_row_and_key_lists(**kwargs):
 def _make_sql_row_and_key_strings(**kwargs):
     """
     !!! DEPRECATED !!!
-    Creates SQL key & value strings with metadata from given args dict
+    Creates SQL key & value strings with metadata from given args dict.
+
+    returns
+    -------
+    keys : list of str
+        eg: ['date_time', 'id', 'product_id']
+    vals : list of str
+        eg: ['2018-01-22T15:45:00', '1234', '10']
     """
     KEY_FMT_STR = '{},'  # how we format sql keys
     keys = ""
@@ -132,7 +147,6 @@ def _make_sql_row_and_key_strings(**kwargs):
 
 def _make_sql_insert(**kwargs):
     """
-    !!! DEPRECATED !!!
     Creates SQL INSERT INTO statement with metadata from given args dict
     """
     logger = logging.getLogger("imars_etl.{}".format(
@@ -144,3 +158,21 @@ def _make_sql_insert(**kwargs):
     SQL = "INSERT INTO file ("+keys+") VALUES ("+vals+")"
     logger.debug(SQL)
     return SQL
+
+
+def _make_sql_where_clause(**kwargs):
+    """
+    Creates SQL WHERE ____ statement with metadata from given args dict
+    """
+    logger = logging.getLogger("imars_etl.{}".format(
+        __name__,
+        )
+    )
+    result = []
+    for key in kwargs:
+        val = kwargs[key]
+        if key in VALID_FILE_TABLE_COLNAMES and key != "filepath":
+            result.append('{}="{}"'.format(key, val))
+    result = ' AND '.join(result)
+    logger.debug(result)
+    return result

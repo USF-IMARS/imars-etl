@@ -9,14 +9,6 @@ from imars_etl.Load.unify_metadata import unify_metadata
 from imars_etl.Load.unify_metadata import _rm_dict_none_values
 from imars_etl.util.timestrings import standardize_time_str
 
-from imars_etl.object_storage.ObjectStorageHandler import ObjectStorageHandler
-from imars_etl.metadata_db.MetadataDBHandler import MetadataDBHandler
-
-
-def _get_handles(**kwargs):
-    """returns object storage & metadata handles to given args"""
-    return ObjectStorageHandler(**kwargs), MetadataDBHandler(**kwargs)
-
 
 # TODO: move usage of this func into parse_args() ?
 def validate_args(kwargs_dict, DEFAULTS={}):
@@ -34,11 +26,6 @@ def validate_args(kwargs_dict, DEFAULTS={}):
 
     # remove keys with None values
     args_dict = _rm_dict_none_values(args_dict)
-
-    (
-        args_dict['object_storage_handle'],
-        args_dict['metadata_db_handle']
-    ) = _get_handles(**args_dict)
 
     if not args_dict.get('nohash', False):
         logger.debug('ensuring hash in metadata...')
@@ -66,9 +53,21 @@ def validate_args(kwargs_dict, DEFAULTS={}):
     if args_dict.get('filepath') is not None:
         fpath = args_dict['filepath']
         dirname, fname = os.path.split(fpath)
-        assert fname == fpath.split('/')[-1]
+        if fname != fpath.split('/')[-1]:
+            raise AssertionError(
+                "filename does not match end of filepath:" +
+                "\n\t'{}'\n\t\t!=\n\t'{}'".format(
+                    fname, fpath.split('/')[-1]
+                )
+            )
         fbase, ext = os.path.splitext(fname)
-        assert fbase == fname.split('.')[0]
+        if fbase != '.'.join(fname.split('.')[0:-1]):
+            raise AssertionError(
+                "basename does not match first part of filename:" +
+                "\n\t'{}'\n\t\t!=\n\t'{}'".format(
+                    fbase, '.'.join(fname.split('.')[0:-1])
+                )
+            )
         args_dict.setdefault('filename', fname)
         args_dict.setdefault('basename', fbase)
         args_dict.setdefault('directory', dirname)

@@ -10,19 +10,15 @@ import logging
 import os
 import shutil
 
-from imars_etl.object_storage.hook_wrappers.BaseHookWrapper \
-    import BaseHookWrapper
-from imars_etl.filepath.get_filepath_formats \
+from filepanther.get_filepath_formats \
     import get_filepath_formats
-from imars_etl.filepath.parse_to_fmt_sanitize import parse_to_fmt_sanitize
+from filepanther.parse_to_fmt_sanitize import parse_to_fmt_sanitize
+
+from imars_etl.metadata_db.mysql import METADATA_ENGINE
 
 
-class FSHookWrapper(BaseHookWrapper):
-    REQUIRED_ATTRS = {
-        'load': ['get_path'],
-        'extract': ['get_path'],
-        'format_filepath': ['get_path'],
-    }
+class imars_objects(object):
+    hook_path = "/srv/imars-objects"
 
     def load(self, filepath, dry_run=False, **kwargs):
         logger = logging.getLogger("imars_etl.{}".format(
@@ -54,16 +50,17 @@ class FSHookWrapper(BaseHookWrapper):
             )
         )
         if not src_path.startswith("/"):
-            src_path = self.hook.get_path() + src_path
+            src_path = self.hook_path + src_path
         logger.debug(["cp", src_path, target_path])
         shutil.copy(src_path, target_path)
         return target_path
 
     def format_filepath(
         self,
-        metadata_db_handle,
+        *args,
+        date_time,
         product_type_name=None, product_id=None, ingest_key=None,
-        forced_basename=None, date_time=None,
+        forced_basename=None,
         **kwargs
     ):
         args_dict = dict(
@@ -71,7 +68,6 @@ class FSHookWrapper(BaseHookWrapper):
             product_id=product_id,
             ingest_key=ingest_key,
             date_time=date_time,
-            metadata_db_handle=metadata_db_handle,
             forced_basename=forced_basename,
             **kwargs
         )
@@ -83,7 +79,7 @@ class FSHookWrapper(BaseHookWrapper):
         # get the format with the highest priority rank
         try:
             format_key, fullpath = get_filepath_formats(
-                metadata_db_handle,
+                METADATA_ENGINE,
                 short_name=product_type_name,
                 product_id=product_id,
                 ingest_name=ingest_key,
@@ -101,14 +97,14 @@ class FSHookWrapper(BaseHookWrapper):
             logger.trace('forcing basename="{}"'.format(forced_basename))
             fullpath = os.path.join(forced_basename, fullpath)
         else:
-            logger.trace('hook path "{}"'.format(self.hook.get_path()))
-            fullpath = os.path.join(self.hook.get_path(), fullpath)
+            logger.trace('hook path "{}"'.format(self.hook_path))
+            fullpath = os.path.join(self.hook_path, fullpath)
         # fullpath = get_product_filepath_template(
         #     product_type_name=kwargs.get("product_type_name"),
         #     product_id=kwargs.get("product_id"),
         #     forced_basename=kwargs.get("forced_basename")
         # )
-        # fullpath = os.path.join(self.hook.get_path(), fullpath)
+        # fullpath = os.path.join(self.hook_path, fullpath)
 
         logger.info("formatting FS path \n>>'{}'".format(fullpath))
         fullpath = parse_to_fmt_sanitize(fullpath)

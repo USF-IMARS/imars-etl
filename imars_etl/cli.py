@@ -7,12 +7,9 @@ from argparse import ArgumentParser
 
 import imars_etl
 from imars_etl.util.ConstMapAction import ConstMapAction
-from imars_etl.BaseHookHandler import get_hooks_list
-from imars_etl.object_storage.ObjectStorageHandler \
-    import DEFAULT_OBJ_STORE_CONN_ID
 from imars_etl.drivers_metadata.get_metadata_driver_from_key \
     import DRIVER_MAP_DICT as METADATA_DRIVER_KEYS
-from imars_etl.config_logger import config_logger
+from imars_etl.util.config_logger import config_logger
 
 from imars_etl.api import load
 from imars_etl.Load.Load import LOAD_DEFAULTS
@@ -29,10 +26,7 @@ from imars_etl.select import SELECT_OUTPUT_FORMATTERS
 from imars_etl.api import find
 
 
-def main(argvs):
-    args = parse_args(argvs)
-    config_logger(verbosity=args.verbose, quiet=args.quiet)
-
+def _welcome_message():
     logger = logging.getLogger("imars_etl.{}".format(
         __name__,
     ))
@@ -41,6 +35,14 @@ def main(argvs):
     )
     logger.info(HELLO)
     logger.info('=' * len(HELLO))
+
+
+def main(argvs):
+    args = parse_args(argvs)
+    config_logger(verbosity=args.verbose, quiet=args.quiet)
+
+    _welcome_message()
+
     # # log test:
     # logger.critical('c')
     # logger.warning('w')
@@ -57,10 +59,10 @@ def main(argvs):
         del args.func
         result = fn(**vars(args))
 
-    if fn in [extract, id_lookup, select]:
+    if fn in [extract, id_lookup, select, load]:
         # print return value
         print(result)
-    elif fn in [find, load]:
+    elif fn in [find]:
         # do nothing w/ return value
         pass
     else:
@@ -293,15 +295,6 @@ def parse_args(argvs):
         action="store_true"
     )
     parser_load.add_argument(
-        "--object_store",
-        help=(
-            "Connection id to use for loading the file into object storage. " +
-            "ie: which backend to use"
-        ),
-        default=DEFAULT_OBJ_STORE_CONN_ID,
-        choices=get_hooks_list()
-    )
-    parser_load.add_argument(
         "--duplicates_ok",
         help="do not raise error if trying to load file already in database",
         action="store_true"
@@ -314,6 +307,11 @@ def parse_args(argvs):
     parser_load.add_argument(
         "--noparse",
         help="do not parse filename for metadata. WARN: may disable features",
+        action="store_true"
+    )
+    parser_load.add_argument(
+        "--no_load",
+        help="do not load file into object store.",
         action="store_true"
     )
     # ===

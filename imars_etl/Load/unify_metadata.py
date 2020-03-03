@@ -6,9 +6,9 @@ from pprint import pformat
 from imars_etl.exceptions.InputValidationError import InputValidationError
 from imars_etl.Load.metadata_constraints import ensure_constistent_metadata
 from imars_etl.Load.metadata_constraints import ensure_metadata_types
-from imars_etl.filepath.parse_filepath import parse_filepath
+from filepanther.parse_filepath import parse_filepath
 from imars_etl.util.timestrings import iso8601strptime
-from imars_etl.metadata_db.MetadataDBHandler import MetadataDBHandler
+from imars_etl.metadata_db.mysql import METADATA_ENGINE
 
 
 def unify_metadata(**kwargs):
@@ -80,7 +80,7 @@ def unify_metadata(**kwargs):
         kwargs.get('filepath') is not None
     ):
         path_metadata = parse_filepath(
-            metadb_handle=MetadataDBHandler(**kwargs),
+            metadb_handle=METADATA_ENGINE,
             **final_meta
         )
         path_metadata = ensure_metadata_types(path_metadata)
@@ -118,7 +118,7 @@ def sql_str_to_dict(sql_str):
     if sql_str is None or len(sql_str) < 1:
         return result
     else:
-        pairs = re.split("\s+AND\s+", sql_str)
+        pairs = re.split(r"\s+AND\s+", sql_str)
         for pair in pairs:
             key, val = pair.split('=')
             key = key.strip().replace("'", "").replace('"', '')
