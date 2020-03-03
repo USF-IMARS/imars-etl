@@ -1,5 +1,5 @@
 #!/bin/bash 
-# Loads all wv2 ntf files from pgc ingest.
+# Loads all wv2 ntf files from pgc ingest in the monroe region (id=9).
 
 
 find /srv/imars-objects/tpa_gs/migration/monroe/ -name 'WV02*M1BS*.ntf' \
