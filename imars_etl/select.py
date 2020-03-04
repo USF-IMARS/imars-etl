@@ -31,7 +31,6 @@ def select(
     sql='',
     cols='*',
     post_where='',
-    first=False,
     verbose=0,
     format=SELECT_OUTPUT_FORMATTERS["py_obj"],
     **kwargs  # NOTE: these get thrown out
@@ -44,11 +43,11 @@ def select(
             "Throwing out unrecognized kwargs: \n\t{}".format(kwargs)
         )
     return format(
-        _select(sql, cols, post_where, first, verbose)
+        _select(sql, cols, post_where, verbose)
     )
 
 
-def _select(sql, cols, post_where, first, verbose):
+def _select(sql, cols, post_where, verbose):
     """
     Prints json-formatted metadata for first entry in given args.sql
 
@@ -93,8 +92,7 @@ def _select(sql, cols, post_where, first, verbose):
         )
     # logger.debug(sql_query)
     result = meta_db_select(
-        sql_query,
-        first=first,
+        sql_query
     )
 
     return result
