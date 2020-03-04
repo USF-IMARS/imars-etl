@@ -4,6 +4,7 @@
 # 0.17.1
 * fix for select(): rm --first
 * fix select() only returns 1 result
+* mysqlclient version requirement dropped
 
 # 0.17.0
 * simplified load hooks & wrappers paradigm
