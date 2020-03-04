@@ -11,7 +11,7 @@ def meta_db_select(sql):
     with METADATA_ENGINE.connect() as con:
         result = con.execute(sql)
         # TODO: check len of result?
-        return result.fetchone()
+        return result.fetchall()
 
 
 def insert(sql):
