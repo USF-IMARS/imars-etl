@@ -7,7 +7,7 @@ import io
 
 # import imars_etl
 # NOTE: can't do that here before dependencies installed, silly.
-VERSION = '0.17.0'  # should match __version__ in imars_etl.__init__.py
+VERSION = '0.17.1'  # should match __version__ in imars_etl.__init__.py
 
 
 def read(*filenames, **kwargs):
@@ -18,6 +18,7 @@ def read(*filenames, **kwargs):
         with io.open(filename, encoding=encoding) as f:
             buf.append(f.read())
     return sep.join(buf)
+
 
 _long_description = read('README.md')  # , 'CHANGES.txt')
 

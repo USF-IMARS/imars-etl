@@ -207,7 +207,6 @@ def parse_args(argvs):
         ),
         default=""
     )
-    parser_select.add_argument("--first", **FIRST)
 
     # === id_lookup
     parser_id_lookup = subparsers.add_parser(

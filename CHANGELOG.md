@@ -1,5 +1,8 @@
-# (NYI) 0.17.0
+# (NYI) 0.18.0
 * TODO: add ./examples/ dir & mv examples from readme
+
+# 0.17.1
+* fix for select(): rm --first
 
 # 0.17.0
 * simplified load hooks & wrappers paradigm
