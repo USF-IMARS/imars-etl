@@ -34,8 +34,14 @@ def extract(
     ))
 
     full_sql_str = "SELECT filepath FROM file WHERE {}".format(sql)
+    result = meta_db_select(full_sql_str)
+    print("res:{}".format(result))
 
-    src_path = meta_db_select(full_sql_str)
+    # there should be only one result
+    assert len(result) == 1
+    assert len(result[0]) == 1
+
+    src_path = result[0][0]
     if output_path is None:
         output_path = "./" + os.path.basename(src_path)
 
