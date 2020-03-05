@@ -6,6 +6,7 @@
 * fix select() only returns 1 result
 * mysqlclient version requirement dropped
 * fix extract's sql usage
+* fix id_lookup should return only one number or name
 
 # 0.17.0
 * simplified load hooks & wrappers paradigm
