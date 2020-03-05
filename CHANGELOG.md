@@ -5,6 +5,7 @@
 * fix for select(): rm --first
 * fix select() only returns 1 result
 * mysqlclient version requirement dropped
+* fix extract's sql usage
 
 # 0.17.0
 * simplified load hooks & wrappers paradigm
