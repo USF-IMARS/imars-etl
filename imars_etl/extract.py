@@ -38,8 +38,16 @@ def extract(
     print("res:{}".format(result))
 
     # there should be only one result
-    assert len(result) == 1
-    assert len(result[0]) == 1
+    if len(result) != 1:
+        raise AssertionError(
+            "expected only one result. Actual #: {}".format(len(result))
+        )
+    if len(result[0]) != 1:
+        raise AssertionError(
+            "expected only one column in result. Actual #: {}".format(
+                len(result)
+            )
+        )
 
     src_path = result[0][0]
     if output_path is None:
