@@ -1,6 +1,9 @@
 # (NYI) 0.18.0
 * TODO: add ./examples/ dir & mv examples from readme
 
+# 0.17.2
+* fix select should raise if n_results == 0
+
 # 0.17.1
 * fix for select(): rm --first
 * fix select() only returns 1 result
