@@ -1,6 +1,7 @@
 import logging
 
 from imars_etl.metadata_db.mysql import meta_db_select
+from imars_etl.metadata_db.mysql import check_result
 from imars_etl.util.config_logger import config_logger
 
 
@@ -94,5 +95,5 @@ def _select(sql, cols, post_where, verbose):
     result = meta_db_select(
         sql_query
     )
-
+    check_result(result, min_results=1)
     return result

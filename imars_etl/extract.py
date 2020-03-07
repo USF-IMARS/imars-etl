@@ -4,6 +4,7 @@ import logging
 from imars_etl.object_storage.imars_objects import imars_objects
 from imars_etl.util.config_logger import config_logger
 from imars_etl.metadata_db.mysql import meta_db_select
+from imars_etl.metadata_db.mysql import check_result
 
 EXTRACT_DEFAULTS = {
 }
@@ -37,9 +38,7 @@ def extract(
     result = meta_db_select(full_sql_str)
     print("res:{}".format(result))
 
-    # there should be only one result
-    assert len(result) == 1
-    assert len(result[0]) == 1
+    check_result(result, min_results=1, max_results=1, expected_columns=1)
 
     src_path = result[0][0]
     if output_path is None:
