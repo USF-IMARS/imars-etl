@@ -29,8 +29,7 @@ def check_result(
     # check # of results
     if (
         len(result) < min_results or
-        max_results < 0 or
-        max_results < len(result)
+        max_results > 0 and max_results < len(result)
     ):
         if max_results < 0:  # change value for printout purposes
             max_results = "inf"
