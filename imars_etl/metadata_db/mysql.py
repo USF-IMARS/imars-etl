@@ -23,13 +23,13 @@ def insert(sql):
 def check_result(
     result,
     min_results=1,
-    max_results=-1,  # -1 means no max
-    expected_columns=1
+    max_results=None,  # None means no max
+    expected_columns=None  # None means don't check it
 ):
     # check # of results
     if (
         len(result) < min_results or
-        max_results > 0 and max_results < len(result)
+        max_results is not None and max_results < len(result)
     ):
         if max_results < 0:  # change value for printout purposes
             max_results = "inf"
@@ -41,7 +41,7 @@ def check_result(
             )
         )
     # check # of columns in each result
-    if len(result[0]) != expected_columns:
+    if expected_columns is not None and len(result[0]) != expected_columns:
         raise AssertionError(
             "expected {} columns in result. Actual #: {}".format(
                 expected_columns,
