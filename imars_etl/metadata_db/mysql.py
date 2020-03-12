@@ -29,9 +29,10 @@ def check_result(
     # check # of results
     if (
         len(result) < min_results or
-        max_results is not None and max_results < len(result)
+        (max_results is not None and max_results < len(result))
     ):
-        if max_results < 0:  # change value for printout purposes
+        # change value for printout purposes
+        if max_results is None:
             max_results = "inf"
         raise AssertionError(
             "expected # results {}<N<{}. Actual #: {}".format(

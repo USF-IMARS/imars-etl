@@ -3,6 +3,7 @@
 
 # 0.17.2
 * fix select should raise if n_results == 0
+* bugfix for when mysql.check_result max_results=None
 
 # 0.17.1
 * fix for select(): rm --first
