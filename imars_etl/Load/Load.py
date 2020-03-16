@@ -68,14 +68,7 @@ def _load(
         new_filepath = _load_object(args_dict)
 
     fields, rows = _make_sql_row_and_key_lists(**args_dict)
-    for row_i, row in enumerate(rows):
-        for i, element in enumerate(row):
-            try:
-                rows[row_i][i] = element.replace(
-                    filepath, new_filepath
-                )
-            except (AttributeError, TypeError):  # element not a string
-                pass
+    rows = _replace_oldpath_w_newpath(rows, filepath, new_filepath)
     if dry_run:  # test mode returns the sql string
         logger.debug('oh, just a test')
         return _make_sql_insert(**args_dict).replace(
@@ -83,6 +76,26 @@ def _load(
         )
     else:
         return _load_metadata(args_dict, rows, fields)
+
+
+def _replace_oldpath_w_newpath(rows, filepath, new_filepath):
+    logger = logging.getLogger("imars_etl.{}".format(
+        __name__,
+        )
+    )
+    logger.trace("old rows {}".format(rows))
+    for row_i, row in enumerate(rows):
+        for i, element in enumerate(row):
+            logger.trace("row,element [{},{}]".format(row_i, i))
+            try:
+                rows[row_i][i] = element.replace(
+                    filepath, new_filepath
+                )
+                logger.trace('new path inserted')
+            except (AttributeError, TypeError):  # element not a string
+                pass
+    logger.trace("new rows {}".format(rows))
+    return rows
 
 
 def _dry_run_load_object(args_dict):
