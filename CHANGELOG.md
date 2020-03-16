@@ -1,6 +1,9 @@
 # (NYI) 0.18.0
 * TODO: add ./examples/ dir & mv examples from readme
 
+# 0.17.3
+* fix wrong filepath in insert
+
 # 0.17.2
 * fix select should raise if n_results == 0
 * bugfix for when mysql.check_result max_results=None

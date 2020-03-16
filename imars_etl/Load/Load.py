@@ -5,7 +5,7 @@ from imars_etl.drivers_metadata.get_metadata_driver_from_key\
     import get_metadata_driver_from_key
 from imars_etl.Load.validate_args import validate_args
 from imars_etl.util.config_logger import config_logger
-from imars_etl.metadata_db.mysql import insert
+from imars_etl.metadata_db import mysql
 from imars_etl.object_storage.imars_objects import imars_objects
 
 LOAD_DEFAULTS = {  # defaults here instead of fn def for cli argparse usage
@@ -71,9 +71,7 @@ def _load(
     rows = _replace_oldpath_w_newpath(rows, filepath, new_filepath)
     if dry_run:  # test mode returns the sql string
         logger.debug('oh, just a test')
-        return _make_sql_insert(**args_dict).replace(
-            filepath, new_filepath
-        )
+        return _make_sql_insert(fields, rows)
     else:
         return _load_metadata(args_dict, rows, fields)
 
@@ -109,8 +107,8 @@ def _load_object(args_dict):
 
 
 def _load_metadata(args_dict, rows, fields):
-    insert(
-        _make_sql_insert(**args_dict)
+    mysql.insert(
+        _make_sql_insert(fields, rows)
     )
     return _make_sql_where_clause(**args_dict)
 
@@ -158,7 +156,7 @@ def _make_sql_row_and_key_strings(**kwargs):
     return keys, vals
 
 
-def _make_sql_insert(**kwargs):
+def _make_sql_insert(keys, vals):
     """
     Creates SQL INSERT INTO statement with metadata from given args dict
     """
@@ -166,7 +164,6 @@ def _make_sql_insert(**kwargs):
         __name__,
         )
     )
-    keys, vals = _make_sql_row_and_key_strings(**kwargs)
     # Create a new record
     SQL = "INSERT INTO file ("+keys+") VALUES ("+vals+")"
     logger.debug(SQL)
