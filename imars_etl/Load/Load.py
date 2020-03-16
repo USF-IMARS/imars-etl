@@ -158,12 +158,15 @@ def _make_sql_row_and_key_strings(**kwargs):
 
 def _make_sql_insert(keys, vals):
     """
-    Creates SQL INSERT INTO statement with metadata from given args dict
+    Creates SQL INSERT INTO statement
     """
     logger = logging.getLogger("imars_etl.{}".format(
         __name__,
         )
     )
+    assert len(vals) == 1
+    keys = ",".join(keys)
+    vals = ",".join(vals[0])
     # Create a new record
     SQL = "INSERT INTO file ("+keys+") VALUES ("+vals+")"
     logger.debug(SQL)
