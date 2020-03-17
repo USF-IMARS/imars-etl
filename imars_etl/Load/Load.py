@@ -165,8 +165,11 @@ def _make_sql_insert(keys, vals):
         )
     )
     assert len(vals) == 1
-    keys = ",".join(keys)
-    vals = ",".join([str(v) for v in vals[0]])
+    # add quotes & commas
+    keys = '","'.join(keys)
+    vals = '","'.join([str(v) for v in vals[0]])
+    keys = '"' + keys + '"'
+    vals = '"' + vals + '"'
     # Create a new record
     SQL = "INSERT INTO file ("+keys+") VALUES ("+vals+")"
     logger.debug(SQL)
